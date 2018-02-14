@@ -12,9 +12,9 @@ import (
 	"strings"
 )
 
-//	LimPerms - to create limited permutations using subsets and heap's algorithm
-//	Needs an slice of strings to create the limited permutations from and an int to limit the number of permutations
-//	For example, (["1", "2", "3", "4"], 3) will create 4P3 (4*3*2) permutations
+//LimPerms - to create limited permutations using subsets and heap's algorithm.
+//Needs an slice of strings to create the limited permutations from and an int to limit the number of permutations.
+//For example, (["1", "2", "3", "4"], 3) will create 4P3 (4*3*2) permutations.
 func LimPerms(toPerm []string, num int) []string {
 	subsets := getSubsets(toPerm, num)
 	perms := getPerms(subsets)
