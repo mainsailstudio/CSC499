@@ -1,0 +1,22 @@
+<div class="row vertical-mid">
+  <div class="col-md-5 left-side">
+    <app-login-start></app-login-start>
+  </div>
+  <div class="col-md-7 right-side">
+    <h1>Users are: {{ users | json }}</h1>
+    <app-register-start (messageEvent)="receiveEmail($event)"></app-register-start>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 vertical-mid nopadtop">
+    <h1>What this is and how this works</h1>
+    <div class="row">
+      <div class="col-md-6">
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eum aperiam asperiores praesentium itaque quas veritatis quos suscipit neque iste quo, eaque, sequi totam harum beatae! Veniam quod dicta fugiat quo ex possimus odio alias distinctio nobis facere suscipit adipisci dolore, et repudiandae voluptas ratione ipsa similique. Cupiditate pariatur aut quam veritatis iusto placeat fugiat, debitis quisquam vitae deleniti! Exercitationem, illo.
+      </div>
+      <div class="col-md-6">
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum iste odit libero aut laudantium provident error commodi explicabo, facere aliquid voluptatem sit placeat aperiam modi minus nisi, dolore voluptatum quia sequi reprehenderit voluptas soluta. Explicabo ad accusamus veritatis tempore cumque excepturi illo. Quae rerum explicabo mollitia nostrum corporis voluptates eaque labore quas, iste, dignissimos sunt. Repudiandae distinctio doloribus officia neque?
+      </div>
+    </div>
+  </div>
+</div>

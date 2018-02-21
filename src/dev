@@ -1,5 +1,0 @@
-/src
-    - main.go: maps all API calls to functions
-    /dynauthapi
-        - create-user.go: create a user using API calls
-        - 
