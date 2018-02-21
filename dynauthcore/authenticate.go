@@ -8,50 +8,107 @@
 package dynauthcore
 
 import (
-	"bytes"
 	"database/sql"
 	dbinfo "dbinfo"
 	"fmt"
 	"log"
 
-	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/crypto/scrypt"
 )
 
-//Authenticate - to do the authentication I suppose.
-func Authenticate(locks string, otp string, userid string, iterations int) {
+//AuthenticateScrypt - to do the authentication I suppose.
+func AuthenticateScrypt(locks string, otp string, userid string, iterations int) {
 	// first prep auth for comparison
-	toHash := locks + otp
-	fmt.Println("toHash is", toHash)
-	hashedOTP := hashOTP(toHash, iterations) // hash the prepped otp
-	fmt.Println("Hashed otp is", hashedOTP)
-	if compareAuth(hashedOTP, userid) == true {
-		fmt.Println("AUTHENTICATED")
-	} else {
-		fmt.Println("NO MATCH FOUND")
+	salts := getSalts(userid)
+	auths := getAuths(userid)
+	authenticated := false
+	for i := range auths {
+		toHash := locks + otp + salts[i]
+		fmt.Println("========================")
+		fmt.Println("Comparison number is", i+1)
+		fmt.Println("To hash string is	", toHash)
+		saltByte := []byte(salts[i])
+		hashedOTP := hashScrypt(toHash, saltByte, iterations) // hash the prepped otp
+		fmt.Println("Hashed string is	", hashedOTP)
+		fmt.Println("Auth to compare is	", auths[i])
+		if hashedOTP == auths[i] {
+			authenticated = true
+			fmt.Println("AUTHENTICATED")
+			break
+		} else {
+			authenticated = false
+			fmt.Println("NO MATCH FOUND")
+		}
 	}
+	if authenticated == true {
+		fmt.Println("You were authenticated")
+	} else {
+		fmt.Println("You were NOT authenticated")
+	}
+
+	// fmt.Println("\n==================\nTEST\n==================")
+	// str := "test"
+	// salt := make([]byte, saltLength)
+	// _, err := io.ReadFull(rand.Reader, salt)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Println("Salt is", salt)
+	// bytes := []byte(str)
+	// fmt.Println("Bytes is", bytes)
+	// bytes += salt
+	// fmt.Println("Both is",bytes)
+
+	// // Converts string to sha2
+	// h := sha256.New()                       // new sha256 object
+	// h.Write(bytes)                          // data is now converted to hex
+	// code := h.Sum(nil)                      // code is now the hex sum
+	// codestr := hex.EncodeToString(code)     // converts hex to string
+	// fmt.Println("Code string is", codestr)
+
+	// salt := make([]byte, saltLength)
+	// _, err := io.ReadFull(rand.Reader, salt)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Println("Salt byte is", salt)
+	// saltString := fmt.Sprintf("%x", salt)
+	// fmt.Println("Salt string is", saltString)
+	// fmt.Println("Converted salt string is", []byte(saltString))
+	// saltString2 := fmt.Sprintf("%x", []byte(saltString))
+	// fmt.Println("Salt string is", saltString2)
+	// fmt.Println()
+	// testHash, err := scrypt.Key([]byte("test"), salt, iterations, 8, 1, 64)
+	// fmt.Println("Hash byte is", testHash)
+	// fmt.Printf("Hash string is %x ", testHash)
+	// fmt.Println()
+
+	// fmt.Println("\n==================\nCOMPARE\n==================")
+	// compareTest, err := scrypt.Key([]byte("test"), []byte(saltString), iterations, 8, 1, 64)
+	// fmt.Println("Hash byte is", compareTest)
+	// fmt.Printf("Hash string is %x ", compareTest)
+	// fmt.Println()
 }
 
-func hashOTP(otp string, iterations int) string {
-	hashedPasswordBcrypt, err := bcrypt.GenerateFromPassword([]byte(otp), iterations)
+func hashScrypt(otp string, salt []byte, iterations int) string {
+	otpByte := []byte(otp)
+	hashedPasswordScrypt, err := scrypt.Key(otpByte, salt, iterations, 8, 1, 64)
 	if err != nil {
 		panic(err)
 	}
-	hashedToString := bytes.NewBuffer(hashedPasswordBcrypt).String()
+	hashedToString := fmt.Sprintf("%x", hashedPasswordScrypt)
 	return hashedToString
 }
 
-func compareAuth(toCompare string, userid string) bool {
+func compareAuthsString(toCompare string, userid string) bool {
 	authSlice := getAuths(userid) // get all of the auths into a slice
 	var authenticated bool
 	fmt.Println("Auth slice is", authSlice)
 	for i := range authSlice {
 		fmt.Println("Compare number", i)
 		authenticated = false
-		err := bcrypt.CompareHashAndPassword([]byte(authSlice[i]), []byte(toCompare))
-		fmt.Println("Err is", err)
-		if err == nil {
+		if toCompare == authSlice[i] {
 			authenticated = true
-			break
 		}
 	}
 	return authenticated
@@ -67,6 +124,37 @@ func getAuths(userid string) []string {
 	defer db.Close()
 	authSlice := []string{}
 	query := "SELECT auth FROM auth" + userid
+	auths, err := db.Query(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer auths.Close()
+	for auths.Next() {
+		var auth string
+		err := auths.Scan(&auth)
+		if err != nil {
+			log.Fatal(err)
+		}
+		authSlice = append(authSlice, auth)
+	}
+	err = auths.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return authSlice
+}
+
+func getSalts(userid string) []string {
+	dbinfo := dbinfo.Db()
+	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
+	if err != nil {
+		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+	}
+
+	defer db.Close()
+	lockSlice := []string{}
+	query := "SELECT salt FROM auth" + userid
 	locks, err := db.Query(query)
 	if err != nil {
 		log.Fatal(err)
@@ -74,16 +162,16 @@ func getAuths(userid string) []string {
 
 	defer locks.Close()
 	for locks.Next() {
-		var auth string
-		err := locks.Scan(&auth)
+		var lock string
+		err := locks.Scan(&lock)
 		if err != nil {
 			log.Fatal(err)
 		}
-		authSlice = append(authSlice, auth)
+		lockSlice = append(lockSlice, lock)
 	}
 	err = locks.Err()
 	if err != nil {
 		log.Fatal(err)
 	}
-	return authSlice
+	return lockSlice
 }
