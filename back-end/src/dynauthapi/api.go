@@ -10,7 +10,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"fmt"
-
+	
+	// "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
@@ -106,7 +107,11 @@ func StartAPIPlease() {
 	// Route handles & endpoints
 	// Init router
 	fmt.Println("Starting mux")
+
 	r := mux.NewRouter()
+	// canonical := handlers.CanonicalHost("http://13.92.156.114", 302)
+	
+	// r.Host("http://13.92.156.114")
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -123,6 +128,9 @@ func StartAPIPlease() {
 	// // Start server
 	// log.Fatal(http.ListenAndServe(":8000", r))
 	// Start server
+	
+	// http.ListenAndServe(":8080", r)
+	
 	handler := cors.Default().Handler(r)
 	http.ListenAndServe(":8080", handler)
 
