@@ -13,8 +13,8 @@ export class TestService {
 
     // Uses http.get() to load data from a single API endpoint
     getUsers() {
-        return this.http.get('http://69.193.87.28:8080/');
+        // return this.http.get('http://13.92.156.114:8080');
         // return this.http.get('localhost:8080');
-        // return this.http.get('https://jsonplaceholder.typicode.com/posts/1');
+        return this.http.get('https://jsonplaceholder.typicode.com/posts/1');
     }
 }

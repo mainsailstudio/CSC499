@@ -21,7 +21,16 @@ const hashLen = 64       // 64 equals 128 characters
 
 func main() {
 	fmt.Println("Starting API")
-	dynauthapi.StartAPIPlease()
+	dynauthapi.StartAPI()
+
+	// fmt.Println("Testing get json")
+	// selectUsers := "select * from users"
+	// json, err := dynauthapi.GetJSONFromSQL(selectUsers)
+	// if err != nil {
+	// 	panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+	// }
+	// fmt.Println("JSON received was", json)
+
 	fmt.Println("1. Add a new user (auths only)")
 	fmt.Println("2. Authenticate a user")
 	var selection int

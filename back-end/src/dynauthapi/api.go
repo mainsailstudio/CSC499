@@ -8,9 +8,9 @@ package api
 
 import (
 	"encoding/json"
-	"net/http"
 	"fmt"
-	
+	"net/http"
+
 	// "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -23,6 +23,16 @@ var users []User
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
+}
+
+// Get all books
+func getUsersReal(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	usersDB, err := GetJSONFromSQL("select * from users")
+	if err != nil {
+		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+	}
+	json.NewEncoder(w).Encode(usersDB)
 }
 
 // // Get single book
@@ -82,7 +92,7 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 // }
 
 // StartAPI - Start the api for testing
-func StartAPIPlease() {
+func StartAPI() {
 
 	// Hardcoded data - @todo: add database
 	users = append(users, User{ID: 1, Fname: "Connor", Lname: "Peters", Email: "design@mainsailstudio.com", Phone: "5854782678",
@@ -109,28 +119,22 @@ func StartAPIPlease() {
 	fmt.Println("Starting mux")
 
 	r := mux.NewRouter()
-	// canonical := handlers.CanonicalHost("http://13.92.156.114", 302)
-	
-	// r.Host("http://13.92.156.114")
+
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
-		w.Header().Set("Access-Control-Allow-Methods", "GET")
-		w.Header().Set("Access-Control-Allow-Methods", "POST")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Accept")
+		// w.Header().Set("Access-Control-Allow-Credentials", "true")
+		// w.Header().Set("Access-Control-Allow-Methods", "GET")
+		// w.Header().Set("Access-Control-Allow-Methods", "POST")
+		// w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Accept")
 		w.Write([]byte("{\"hello\": \"world\"}"))
 	})
 
 	r.HandleFunc("/users", getUsers).Methods("GET")
-	r.HandleFunc("/user", CreateUser).Methods("POST")
+	r.HandleFunc("/users-real", getUsersReal).Methods("GET")
+	r.HandleFunc("/register", CreateUser).Methods("POST")
+	r.HandleFunc("/register", CreateUser).Methods("POST")
 
-	// // Start server
-	// log.Fatal(http.ListenAndServe(":8000", r))
-	// Start server
-	
-	// http.ListenAndServe(":8080", r)
-	
 	handler := cors.Default().Handler(r)
 	http.ListenAndServe(":8080", handler)
 

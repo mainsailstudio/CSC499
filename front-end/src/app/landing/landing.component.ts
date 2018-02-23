@@ -11,7 +11,6 @@ import {TestService} from './test.service';
 export class LandingComponent implements OnInit {
 
   email = 'rando';
-
   public users;
 
   constructor(private _testService: TestService) { }
@@ -19,6 +18,11 @@ export class LandingComponent implements OnInit {
   ngOnInit() {
     this.getUsers();
   }
+
+  receiveEmail($event) {
+    this.email = $event;
+  }
+
 
   getUsers() {
     this._testService.getUsers().subscribe(

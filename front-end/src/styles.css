@@ -52,7 +52,8 @@ input[type=text]:focus, textarea:focus {
 */
 
 input[type=text],
-input[type=password]{
+input[type=password],
+input[type=email]{
     background-color:transparent;
     border:none;
     border-bottom: 1px solid rgba(0,0,0,.3);
@@ -64,8 +65,10 @@ input[type=password]{
 
 input[type=text]:focus,
 input[type=password]:focus,
+input[type=email]:focus,
 textarea:focus,
-button:active {
+button:focus,
+button[type=submit]:hover {
     outline:0px !important;
     -webkit-appearance:none;
     border-bottom: 1px solid rgba(19, 76, 122, 0.65);
@@ -102,6 +105,17 @@ button[type=submit]{
 button[type=submit]:hover{
     color: rgba(19, 76, 122, 0.85);
 } 
+
+.alert-danger {
+    color: #9a1f1f;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 0;
+    border: none;
+}
+
+input.ng-invalid.ng-dirty.ng-touched{
+    border-bottom: 1px dashed rgba(145, 0, 0, 0.8) !important;
+}
 
 .fa-alignWithText{
     vertical-align: -4px;

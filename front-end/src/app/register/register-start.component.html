@@ -1,8 +1,30 @@
 <h1>Register</h1>
-    <label for="email">Email:</label><br />
-    <input type="text" name="email" value="" placeholder="example@example.com" style="width:70%"><br />
-    <label for="tempPass">Temporary password:</label><br />
-    <input type="password" name="tempPass" value="" placeholder="$tr0ngTEMPpasswordddd" style="width:70%"><br />
-    <!-- <a routerLink="/register"> -->
-    <button type="submit" (click)="sendEmail()">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
-    <!-- </a> -->
+    <form>
+        <label for="email">Email:</label><br />
+        <input required ngModel email name="email" #email="ngModel" type="email" value="" placeholder="example@example.com" style="width:70%"><br />
+        <!-- error for email -->
+        <div class="alert alert-danger" *ngIf="email.touched && !email.valid && email.errors?.email">
+            Make sure this is a valid email
+        </div>
+
+        <label for="tempPass">Temporary password:</label><br />
+        <input required ngModel password name="tempPass" #tempPass="ngModel" type="password" value="" placeholder="$tr0ngTEMPpasswordddd" style="width:70%"><br />
+        <!-- error for tempPass -->
+        <div class="alert alert-danger" *ngIf="tempPass.touched && !tempPass.valid">
+            Make sure this is a strong password
+        </div>
+
+        <!-- <label for="confirmPass">Confirm password:</label><br />
+        <input required ngModel password name="confirmPass" #confirmPass="ngModel" type="password" value="" placeholder="Confirm $tr0ngTEMPpasswordddd" style="width:70%"><br /> -->
+        <!-- error for confirmPass -->
+        <!-- <div class="alert alert-danger" *ngIf="conifirmPass.touched && !confirmPass.valid">
+            Make sure both passwords are the same
+        </div>
+
+        <input ngModel password name="password" #password="ngModel" type="hidden" value=""> -->
+
+        <button type="submit" (click)="add(email.value, password.value);">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+        <!-- <a routerLink="/register">
+        <button type="submit">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+        </a> -->
+    </form>

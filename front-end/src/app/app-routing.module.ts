@@ -9,7 +9,7 @@ const routes: Routes = [
   { path: '',  component: LandingComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
-  { path: '**', component: NotFoundComponent },
+  { path: '**', component: NotFoundComponent } // make sure this is always at the bottom so it doesn't superscede legitimate routes
 ];
 
 @NgModule({

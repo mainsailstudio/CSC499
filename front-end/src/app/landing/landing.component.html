@@ -3,12 +3,14 @@
     <app-login-start></app-login-start>
   </div>
   <div class="col-md-7 right-side">
-    <h1>Users are: {{ users | json }}</h1>
+    <!-- <h1>Users are: {{ users | json }}</h1> -->
+    <h1>Email is: {{ email }}</h1>
     <app-register-start (messageEvent)="receiveEmail($event)"></app-register-start>
+    <!-- <app-register-start></app-register-start> -->
   </div>
 </div>
 <div class="row">
-  <div class="col-md-12 vertical-mid nopadtop">
+  <div class="col-md-12 vertical-mid">
     <h1>What this is and how this works</h1>
     <div class="row">
       <div class="col-md-6">

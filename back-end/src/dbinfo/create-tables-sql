@@ -1,0 +1,40 @@
+create database dynauth_backend;
+use dynauth_backend;
+drop table if exists users;
+create table users (
+	id int primary key auto_increment, fname varchar(30), lname varchar(30), email varchar(255), phone varchar(12), security int
+);
+
+drop table if exists behaviors;
+create table behaviors (
+	id int primary key auto_increment, userid int not null, elapsed varchar(30), refresh int, hint int,
+	
+	foreign key (userid) references users(id)
+);
+
+drop table if exists log;
+create table log(
+	id int primary key auto_increment, userid int not null, ip varchar(55), time varchar(30), behaviorid int not null,
+	
+	foreign key (userid) references users(id),
+	foreign key (behaviorid) references behaviors(id)
+);
+
+drop table if exists locks;
+create table locks(
+	id int primary key auto_increment, userid int not null, locksAre varchar(16), lockType int,
+	
+	foreign key (userid) references users(id)
+);
+
+drop table if exists keysDisplay;
+create table keysDisplay(
+	id int primary key auto_increment, userid int not null, keysAre varchar(16), keyType int,
+	
+	foreign key (userid) references users(id)
+);
+
+drop table if exists securityLevels;
+create table securityLevels(
+    id int primary key auto_increment, keyNum int, lockDisplayNum int, refreshNum int, hintNum int, keyDisplayCharNum int
+);
