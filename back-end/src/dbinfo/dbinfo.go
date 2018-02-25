@@ -6,6 +6,6 @@ import (
 
 // Db returns a slice with the needed db information
 func Db() []string {
-	dbinfo := []string{"mysql", "root:root@/" + dynauthconst.DatabaseName}
+	dbinfo := []string{"mysql", dynauthconst.DatabaseUser + ":" + dynauthconst.DatabasePass + "@/" + dynauthconst.DatabaseName}
 	return dbinfo
 }
