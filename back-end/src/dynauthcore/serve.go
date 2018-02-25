@@ -12,17 +12,25 @@ import (
 	dbinfo "dbinfo"
 	"fmt"
 	"log"
-
-	"github.com/shogo82148/go-shuffle"
+	"math/rand"
+	"time"
+	//"github.com/shogo82148/go-shuffle"
 )
 
 //ServeLocks - to query the database and return the user's locks in a string
-func ServeLocks(userid string) string {
+func ServeLocks(userid string, lockNum int) string {
 	locks := getLocks(userid)
 	fmt.Println("Initial locks are", locks)
+
+	// shuffle.Slice(locks) - from imported package
+	shuffle(locks) // from internet code
+	fmt.Println("Shuffled non-truncated locks are", locks)
+
+	locks = locks[:lockNum]
+	fmt.Println("Shuffled truncated locks are", locks)
+
 	var lockString string
-	shuffle.Slice(locks)
-	fmt.Println("Shuffled locks are", locks)
+
 	for i := range locks {
 		lockString += locks[i]
 	}
@@ -32,8 +40,17 @@ func ServeLocks(userid string) string {
 //ServeLockSlice - to query the database and return the user's locks in a slice
 func ServeLockSlice(userid string) []string {
 	locks := getLocks(userid)
-	shuffle.Strings(locks)
+	// shuffle.Strings(locks) - from imported package
+	shuffle(locks) // from internet code
 	return locks
+}
+
+func shuffle(slice []string) {
+	r := rand.New(rand.NewSource(time.Now().Unix()))
+	for n := len(slice); n > 0; n-- {
+		randIndex := r.Intn(n)
+		slice[n-1], slice[randIndex] = slice[randIndex], slice[n-1]
+	}
 }
 
 func getLocks(userid string) []string {

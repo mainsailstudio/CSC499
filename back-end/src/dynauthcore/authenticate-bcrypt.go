@@ -8,7 +8,6 @@
 package dynauthcore
 
 import (
-	"bytes"
 	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
@@ -19,23 +18,23 @@ func AuthenticateBcrypt(locks string, otp string, userid string, iterations int)
 	// first prep auth for comparison
 	toHash := locks + otp
 	fmt.Println("toHash is", toHash)
-	hashedOTP := hashBcrypt(toHash, iterations) // hash the prepped otp
-	fmt.Println("Hashed otp is", hashedOTP)
-	if compareAuthsBcrypt(hashedOTP, userid) == true {
+	// hashedOTP := hashBcrypt(toHash, iterations) // hash the prepped otp
+	// fmt.Println("Hashed otp is", hashedOTP)
+	if compareAuthsBcrypt(toHash, userid) == true {
 		fmt.Println("AUTHENTICATED")
 	} else {
 		fmt.Println("NO MATCH FOUND")
 	}
 }
 
-func hashBcrypt(otp string, iterations int) string {
-	hashedPasswordBcrypt, err := bcrypt.GenerateFromPassword([]byte(otp), iterations)
-	if err != nil {
-		panic(err)
-	}
-	hashedToString := bytes.NewBuffer(hashedPasswordBcrypt).String()
-	return hashedToString
-}
+// func hashBcrypt(otp string, iterations int) string {
+// 	hashedPasswordBcrypt, err := bcrypt.GenerateFromPassword([]byte(otp), iterations)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	hashedToString := bytes.NewBuffer(hashedPasswordBcrypt).String()
+// 	return hashedToString
+// }
 
 func compareAuthsBcrypt(toCompare string, userid string) bool {
 	authSlice := getAuths(userid) // get all of the auths into a slice

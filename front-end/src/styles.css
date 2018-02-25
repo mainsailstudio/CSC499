@@ -61,6 +61,7 @@ input[type=email]{
     padding-bottom: 6px;
     padding-right: 12px;
     margin-bottom:18px;
+    font-family: 'Titillium Web', sans-serif;
 }
 
 input[type=text]:focus,

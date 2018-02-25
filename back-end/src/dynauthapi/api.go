@@ -28,11 +28,14 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 // Get all books
 func getUsersReal(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	usersDB, err := GetJSONFromSQL("select * from users")
+	sqlString := "select * from users"
+	usersDB, err := GetJSONFromSQL(sqlString)
 	if err != nil {
 		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
 	}
-	json.NewEncoder(w).Encode(usersDB)
+	// json.NewEncoder(w).Encode(usersDB)
+	fmt.Println(usersDB)
+	fmt.Fprintf(w, usersDB) // prints to browser
 }
 
 // // Get single book
@@ -95,24 +98,17 @@ func getUsersReal(w http.ResponseWriter, r *http.Request) {
 func StartAPI() {
 
 	// Hardcoded data - @todo: add database
-	users = append(users, User{ID: 1, Fname: "Connor", Lname: "Peters", Email: "design@mainsailstudio.com", Phone: "5854782678",
+	testUser := User{ID: "1", Fname: "Connor", Lname: "Peters", Email: "design@mainsailstudio.com", Phone: "5854782678",
 		Security: &Security{
-			ID:   1,
+			ID:   "1",
 			Name: "Security level 1",
-			Desc: "This is security level 1"},
-		Locks: &Lock{
-			ID:       1,
-			UserID:   1,
-			Lock:     "1",
-			LockType: 1},
-		Auths: &Auth{
-			Auth: "testauthIguess",
-			Salt: "Iguess"},
-		KeysDisplay: &KeyDisplay{
-			ID:      1,
-			UserID:  1,
-			Key:     "test1",
-			KeyType: 1}})
+			Desc: "This is security level 1"}}
+	userLocks := Lock{AuthID: "1", UserID: testUser.ID, Lock: "1", LockType: "1"}
+	_ = userLocks
+	userAuths := Auth{UserID: testUser.ID, Auth: "testauthIguess", Salt: "Iguess"}
+	_ = userAuths
+	userKeyDisplay := KeyDisplay{UserID: testUser.ID, Key: "test1", KeyType: "1"}
+	_ = userKeyDisplay
 
 	// Route handles & endpoints
 	// Init router
@@ -133,7 +129,7 @@ func StartAPI() {
 	r.HandleFunc("/users", getUsers).Methods("GET")
 	r.HandleFunc("/users-real", getUsersReal).Methods("GET")
 	r.HandleFunc("/register", CreateUser).Methods("POST")
-	r.HandleFunc("/register", CreateUser).Methods("POST")
+	//r.HandleFunc("/register", CreateUser).Methods("POST")
 
 	handler := cors.Default().Handler(r)
 	http.ListenAndServe(":8080", handler)
