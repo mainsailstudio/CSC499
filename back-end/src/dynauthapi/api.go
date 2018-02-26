@@ -103,7 +103,7 @@ func StartAPI() {
 			ID:   "1",
 			Name: "Security level 1",
 			Desc: "This is security level 1"}}
-	userLocks := Lock{AuthID: "1", UserID: testUser.ID, Lock: "1", LockType: "1"}
+	userLocks := Lock{ID: "1", UserID: testUser.ID, Lock: "1", LockType: "1"}
 	_ = userLocks
 	userAuths := Auth{UserID: testUser.ID, Auth: "testauthIguess", Salt: "Iguess"}
 	_ = userAuths

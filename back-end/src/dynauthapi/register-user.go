@@ -26,14 +26,40 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&user)
 	if user.Fname != "" || user.Lname != "" || user.Phone != "" || user.LockNum != "" || user.KeyNum != "" || user.Security != nil {
 		fmt.Println("Would update user to match here")
-		// updateFullUser
-	} else if user.Fname == "" || user.Lname == "" || user.Phone == "" || user.LockNum == "" || user.KeyNum == "" || user.Security == nil && user.Email != "" && user.TempPass != "" {
-		registerUser(user.Email, user.TempPass)
+		//createFullUser(user.Fname, user.Lname, user.Phone, user.LockNum, user.KeyNum,)
+	} else if user.Email != "" && user.TempPass != "" {
+		if checkUserExists(user.Email) == false {
+			registerUser(user.Email, user.TempPass)
+			json.NewEncoder(w).Encode(user)
+		} else {
+			http.Error(w, "This email already exists, please use a different email", 400)
+		}
 	} else {
-		fmt.Println("There was an error with the register user api call, the fields did not match any method")
+		http.Error(w, "There was an error with the register user api call, the fields did not match any method", 400)
 	}
-	json.NewEncoder(w).Encode(user)
-	fmt.Println("New user raw is", user, user.Security)
+}
+
+func checkUserExists(email string) bool {
+	dbinfo := dbinfo.Db()
+	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
+	if err != nil {
+		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+	}
+	defer db.Close()
+
+	exists := false
+	// search to make sure this email doesn't already exist
+	var whoCares string
+	row := db.QueryRow("SELECT email FROM users where email = ?", email).Scan(whoCares)
+	switch row {
+	case sql.ErrNoRows:
+		fmt.Println("No rows selected")
+		exists = false
+	default:
+		exists = true
+	}
+
+	return exists
 }
 
 // registerUse - only takes email and tempPass for simple registration
@@ -89,7 +115,6 @@ func registerUser(email string, tempPass string) {
 	}
 }
 
-func insertUser() {
-	// make sure to insert user without IDs
+func createFullUser() {
 
 }

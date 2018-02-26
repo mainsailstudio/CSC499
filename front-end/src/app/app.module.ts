@@ -4,14 +4,18 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // app component imports
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { LoginStartComponent } from './login/login-start.component';
-import { RegisterComponent } from './register/register.component';
-import { RegisterStartComponent } from './register/register-start.component';
+import {
+  RegisterComponent,
+  RegisterStartComponent,
+  RegisterContinueComponent,
+  RegisterFinalComponent
+} from './register/register.component';
 import { LandingComponent } from './landing/landing.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 
@@ -32,15 +36,17 @@ import { MessageService } from './message.service';
     LoginStartComponent,
     RegisterComponent,
     RegisterStartComponent,
+    RegisterContinueComponent,
+    RegisterFinalComponent,
     LandingComponent,
     NotFoundComponent
    ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule,
-    NgbModule.forRoot()
+    FormsModule
   ],
   providers: [
     LoginService,

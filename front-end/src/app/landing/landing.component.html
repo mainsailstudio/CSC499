@@ -4,9 +4,10 @@
   </div>
   <div class="col-md-7 right-side">
     <!-- <h1>Users are: {{ users | json }}</h1> -->
-    <h1>Email is: {{ email }}</h1>
-    <app-register-start (messageEvent)="receiveEmail($event)"></app-register-start>
-    <!-- <app-register-start></app-register-start> -->
+    <app-register-start *ngIf="displayRegisterStart"></app-register-start>
+    <app-register-continue *ngIf="displayRegisterContinue"></app-register-continue>
+    <app-register-final *ngIf="displayRegisterFinal"></app-register-final>
+    <button type="submit" (click)="register()">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
   </div>
 </div>
 <div class="row">

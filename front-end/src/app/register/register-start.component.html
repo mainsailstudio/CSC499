@@ -14,17 +14,6 @@
             Make sure this is a strong password
         </div>
 
-        <!-- <label for="confirmPass">Confirm password:</label><br />
-        <input required ngModel password name="confirmPass" #confirmPass="ngModel" type="password" value="" placeholder="Confirm $tr0ngTEMPpasswordddd" style="width:70%"><br /> -->
-        <!-- error for confirmPass -->
-        <!-- <div class="alert alert-danger" *ngIf="conifirmPass.touched && !confirmPass.valid">
-            Make sure both passwords are the same
-        </div>
-
-        <input ngModel password name="password" #password="ngModel" type="hidden" value=""> -->
-
-        <button type="submit" (click)="add(email.value, password.value);">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
-        <!-- <a routerLink="/register">
-        <button type="submit">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
-        </a> -->
+        <label for="confirmPass">Confirm password:</label><br />
+        <input required ngModel password name="confirmPass" #confirmPass="ngModel" (keyup)="validateRegistration(email.value, tempPass.value, confirmPass.value)" type="password" value="" placeholder="Confirm $tr0ngTEMPpasswordddd" style="width:70%"><i class="fas fa-check-square fa-lg fa-alignWithText" style="color:rgba(255, 255, 255, .6);" *ngIf="confirmPass.touched && !validateRegistration(email.value, tempPass.value, confirmPass.value) === false"></i><br />
     </form>

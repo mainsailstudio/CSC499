@@ -35,10 +35,9 @@ type Auth struct {
 	Salt   string `json:"salt"`
 }
 
-// Lock structure - each key that attaches directly to an auth via authID
-// Attaches directly to the user via UserID User
+// Lock structure - attaches directly to the user via UserID User
 type Lock struct {
-	AuthID   string `json:"id"`
+	ID       string `json:"id"`
 	UserID   string `json:"userid"`
 	Lock     string `json:"locksAre"`
 	LockType string `json:"lockType"`

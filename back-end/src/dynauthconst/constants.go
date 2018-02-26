@@ -17,7 +17,7 @@ const DatabaseUser = "root"
 const DatabasePass = "root"
 
 // BcryptIterations - the amount of iterations to perform when hashing a password or auth using bcrypt
-const BcryptIterations = 10
+const BcryptIterations = 1 // for testing
 
 // KeyNum - the total amount of keys the user will want, be careful with this because the larger this number is, the factorially larger the amount of computations will be. Keep it > 30
 const KeyNum = 10

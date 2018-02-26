@@ -27,15 +27,6 @@ func AuthenticateBcrypt(locks string, otp string, userid string, iterations int)
 	}
 }
 
-// func hashBcrypt(otp string, iterations int) string {
-// 	hashedPasswordBcrypt, err := bcrypt.GenerateFromPassword([]byte(otp), iterations)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	hashedToString := bytes.NewBuffer(hashedPasswordBcrypt).String()
-// 	return hashedToString
-// }
-
 func compareAuthsBcrypt(toCompare string, userid string) bool {
 	authSlice := getAuths(userid) // get all of the auths into a slice
 	var authenticated bool
