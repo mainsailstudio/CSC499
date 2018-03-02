@@ -15,7 +15,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
+	"os"
+	"github.com/mailjet/mailjet-apiv3-go"
+	
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -87,9 +89,42 @@ func registerUser(email string, tempPass string) {
 	if err != nil {
 		panic(err.Error())
 	}
+	confirmEmail()
+	fmt.Println("Confirmation email was sent!!!")
 }
 
 func insertUser() {
 	// make sure to insert user without IDs
 
+}
+
+
+/*
+* This call sends an email to one recipient, using a validated sender address
+* Do not forget to update the sender address used in the sample
+ */
+func confirmEmail() {
+	publicKey := os.Getenv("MJ_APIKEY_PUBLIC")
+	secretKey := os.Getenv("MJ_APIKEY_PRIVATE")
+
+	mj := mailjet.NewMailjetClient(publicKey, secretKey)
+
+	param := &mailjet.InfoSendMail{
+		FromEmail: "cpete4@u.brockport.edu",
+		FromName:  "Bob Patrick",
+		Recipients: []mailjet.Recipient{
+			mailjet.Recipient{
+				Email: "design@mainsailstudio.com",
+			},
+		},
+		Subject:  "Hello World!",
+		TextPart: "Hi there !",
+	}
+	res, err := mj.SendMail(param)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("Success")
+		fmt.Println(res)
+	}
 }
