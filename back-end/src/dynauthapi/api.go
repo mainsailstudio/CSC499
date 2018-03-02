@@ -129,6 +129,11 @@ func StartAPI() {
 	r.HandleFunc("/users", getUsers).Methods("GET")
 	r.HandleFunc("/users-real", getUsersReal).Methods("GET")
 	r.HandleFunc("/register", CreateUser).Methods("POST")
+
+	// testing authentication
+	// r.HandleFunc("/api", GetAPIBase).Methods("GET")
+	r.HandleFunc("/api/users", GetAPIUsers).Methods("GET")
+	r.HandleFunc("/api/authenticate", PostAPIAuth).Methods("POST")
 	//r.HandleFunc("/register", CreateUser).Methods("POST")
 
 	handler := cors.Default().Handler(r)
