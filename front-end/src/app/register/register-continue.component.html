@@ -1,0 +1,48 @@
+<h1>Continue your registration</h1>
+    <form>
+        <label for="fname">First name:</label><br />
+        <input  required ngModel fname name="fname" 
+                #fname="ngModel" type="text" value="" 
+                placeholder="Jamie" 
+                style="width:70%"><br />
+        <!-- error for email -->
+        <div    class="alert alert-danger" 
+                *ngIf="fname.touched && !fname.valid">
+                Make sure this is a valid email
+        </div>
+        
+        <label for="lname">Last name:</label><br />
+        <input  required ngModel lname name="lname" 
+                #lname="ngModel" type="text" value="" 
+                placeholder="Smith" 
+                style="width:70%"><br />
+        <!-- error for email -->
+        <div    class="alert alert-danger" 
+                *ngIf="lname.touched && !lname.valid">
+                Make sure this is a valid email
+        </div>
+        
+        <label for="security">Security level: </label>
+        <ul id="security-levels">
+                <li>
+                    <input type='radio' value='1' name='radio' id='radio1'/>
+                    <label for='radio1'>1</label>
+                </li>
+                <li>
+                    <input type='radio' value='2' name='radio'  id='radio2'/>
+                    <label for='radio2'>2</label>
+                </li>
+                <li>
+                    <input type='radio' value='3' name='radio'  id='radio3'/>
+                    <label for='radio3'>3</label>
+                </li>
+                <li>
+                    <input type='radio' value='4' name='radio'  id='radio4'/>
+                    <label for='radio4'>4</label>
+                </li>
+            </ul>
+        <!-- <div    class="alert alert-danger" 
+                *ngIf="lname.touched && !lname.valid">
+                Make sure this is a valid email
+        </div> -->
+    </form>
