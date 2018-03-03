@@ -10,8 +10,7 @@ package dynauthcore
 import (
 	"database/sql"
 	dbinfo "dbinfo"
-	"fmt"
-	"log"
+	"errors"
 	"math/rand"
 	"time"
 	//"github.com/shogo82148/go-shuffle"
@@ -19,15 +18,13 @@ import (
 
 //ServeLocks - to query the database and return the user's locks in a string
 func ServeLocks(userid string, lockNum int) string {
-	locks := getLocks(userid)
-	fmt.Println("Initial locks are", locks)
-
+	locks, err := GetLocks(userid)
+	if err != nil {
+		return ""
+	}
 	// shuffle.Slice(locks) - from imported package
 	shuffle(locks) // from internet code
-	fmt.Println("Shuffled non-truncated locks are", locks)
-
 	locks = locks[:lockNum]
-	fmt.Println("Shuffled truncated locks are", locks)
 
 	var lockString string
 
@@ -38,10 +35,19 @@ func ServeLocks(userid string, lockNum int) string {
 }
 
 //ServeLockSlice - to query the database and return the user's locks in a slice
-func ServeLockSlice(userid string) []string {
-	locks := getLocks(userid)
-	// shuffle.Strings(locks) - from imported package
+func ServeLockSlice(userid string, lockNum int) []string {
+	locks, err := GetLocks(userid)
+	if err != nil {
+		return nil
+	}
+	if len(locks) < 1 {
+		return nil
+	}
+	// shuffle.Slice(locks) - from imported package
 	shuffle(locks) // from internet code
+
+	locks = locks[:lockNum]
+
 	return locks
 }
 
@@ -53,7 +59,8 @@ func shuffle(slice []string) {
 	}
 }
 
-func getLocks(userid string) []string {
+// GetLocks queries the database and returns all of the user's locks into a slice
+func GetLocks(userid string) ([]string, error) {
 	dbinfo := dbinfo.Db()
 	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
 	if err != nil {
@@ -65,21 +72,21 @@ func getLocks(userid string) []string {
 	//selectQuery := "SELECT locks FROM locks WHERE userid = ?" + userid
 	locks, err := db.Query("SELECT locksAre FROM locks WHERE userid = ?", userid)
 	if err != nil {
-		log.Fatal(err)
+		return nil, errors.New("No locks were receieved from the database, user must not have initialized them")
 	}
 	defer locks.Close()
 	for locks.Next() {
 		var lockInfo string
 		err := locks.Scan(&lockInfo)
 		if err != nil {
-			log.Fatal(err)
+			return nil, errors.New("Locks weren't added to the slice properly for unknown reasons")
 		}
 		lockSlice = append(lockSlice, lockInfo)
 	}
-	err = locks.Err()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// err = locks.Err()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	return lockSlice
+	return lockSlice, nil
 }

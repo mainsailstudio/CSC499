@@ -23,8 +23,18 @@ h1{
     font-weight:600;
 }
 
+a{
+    color:#024c8c;
+}
+
+a:hover{
+    text-decoration:none;
+    color:#5c1d00;
+}
+
 input,
-button{
+button,
+a{
     transition: all 0.3s ease 0s;
 }
 
@@ -131,7 +141,7 @@ input.ng-invalid.ng-dirty.ng-touched{
     padding-bottom:10vh;
 }
 
-.nopadtop{
+.small-pad-top{
     padding-top:5vh;
 }
 

@@ -1,6 +1,7 @@
-/*	Title:	RESTful API using Mux
+/*
+Title:	Registering the user via
 	Author:	Connor Peters
-	Date:	2/3/2018
+	Date:	2/26/2018
 	Desc:
 */
 
@@ -15,7 +16,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
+	// . "github.com/mailjet/mailjet-apiv3-go"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -28,7 +31,9 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Would update user to match here")
 		//createFullUser(user.Fname, user.Lname, user.Phone, user.LockNum, user.KeyNum,)
 	} else if user.Email != "" && user.TempPass != "" {
-		if checkUserExists(user.Email) == false {
+		userExists, userID := checkUserExists(user.Email)
+		_ = userID // userID should be empty here
+		if userExists == false {
 			registerUser(user.Email, user.TempPass)
 			json.NewEncoder(w).Encode(user)
 		} else {
@@ -39,7 +44,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func checkUserExists(email string) bool {
+func checkUserExists(email string) (bool, string) {
 	dbinfo := dbinfo.Db()
 	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
 	if err != nil {
@@ -49,8 +54,8 @@ func checkUserExists(email string) bool {
 
 	exists := false
 	// search to make sure this email doesn't already exist
-	var whoCares string
-	row := db.QueryRow("SELECT email FROM users where email = ?", email).Scan(whoCares)
+	var userID string
+	row := db.QueryRow("SELECT id FROM users where email = ?", email).Scan(&userID)
 	switch row {
 	case sql.ErrNoRows:
 		fmt.Println("No rows selected")
@@ -58,8 +63,7 @@ func checkUserExists(email string) bool {
 	default:
 		exists = true
 	}
-
-	return exists
+	return exists, userID
 }
 
 // registerUse - only takes email and tempPass for simple registration
@@ -94,7 +98,7 @@ func registerUser(email string, tempPass string) {
 	fmt.Println("User id selected was", userid)
 
 	// This is where each unique user password is created
-	initUserPass := "INSERT INTO tempPass (userid, pass) VALUES (?, ?)"
+	initUserPass := "INSERT INTO tempPass (userid, pass, expireDate, init) VALUES (?, ?, ?, ?)"
 	stmtInsPass, err := db.Prepare(initUserPass)
 	if err != nil {
 		panic(err.Error())
@@ -108,13 +112,76 @@ func registerUser(email string, tempPass string) {
 	}
 	tempPass = bytes.NewBuffer(hashedPasswordBcrypt).String()
 
+	expireDate := time.Now().Local().AddDate(0, 0, 7)
+	//timein := time.Now().Local().Add(time.Hour * time.Duration(Hours) +
+	//time.Minute * time.Duration(Mins) +
+	// time.Second * time.Duration(Sec))
+	expireDate.Format("2006-01-02 15:04:05")
+	fmt.Println("Expire date is", expireDate)
 	fmt.Println("Hashed temp pass is", tempPass)
-	_, err = stmtInsPass.Exec(userid, tempPass)
+	_, err = stmtInsPass.Exec(userid, tempPass, expireDate, 0)
 	if err != nil {
 		panic(err.Error())
 	}
+	// confirmEmail()
+	fmt.Println("Confirmation email was sent!!!")
 }
 
 func createFullUser() {
 
 }
+
+/*
+* This call sends an email to one recipient, using a validated sender address
+* Do not forget to update the sender address used in the sample
+ */
+// func confirmEmail() {
+// 	type Payload struct {
+// 		Messages []struct {
+// 			From struct {
+// 				Email string `json:"Email"`
+// 				Name  string `json:"Name"`
+// 			} `json:"From"`
+// 			To []struct {
+// 				Email string `json:"Email"`
+// 				Name  string `json:"Name"`
+// 			} `json:"To"`
+// 			Subject  string `json:"Subject"`
+// 			TextPart string `json:"TextPart"`
+// 		} `json:"Messages"`
+// 	}
+
+// 	data := Payload{
+// 		Messages[]{
+// 			From{
+// 				Email: "cpete4@u.brockport.edu",
+// 				Name:  "Dynauth Test",
+// 			},
+// 			To{
+// 				Email: "design@mainsailstudio.com",
+// 				Name:  "Tester",
+// 			},
+// 			Subject:  "Test emaillls",
+// 			TextPart: "TextPart I guess",
+// 		},
+// 	}
+
+// 	payloadBytes, err := json.Marshal(data)
+// 	if err != nil {
+// 		// handle err
+// 	}
+// 	body := bytes.NewReader(payloadBytes)
+
+// 	req, err := http.NewRequest("POST", "https://api.mailjet.com/v3.1/send", body)
+// 	if err != nil {
+// 		// handle err
+// 	}
+// 	req.SetBasicAuth("edc2ab073e461e2a00cb67bc1e714eab", "dc3dcad32f6fc03a925d2b35bd3f99b6")
+// 	req.Header.Set("Content-Type", "application/json")
+
+// 	resp, err := http.DefaultClient.Do(req)
+// 	if err != nil {
+// 		// handle err
+// 	}
+// 	defer resp.Body.Close()
+// }

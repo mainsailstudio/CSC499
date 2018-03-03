@@ -1,13 +1,12 @@
 <div class="row vertical-mid">
-  <div class="col-md-5 left-side">
-    <app-login-start></app-login-start>
+  <div class="col-md-5 left-side" [ngSwitch]="loginState">
+    <app-login *ngSwitchCase="1" (submit)="changeLoginState(2)"></app-login>
+    <app-login-success *ngSwitchCase="2"></app-login-success>
   </div>
-  <div class="col-md-7 right-side">
+  <div class="col-md-7 right-side" [ngSwitch]="registerState">
     <!-- <h1>Users are: {{ users | json }}</h1> -->
-    <app-register-start *ngIf="displayRegisterStart"></app-register-start>
-    <app-register-continue *ngIf="displayRegisterContinue"></app-register-continue>
-    <app-register-final *ngIf="displayRegisterFinal"></app-register-final>
-    <button type="submit" (click)="register()">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+    <app-register-start *ngSwitchCase="1" (submit)="changeRegisterState(2)"></app-register-start>
+    <app-register-continue *ngSwitchCase="2"></app-register-continue>
   </div>
 </div>
 <div class="row">
