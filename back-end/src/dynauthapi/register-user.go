@@ -226,4 +226,3 @@ func confirmEmail() {
 // 	}
 // 	defer resp.Body.Close()
 // }
->>>>>>> feaabbd8211692cf07793bd6b0a8aee0f4c629ca
