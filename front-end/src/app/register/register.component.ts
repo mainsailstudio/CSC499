@@ -1,24 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { trigger, state, transition, style, animate } from '@angular/animations';
 
-import { RegisterUser } from './register-start.interface';
-import { RegisterStartService } from './register-start.service';
+import { RegisterUserService } from './register-user.service';
 import { LockKey } from './lock-key/lock-key';
 
-@Component({
-    selector: 'app-register',
-    templateUrl: 'register.component.html',
-    styleUrls: ['./register.component.css']
-  })
-export class RegisterComponent implements OnInit {
-
-  @Input() email: string;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+export interface StartRegisterUser {
+  id: number;
+  email: string;
+  tempPass: string;
 }
 
 @Component({
@@ -28,9 +17,9 @@ export class RegisterComponent implements OnInit {
 })
 export class RegisterStartComponent implements OnInit {
 
-  register: RegisterUser[];
+  register: StartRegisterUser[];
 
-  constructor(private registerService: RegisterStartService) { }
+  constructor(private registerService: RegisterUserService) { }
 
   ngOnInit() {
     // this.getHeroes();
@@ -44,7 +33,7 @@ export class RegisterStartComponent implements OnInit {
     }
   }
 
-  add(email: string, tempPass: string): void {
+  postData(email: string, tempPass: string): void {
     this.register = undefined;
     email = email.trim();
     console.log('Email is ' + email);
@@ -54,7 +43,8 @@ export class RegisterStartComponent implements OnInit {
     if (!tempPass) { return; }
 
     // The server will generate the id for this new hero
-    const newUser: RegisterUser = { email, tempPass } as RegisterUser;
+    const newUser: StartRegisterUser = { email, tempPass } as StartRegisterUser;
+    console.log('newUser to be posted is ' + newUser);
     this.registerService.addUser(newUser).subscribe(
       suc => {
         console.log(suc);
@@ -106,77 +96,34 @@ export class RegisterStartComponent implements OnInit {
 })
 export class RegisterContinueComponent implements OnInit {
 
-  register: RegisterUser[];
-
-  constructor(private registerService: RegisterStartService) { }
+  constructor() { }
 
   ngOnInit() {
 
   }
 
-  add(email: string, tempPass: string): void {
-    this.register = undefined;
-    email = email.trim();
-    console.log('Email is ' + email);
-    if (!email) { return; }
-    tempPass = tempPass.trim();
-    console.log('tempPass is ' + tempPass);
-    if (!tempPass) { return; }
+  // postData(fname: string, lname: string, securityLv: number): void {
+  //   this.register = undefined;
+  //   fname = fname.trim();
+  //   console.log('fname is ' + fname);
+  //   if (!fname) { return; }
 
-    // The server will generate the id for this new hero
-    const newUser: RegisterUser = { email, tempPass } as RegisterUser;
-    this.registerService.addUser(newUser).subscribe(
-      suc => {
-        console.log(suc);
-      },
-      err => {
-          console.log(err );
-      }
-    );
-  }
-}
+  //   lname = lname.trim();
+  //   console.log('lname is ' + lname);
+  //   if (!lname) { return; }
 
-@Component({
-  selector: 'app-register-final',
-  templateUrl: 'register-final.component.html',
-  styleUrls: ['./register.component.css']
-})
-export class RegisterFinalComponent implements OnInit {
+  //   console.log('securityLv is ' + securityLv);
+  //   if (!lname) { return; }
 
-  locks = [
-    new LockKey(1, 'Windstorm'),
-    new LockKey(2, 'Bombasto'),
-    new LockKey(3, 'Magneta'),
-    new LockKey(4, 'Tornado')
-  ];
-
-  register: RegisterUser[];
-
-  constructor(private registerService: RegisterStartService) { }
-
-  ngOnInit() {
-
-  }
-
-  get(email: string, tempPass: string): void {
-    this.register = undefined;
-    email = email.trim();
-    console.log('Email is ' + email);
-    if (!email) { return; }
-    tempPass = tempPass.trim();
-    console.log('tempPass is ' + tempPass);
-    if (!tempPass) { return; }
-
-    // The server will generate the id for this new hero
-    const newUser: RegisterUser = { email, tempPass } as RegisterUser;
-    this.registerService.addUser(newUser).subscribe(
-      suc => {
-        console.log(suc);
-      },
-      err => {
-          console.log(err );
-      }
-    );
-  }
-
+  //   // The server will generate the id for this new hero
+  //   const newUser: ContinueRegisterUser = { fname, lname, securityLv } as ContinueRegisterUser;
+  //   this.registerService.continueUser(newUser).subscribe(
+  //     suc => {
+  //       console.log(suc);
+  //     },
+  //     err => {
+  //         console.log(err );
+  //     }
+  //   );
+  // }
 }

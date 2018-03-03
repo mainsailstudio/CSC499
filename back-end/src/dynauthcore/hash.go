@@ -12,7 +12,7 @@ package dynauthcore
 import (
 	"bytes"
 	"dynauthconst"
-	"fmt"
+	// "fmt"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -38,7 +38,7 @@ func HashPermsBcrypt(toHash []string) []string {
 			panic(err)
 		}
 		hashedToString := bytes.NewBuffer(hashedPasswordBcrypt).String()
-		fmt.Println("Hashed string is", hashedToString)
+		// fmt.Println("Hashed string is", hashedToString)
 		hashed = append(hashed, hashedToString)
 	}
 	return hashed

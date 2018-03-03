@@ -14,6 +14,7 @@ import (
 	// "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	// "github.com/auth0/go-jwt-middleware" -- to implement middleware
 )
 
 // Init hashs var as a slice Hash struct
@@ -129,11 +130,12 @@ func StartAPI() {
 	r.HandleFunc("/users", getUsers).Methods("GET")
 	r.HandleFunc("/users-real", getUsersReal).Methods("GET")
 	r.HandleFunc("/register", CreateUser).Methods("POST")
+	r.HandleFunc("/login", LoginUserFromEmail).Methods("POST")
 
 	// testing authentication
 	// r.HandleFunc("/api", GetAPIBase).Methods("GET")
 	r.HandleFunc("/api/users", GetAPIUsers).Methods("GET")
-	r.HandleFunc("/api/authenticate", PostAPIAuth).Methods("POST")
+	r.HandleFunc("/api/authenticate", PostAPIAuth).Methods("GET")
 	//r.HandleFunc("/register", CreateUser).Methods("POST")
 
 	handler := cors.Default().Handler(r)

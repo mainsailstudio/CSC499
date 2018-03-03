@@ -7,8 +7,9 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { catchError } from 'rxjs/operators';
 
-import { RegisterUser } from './register-start.interface';
 import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
+
+import { StartRegisterUser } from './register.component';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -18,7 +19,7 @@ const httpOptions = {
 };
 
 @Injectable()
-export class RegisterStartService {
+export class RegisterUserService {
   registerUrl = 'http://13.92.156.114:8080/register';  // URL to web api
   private handleError: HandleError;
 
@@ -52,9 +53,9 @@ export class RegisterStartService {
 
   //////// Save methods //////////
 
-  /** POST: add a new hero to the database */
-  addUser (register: RegisterUser): Observable<RegisterUser> {
-    return this.http.post<RegisterUser>(this.registerUrl, register, httpOptions)
+  /** POST: add a new user to the database */
+  addUser (register: StartRegisterUser): Observable<StartRegisterUser> {
+    return this.http.post<StartRegisterUser>(this.registerUrl, register, httpOptions)
       .pipe(
         catchError(this.handleError('registerUser', register))
       );

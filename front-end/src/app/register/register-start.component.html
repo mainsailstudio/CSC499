@@ -16,4 +16,6 @@
 
         <label for="confirmPass">Confirm password:</label><br />
         <input required ngModel password name="confirmPass" #confirmPass="ngModel" (keyup)="validateRegistration(email.value, tempPass.value, confirmPass.value)" type="password" value="" placeholder="Confirm $tr0ngTEMPpasswordddd" style="width:70%"><i class="fas fa-check-square fa-lg fa-alignWithText" style="color:rgba(255, 255, 255, .6);" *ngIf="confirmPass.touched && !validateRegistration(email.value, tempPass.value, confirmPass.value) === false"></i><br />
+
+        <button type="submit" (click)="postData(email.value, tempPass.value)">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
     </form>

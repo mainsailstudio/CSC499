@@ -6,6 +6,8 @@
 
 package api
 
+import jwt "github.com/dgrijalva/jwt-go"
+
 // User structure - defines the user objects
 type User struct {
 	ID       string    `json:"id"`
@@ -17,6 +19,19 @@ type User struct {
 	KeyNum   string    `json:"keyNum"`
 	TempPass string    `json:"tempPass"`
 	Security *Security `json:"security"`
+}
+
+// UserLogin structure - structure passed when a use logs in
+type UserLogin struct {
+	Email      string `json:"email"`
+	SecurityLv string `json:securitylv"`
+	Locks      string `json:"locks"`
+}
+
+// JwtClaims - for issue a JWT for authentication
+type JwtClaims struct {
+	Email string `json:"email"`
+	jwt.StandardClaims
 }
 
 // Security structure - the security levels

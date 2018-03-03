@@ -24,3 +24,6 @@ const KeyNum = 10
 
 // DisplayLockNum - the total amount of locks that will be displayed for dynamic authentication. Keep it small (> 7)
 const DisplayLockNum = 4
+
+// Timezone for date/time
+// const Timezone = time.LoadLocation("EST")

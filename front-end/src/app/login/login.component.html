@@ -1,8 +1,10 @@
-<div class="row vertical-mid">
-  <div class="col-md-5 left-side">
-    <h1>test</h1>
-  </div>
-  <div class="col-md-7 right-side">
-    <app-register-start></app-register-start>
-  </div>
-</div>
+<h1>Login</h1>
+  <form>
+    <label for="email">Email:</label><br />
+        <input required ngModel email name="email" #email="ngModel" type="email" value="" placeholder="example@example.com" style="width:70%"><br />
+        <!-- error for email -->
+        <div class="alert alert-danger" *ngIf="email.touched && !email.valid && email.errors?.email">
+            Make sure this is a valid email
+        </div>
+    <button type="submit" (click)="postData(email.value)">Login <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+  </form>
