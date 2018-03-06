@@ -1,6 +1,7 @@
 <div class="row vertical-mid">
   <div class="col-md-5 left-side" [ngSwitch]="loginState">
-    <app-login *ngSwitchCase="1" (submit)="changeLoginState(2)"></app-login>
+    <!-- <app-login *ngSwitchCase="1" (submit)="changeLoginState(2)"></app-login> -->
+    <app-login *ngSwitchCase="1"></app-login>
     <app-login-success *ngSwitchCase="2"></app-login-success>
   </div>
   <div class="col-md-7 right-side" [ngSwitch]="registerState">

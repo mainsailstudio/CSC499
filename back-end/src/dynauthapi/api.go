@@ -9,12 +9,17 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 
 	// "github.com/gorilla/handlers"
+	"github.com/auth0/go-jwt-middleware"
+	"github.com/codegangsta/negroni" // to implement the JWT middleware
+	// JWT middleware
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	// "github.com/auth0/go-jwt-middleware" -- to implement middleware
 )
 
 // Init hashs var as a slice Hash struct
@@ -95,6 +100,11 @@ func getUsersReal(w http.ResponseWriter, r *http.Request) {
 // 	}
 // }
 
+// just to test quickly
+func testAuth(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Only view this if you are authenticated")
+}
+
 // StartAPI - Start the api for testing
 func StartAPI() {
 
@@ -115,6 +125,23 @@ func StartAPI() {
 	// Init router
 	fmt.Println("Starting mux")
 
+	// read private key and use that as the secret
+	pkSecret, err := ioutil.ReadFile("../../../private.ppk") // in form of byte
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Print(string(pkSecret))
+
+	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
+		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+			return pkSecret, nil
+		},
+		// When set, the middleware verifies that tokens are signed with the specific signing algorithm
+		// If the signing method is not constant the ValidationKeyGetter callback can be used to implement additional checks
+		// Important to avoid security issues described here: https://auth0.com/blog/2015/03/31/critical-vulnerabilities-in-json-web-token-libraries/
+		SigningMethod: jwt.SigningMethodHS256,
+	})
+
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -130,13 +157,24 @@ func StartAPI() {
 	r.HandleFunc("/users", getUsers).Methods("GET")
 	r.HandleFunc("/users-real", getUsersReal).Methods("GET")
 	r.HandleFunc("/register", CreateUser).Methods("POST")
-	r.HandleFunc("/login", LoginUserFromEmail).Methods("POST")
+	r.HandleFunc("/login-start", GetLoginState).Methods("POST")
+	r.HandleFunc("/login-finish", LoginUser).Methods("POST")
 
 	// testing authentication
 	// r.HandleFunc("/api", GetAPIBase).Methods("GET")
 	r.HandleFunc("/api/users", GetAPIUsers).Methods("GET")
 	r.HandleFunc("/api/authenticate", PostAPIAuth).Methods("GET")
 	//r.HandleFunc("/register", CreateUser).Methods("POST")
+
+	r.Handle("/ping", negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(http.HandlerFunc(testAuth)),
+	))
+
+	r.Handle("/register-continue", negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(http.HandlerFunc(CreateUserContinue)),
+	))
 
 	handler := cors.Default().Handler(r)
 	http.ListenAndServe(":8080", handler)

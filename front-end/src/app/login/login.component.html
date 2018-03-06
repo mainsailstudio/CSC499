@@ -1,10 +1,54 @@
 <h1>Login</h1>
-  <form>
+  <!-- <form (ngSubmit)="onSubmit()" #loginForm="ngForm"> -->
+  <form *ngIf="initLogin">
     <label for="email">Email:</label><br />
         <input required ngModel email name="email" #email="ngModel" type="email" value="" placeholder="example@example.com" style="width:70%"><br />
         <!-- error for email -->
         <div class="alert alert-danger" *ngIf="email.touched && !email.valid && email.errors?.email">
             Make sure this is a valid email
         </div>
-    <button type="submit" (click)="postData(email.value)">Login <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+
+      <button type="submit" (click)="postData(email.value)" class="button" *ngIf="initLogin">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
   </form>
+
+  <form (ngSubmit)="contLogin(contLoginForm.value)" #contLoginForm="ngForm" *ngIf="!initLogin">
+    <label for="email">Email:</label><br />
+    <input disabled required ngModel fakeEmail name="fakeEmail" #fakeEmail="ngModel" type="email" style="width:70%" [(ngModel)]="userEmail"><br />
+
+    <!-- if the loginstate is 1 -->
+    <div id="loginState1" *ngIf="loginState === '1'">
+      <label for="locks">Temporary password:</label><br />
+      <input autofocus required ngModel tempPass name="tempPass" #tempPass="ngModel" type="password" style="width:70%"><br />
+    </div>
+
+    <!-- if the loginstate is 2 -->
+    <div id="loginState2" *ngIf="loginState === '2'">
+      <label for="locks" *ngIf="!allowTempPass" >Locks: {{ locks }}</label><br *ngIf="!allowTempPass" />
+      <input autofocus required ngModel *ngIf="!allowTempPass" keys name="keys" #keys="ngModel" type="password" style="width:70%"><br *ngIf="!allowTempPass" />
+      <span *ngIf="!allowTempPass" (click)="toggleTempPass()" class="small">Use your temporary password instead</span><br />
+      <input ngModel tempPass *ngIf="allowTempPass" name="tempPass" #tempPass="ngModel" type="password" style="width:70%"><br />
+      <span *ngIf="allowTempPass" (click)="toggleTempPass()" class="small">Switch back to lock-key authentication</span><br />
+    </div>
+
+    <!-- if the loginstate is 3 -->
+    <div id="loginState3" *ngIf="loginState === '3'">
+      <label for="locks">Locks: {{ locks }}</label><br />
+      <input autofocus required ngModel keys name="keys" #keys="ngModel" type="password" style="width:70%"><br />
+    </div>
+
+     <!-- if the loginstate is unknown -->
+    <div class="alert alert-danger" *ngIf="loginState === 'Unknown'">
+        This email doesn't exist
+    </div>
+    
+    <!-- if the form is has aready been submitted  -->
+    <!-- <button [disabled]="!ngForm.valid" type="submit" *ngIf="!initLogin">Login <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button> -->
+    <button type="submit">Login <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+  </form>
+  <div *ngIf="showSuccess">
+    <h1>Success!</h1>
+    <button (click)="tryPing()">PING!</button>
+  </div>
+  <div *ngIf="showFail">
+    <h1>Failure</h1>
+  </div>

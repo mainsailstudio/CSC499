@@ -20,27 +20,71 @@ import (
 	// . "github.com/mailjet/mailjet-apiv3-go"
 )
 
-// LoginUserFromEmail - load the user properties via email and return what to do next to the API
-func LoginUserFromEmail(w http.ResponseWriter, r *http.Request) {
-	var user UserLogin
+// GetLoginState - load the user properties via email and return what to do next to the API
+func GetLoginState(w http.ResponseWriter, r *http.Request) {
+	var user UserLoginState
 	_ = json.NewDecoder(r.Body).Decode(&user)
+	if user.Email == "" {
+		http.Error(w, "The email is empty", 400)
+	}
 	userExists, userID := checkUserExists(user.Email)
+	fmt.Println("User exists bool is", userExists)
 	if userExists == true {
 		lockString, passExpire := getUserLocksAndPass(userID)
 		if passExpire == true {
-			newUserLogin := UserLogin{Email: user.Email, SecurityLv: "3", Locks: lockString}
+			newUserLogin := UserLoginState{Email: user.Email, LoginState: "3", Locks: lockString}
 			json.NewEncoder(w).Encode(newUserLogin)
-		} else if passExpire != true && lockString != "" {
-			newUserLogin := UserLogin{Email: user.Email, SecurityLv: "2", Locks: lockString}
+		} else if passExpire != true && lockString != "No locks received" {
+			newUserLogin := UserLoginState{Email: user.Email, LoginState: "2", Locks: lockString}
 			json.NewEncoder(w).Encode(newUserLogin)
 		} else {
-			newUserLogin := UserLogin{Email: user.Email, SecurityLv: "1", Locks: ""}
+			newUserLogin := UserLoginState{Email: user.Email, LoginState: "1", Locks: ""}
 			json.NewEncoder(w).Encode(newUserLogin)
 		}
 		//json.NewEncoder(w).Encode(user)
 
 	} else {
 		http.Error(w, "The email does not exist in our records", 400)
+	}
+}
+
+// LoginUser - the function that actually logs in the user
+func LoginUser(w http.ResponseWriter, r *http.Request) {
+	var user UserLoginCheck
+	_ = json.NewDecoder(r.Body).Decode(&user)
+	if user.Email == "" {
+		http.Error(w, "The email is empty", 400)
+	}
+
+	userExists, userID := checkUserExists(user.Email)
+
+	if userExists == true {
+		fmt.Println("User login state is", user.LoginState)
+		if user.LoginState == "3" {
+			// if the user is logging in via dynauth
+			authCorrect := dynauthcore.AuthenticateBcryptAPI(userID, user.Secret)
+			if authCorrect {
+				fmt.Println("Correctly authenticated via auths")
+				token := issueJWT(user.Email) // sending the user's email to be a part of the jwt claim
+				userSuccess := UserLoginSuccess{ID: userID, Email: user.Email, LoginState: user.LoginState, Token: token}
+				json.NewEncoder(w).Encode(userSuccess)
+			} else {
+				fmt.Println("NOT authenticated via auths")
+			}
+		}
+
+		if user.LoginState == "1" {
+			// if the user is loggin in via a temp pass
+			passwordCorrect := dynauthcore.TempPassAuth(userID, user.Secret)
+			if passwordCorrect {
+				fmt.Println("Correctly authenticated via a temp pass")
+				token := issueJWT(user.Email) // sending the user's email to be a part of the jwt claim
+				userSuccess := UserLoginSuccess{ID: userID, Email: user.Email, LoginState: user.LoginState, Token: token}
+				json.NewEncoder(w).Encode(userSuccess)
+			} else {
+				fmt.Println("NOT authenticated via a temp pass")
+			}
+		}
 	}
 }
 
@@ -72,8 +116,8 @@ func checkUserTempPassDate(userID string) bool {
 	// search to make sure this email doesn't already exist
 	err = db.QueryRow("SELECT expireDate FROM tempPass where userid = ?", userID).Scan(&expireDateString)
 	if err != nil {
-		return true
-		// http.Error(w, "The email does not have a temppass set", 400)
+		fmt.Println("There is no date")
+		return true // date is expired
 	}
 
 	timezone, _ := time.LoadLocation("EST")

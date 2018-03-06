@@ -20,7 +20,7 @@ const httpOptions = {
 
 @Injectable()
 export class RegisterUserService {
-  registerUrl = 'http://13.92.156.114:8080/register';  // URL to web api
+  registerUrl = 'http://localhost:8080/register';  // URL to web api
   private handleError: HandleError;
 
   constructor(

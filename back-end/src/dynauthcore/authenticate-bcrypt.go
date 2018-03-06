@@ -9,26 +9,51 @@ package dynauthcore
 
 import (
 	"fmt"
+	"log"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-//AuthenticateBcrypt - to do the authentication I suppose.
+// AuthenticateBcrypt - to do the authentication I suppose.
 func AuthenticateBcrypt(locks string, otp string, userid string, iterations int) {
 	// first prep auth for comparison
 	toHash := locks + otp
 	fmt.Println("toHash is", toHash)
 	// hashedOTP := hashBcrypt(toHash, iterations) // hash the prepped otp
 	// fmt.Println("Hashed otp is", hashedOTP)
-	if compareAuthsBcrypt(toHash, userid) == true {
+	authenticated, err := compareAuthsBcrypt(toHash, userid)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if authenticated == true {
 		fmt.Println("AUTHENTICATED")
 	} else {
 		fmt.Println("NO MATCH FOUND")
 	}
 }
 
-func compareAuthsBcrypt(toCompare string, userid string) bool {
-	authSlice := getAuths(userid) // get all of the auths into a slice
+// AuthenticateBcryptAPI - to do the authentication I suppose.
+func AuthenticateBcryptAPI(userid string, auth string) bool {
+	authenticated, err := compareAuthsBcrypt(auth, userid)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if authenticated == true {
+		fmt.Println("AUTHENTICATED")
+		return true
+	}
+	fmt.Println("NO MATCH FOUND")
+	return false
+
+}
+
+func compareAuthsBcrypt(toCompare string, userid string) (bool, error) {
+	authSlice, err := getAuths(userid) // get all of the auths into a slice
+	if err != nil {
+		return false, err
+	}
 	var authenticated bool
 	fmt.Println("Auth slice is", authSlice)
 	for i := range authSlice {
@@ -41,5 +66,5 @@ func compareAuthsBcrypt(toCompare string, userid string) bool {
 			break
 		}
 	}
-	return authenticated
+	return authenticated, nil
 }

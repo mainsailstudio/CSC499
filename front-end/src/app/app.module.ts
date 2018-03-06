@@ -15,6 +15,13 @@ import { LoginNewComponent } from './login/login-new.component';
 import { RegisterStartComponent, RegisterContinueComponent } from './register/register.component';
 import { LandingComponent } from './landing/landing.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import {  DashboardComponent,
+  DashboardMainComponent,
+  DashboardInitComponent,
+  DashboardSidebarComponent,
+  DashboardNavComponent } from './dashboard/dashboard.component';
+import { ConfigurationComponent } from './dashboard/configuration/configuration.component';
+import { LogoutComponent } from './login/logout.component';
 
 // module imports
 import { AppRoutingModule } from './app-routing.module';
@@ -28,11 +35,7 @@ import { LoginUserService } from './login/login-user.service';
 import { RegisterUserService } from './register/register-user.service';
 import { HttpErrorHandler } from './http-error-handler.service';
 import { MessageService } from './message.service';
-import {  DashboardComponent,
-          DashboardMainComponent,
-          DashboardSidebarComponent,
-          DashboardNavComponent } from './dashboard/dashboard.component';
-import { ConfigurationComponent } from './dashboard/configuration/configuration.component';
+import { AccountInitService } from './dashboard/account-init.service';
 
 @NgModule({
   declarations: [
@@ -40,12 +43,14 @@ import { ConfigurationComponent } from './dashboard/configuration/configuration.
     LoginComponent,
     LoginSuccessComponent,
     LoginNewComponent,
+    LogoutComponent,
     RegisterStartComponent,
     RegisterContinueComponent,
     LandingComponent,
     NotFoundComponent,
     DashboardComponent,
     DashboardMainComponent,
+    DashboardInitComponent,
     DashboardSidebarComponent,
     DashboardNavComponent,
     ConfigurationComponent
@@ -63,6 +68,7 @@ import { ConfigurationComponent } from './dashboard/configuration/configuration.
     AuthenticationService,
     AuthGuard,
     UserService,
+    AccountInitService,
     LoginUserService,
     RegisterUserService,
     HttpErrorHandler,

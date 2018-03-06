@@ -2,10 +2,19 @@ import { Component, OnInit } from '@angular/core';
 // import { AuthenticateService } from '../authenticate/authenticate.service';
 import { LoginUserService } from './login-user.service';
 
-// export interface LoginUser {
-//   email: string;
-//   tempPass: string;
-// }
+export interface StartLoginUser {
+  email: string;
+  loginState: string;
+  locks: string;
+}
+
+export interface ContLoginUser {
+  id: string;
+  email: string;
+  loginState: string;
+  secret: string;
+  token: string;
+}
 
 @Component({
     selector: 'app-login',
@@ -14,34 +23,120 @@ import { LoginUserService } from './login-user.service';
   })
 export class LoginComponent implements OnInit {
 
-  // register: StartRegisterUser[];
-
+  initLogin = true;
+  loginState = '0';
+  locks = '';
+  allowTempPass = false;
+  userEmail = '';
+  showSuccess = false;
+  showFail = false;
   constructor(private loginService: LoginUserService) { }
 
   ngOnInit() {
     // this.getHeroes();
   }
 
-  validateRegistration(email: string, pass: string, confirmPass: string): boolean {
-    if (pass === confirmPass) {
-      return true;
+  postData(email: string): void {
+   // this.register = undefined;
+    email = email.trim();
+    this.userEmail = email;
+    console.log('Email is ' + this.userEmail);
+
+
+    const loginUser: StartLoginUser = { email } as StartLoginUser;
+    console.log('loginUser to be posted is ' + loginUser);
+    this.loginService.startLoginUser(loginUser).subscribe(
+      suc => {
+        console.log(suc);
+        this.nextFormInput(suc);
+      },
+      err => {
+        console.log(err );
+      }
+    );
+  }
+
+  nextFormInput(user: StartLoginUser) {
+    this.loginState = user.loginState;
+
+    if (user.loginState === '1') { // first time user login
+      this.initLogin = false;
+    } else if (user.loginState === '2') { // user hasn't initialized locks yet
+      this.initLogin = false;
+      this.locks = user.locks;
+    } else if (user.loginState === '3') { // user is all set
+      this.initLogin = false;
+      this.locks = user.locks;
     } else {
-      return false;
+      this.initLogin = true; // not necessary but for safety
+      this.loginState = 'Unknown';
     }
   }
 
-  postData(email: string, tempPass: string): void {
-    email = email.trim();
-    console.log('Email is ' + email);
+  loginUser(keys: string, tempPass: string) {
+    console.log('Keys are ' + keys + ' and tempPass is ' + tempPass);
+  }
 
-    this.loginService.loginUser(email).subscribe(
+  contLogin(contLoginForm: any) {
+    const email = this.userEmail;
+    let loginState = this.loginState;
+    let tempPass = contLoginForm.tempPass;
+    let auth = contLoginForm.keys;
+
+    console.log('Email is ' + email);
+    console.log('loginState is ' + loginState);
+    console.log('tempPass is ' + tempPass);
+    console.log('auth is ' + auth);
+    // for documentation purposes:
+    // this uses the same loginState variable to determine if the user is logging in via a temp pass or their lock-key combo.
+    // Since there is only those 2 options, and loginState of 2 initially determines that the user could use either,
+    // these if statements set the loginState to be either 1 (password) or 3 (dynauth)
+    if (auth === 'undefined' || auth === undefined) {
+      auth = '';
+      loginState = '1';
+    } else {
+      tempPass = '';
+      loginState = '3';
+      auth = this.locks + contLoginForm.keys;
+    }
+
+    const secret = tempPass + auth; // due to the if's one of the other should be empty
+    console.log('Secret is ' + secret + ' and loginstate is ' + loginState);
+    const loginUser: ContLoginUser = { email, loginState, secret } as ContLoginUser;
+    console.log('loginUser to be posted is ' + email + tempPass + auth);
+    this.loginService.contLoginUser(loginUser).subscribe(
       suc => {
-        console.log(suc);
+        if (suc) {
+// new Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
+          this.showSuccess = true;
+          this.showFail = false;
+          console.log('Success');
+        } else {
+          this.showFail = true;
+          this.showSuccess = false;
+          console.log('Failure');
+        }
       },
       err => {
-          console.log(err );
+        this.showFail = true;
+        this.showSuccess = false;
+        console.log('Error is ' + err);
       }
     );
+    // console.log('contLoginForm is ' + contLoginForm.tempPass);
+  }
+
+
+  toggleTempPass() {
+    if (this.allowTempPass === false) {
+      this.allowTempPass = true;
+    } else {
+      this.allowTempPass = false;
+    }
+  }
+
+  tryPing() {
+
   }
 
 }
@@ -60,4 +155,9 @@ export class LoginSuccessComponent implements OnInit {
   ngOnInit() {
 
   }
+
+  presentLogin(suc: string) {
+    console.log('success component is ' + suc);
+  }
+
 }

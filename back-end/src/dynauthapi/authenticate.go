@@ -10,6 +10,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -48,6 +49,36 @@ func PostAPIAuth(w http.ResponseWriter, r *http.Request) {
 	jsonToken, _ := json.Marshal(token)
 	fmt.Fprintf(w, string(jsonToken)) // prints to browser
 
+}
+
+// issueJWT - to get api users for testing
+// takes the user's email as a claim
+func issueJWT(email string) string {
+
+	pkSecret, err := ioutil.ReadFile("../../../private.ppk") // in form of byte
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Print(string(pkSecret))
+
+	// Create a new token object, specifying signing method and the claims
+	// you would like it to contain.
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iss":   "Dynauth Test",
+		"email": email,
+		//"nbf": time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+		"iat": time.Now(),
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
+	})
+
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString(pkSecret)
+	if err != nil {
+		fmt.Println("Error creating signed token")
+		log.Fatal(err)
+	}
+
+	return tokenString
 }
 
 // func mainJwt(w http.ResponseWriter, r *http.Request) {

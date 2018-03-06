@@ -20,7 +20,10 @@ import (
 func AuthenticateScrypt(locks string, otp string, userid string, iterations int) {
 	// first prep auth for comparison
 	salts := getSalts(userid)
-	auths := getAuths(userid)
+	auths, err := getAuths(userid)
+	if err != nil {
+		log.Fatal(err)
+	}
 	authenticated := false
 	for i := range auths {
 		toHash := locks + otp + salts[i]
@@ -101,7 +104,10 @@ func hashScrypt(otp string, salt []byte, iterations int) string {
 }
 
 func compareAuthsString(toCompare string, userid string) bool {
-	authSlice := getAuths(userid) // get all of the auths into a slice
+	authSlice, err := getAuths(userid) // get all of the auths into a slice
+	if err != nil {
+		log.Fatal(err)
+	}
 	var authenticated bool
 	fmt.Println("Auth slice is", authSlice)
 	for i := range authSlice {
@@ -114,7 +120,7 @@ func compareAuthsString(toCompare string, userid string) bool {
 	return authenticated
 }
 
-func getAuths(userid string) []string {
+func getAuths(userid string) ([]string, error) {
 	dbinfo := dbinfo.Db()
 	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
 	if err != nil {
@@ -126,7 +132,7 @@ func getAuths(userid string) []string {
 	query := "SELECT auth FROM auth" + userid
 	auths, err := db.Query(query)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	defer auths.Close()
@@ -142,7 +148,7 @@ func getAuths(userid string) []string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return authSlice
+	return authSlice, nil
 }
 
 func getSalts(userid string) []string {

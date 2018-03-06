@@ -17,15 +17,44 @@ type User struct {
 	Phone    string    `json:"phone"`
 	LockNum  string    `json:"lockNum"`
 	KeyNum   string    `json:"keyNum"`
-	TempPass string    `json:"tempPass"`
 	Security *Security `json:"security"`
 }
 
-// UserLogin structure - structure passed when a use logs in
-type UserLogin struct {
+// UserLoginState structure - structure passed when a use logs in
+type UserLoginState struct {
 	Email      string `json:"email"`
-	SecurityLv string `json:securitylv"`
+	LoginState string `json:"loginState"`
 	Locks      string `json:"locks"`
+}
+
+// UserLoginCheck structure - structure passed when a use logs in
+type UserLoginCheck struct {
+	Email      string `json:"email"`
+	LoginState string `json:"LoginState"`
+	Secret     string `json:"secret"`
+}
+
+// UserLoginSuccess structure - structure passed when a user loggon is successful
+type UserLoginSuccess struct {
+	ID         string `json:"id"`
+	Email      string `json:"email"`
+	LoginState string `json:"loginState"`
+	Token      string `json:"token"`
+}
+
+// UserRegisterStart structure -
+type UserRegisterStart struct {
+	Email    string `json:"email"`
+	TempPass string `json:"tempPass"`
+}
+
+// UserRegisterCont structure -
+type UserRegisterCont struct {
+	ID         string `json:"id"`
+	Email      string `json:"email"`
+	Fname      string `json:"fname"`
+	Lname      string `json:"Lname"`
+	SecurityLv string `json:"SecurityLv"`
 }
 
 // JwtClaims - for issue a JWT for authentication

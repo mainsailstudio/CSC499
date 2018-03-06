@@ -25,22 +25,16 @@ import (
 // CreateUser - create and insert a new user
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	//params := mux.Vars(r)
-	var user User
+	var user UserRegisterStart
 	_ = json.NewDecoder(r.Body).Decode(&user)
-	if user.Fname != "" || user.Lname != "" || user.Phone != "" || user.LockNum != "" || user.KeyNum != "" || user.Security != nil {
-		fmt.Println("Would update user to match here")
-		//createFullUser(user.Fname, user.Lname, user.Phone, user.LockNum, user.KeyNum,)
-	} else if user.Email != "" && user.TempPass != "" {
-		userExists, userID := checkUserExists(user.Email)
-		_ = userID // userID should be empty here
-		if userExists == false {
-			registerUser(user.Email, user.TempPass)
-			json.NewEncoder(w).Encode(user)
-		} else {
-			http.Error(w, "This email already exists, please use a different email", 400)
-		}
+	userExists, userID := checkUserExists(user.Email)
+	_ = userID // userID should be empty here
+
+	if userExists == false {
+		registerUser(user.Email, user.TempPass)
+		json.NewEncoder(w).Encode(user)
 	} else {
-		http.Error(w, "There was an error with the register user api call, the fields did not match any method", 400)
+		http.Error(w, "This email already exists, please use a different email", 400)
 	}
 }
 
@@ -127,8 +121,42 @@ func registerUser(email string, tempPass string) {
 	fmt.Println("Confirmation email was sent!!!")
 }
 
-func createFullUser() {
+// CreateUserContinue - to continue with the user creation, adding name and security level
+func CreateUserContinue(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
+	var user UserRegisterCont
+	_ = json.NewDecoder(r.Body).Decode(&user)
+	fmt.Println("User is", user)
+	dbinfo := dbinfo.Db()
+	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
+	if err != nil {
+		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+	}
+	defer db.Close()
+
+	// This is where each unique user is created
+	updateUser := "UPDATE users SET fname = ?, lname = ?, security = ? WHERE id = ?"
+	updateUserPrep, err := db.Prepare(updateUser)
+	if err != nil {
+		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+		http.Error(w, "Problem updating the user information", 500)
+	}
+	defer updateUserPrep.Close()
+
+	_, err = updateUserPrep.Exec(user.Fname, user.Lname, user.SecurityLv, user.ID)
+	if err != nil {
+		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+		http.Error(w, "Problem updating the user information", 500)
+	}
+
+	sqlString := "SELECT * FROM securitylevels WHERE id = " + user.SecurityLv
+	securityJSON, err := GetJSONFromSQL(sqlString)
+	if err != nil {
+		fmt.Println("Error selecting security schemes")
+	}
+
+	fmt.Fprintf(w, securityJSON) // prints to browser
 }
 
 /*

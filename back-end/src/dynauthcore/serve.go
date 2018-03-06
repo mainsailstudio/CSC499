@@ -11,6 +11,7 @@ import (
 	"database/sql"
 	dbinfo "dbinfo"
 	"errors"
+	"fmt"
 	"math/rand"
 	"time"
 	//"github.com/shogo82148/go-shuffle"
@@ -20,18 +21,24 @@ import (
 func ServeLocks(userid string, lockNum int) string {
 	locks, err := GetLocks(userid)
 	if err != nil {
-		return ""
+		return "Error when getting locks"
 	}
-	// shuffle.Slice(locks) - from imported package
-	shuffle(locks) // from internet code
-	locks = locks[:lockNum]
 
-	var lockString string
+	if len(locks) > 0 {
+		fmt.Println("Locks look good")
+		shuffle(locks) // from internet code
+		locks = locks[:lockNum]
 
-	for i := range locks {
-		lockString += locks[i]
+		var lockString string
+
+		for i := range locks {
+			lockString += locks[i]
+		}
+		return lockString
 	}
-	return lockString
+	fmt.Println("No locks man")
+	return "No locks received"
+
 }
 
 //ServeLockSlice - to query the database and return the user's locks in a slice

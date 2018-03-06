@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
 
 import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
 
-// import { StartRegisterUser } from './register.component';
+import { StartLoginUser, ContLoginUser } from './login.component';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -18,9 +18,18 @@ const httpOptions = {
   })
 };
 
+const httpOptionsAuthorized = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json',
+    'Authorization': 'Bearer ' + this.token
+  })
+};
+
 @Injectable()
 export class LoginUserService {
-  registerUrl = 'http://13.92.156.114:8080/login';  // URL to web api
+  public token: string;
+  public loginState: string;
+  loginUrl = 'http://localhost:8080/login';  // URL to web api
   private handleError: HandleError;
   private email: string;
 
@@ -28,13 +37,46 @@ export class LoginUserService {
     private http: HttpClient,
     httpErrorHandler: HttpErrorHandler) {
     this.handleError = httpErrorHandler.createHandleError('LoginUserService');
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.token = currentUser && currentUser.token;
   }
 
-  loginUser (email: string) {
-    return this.http.post(this.registerUrl, email, httpOptions)
+  startLoginUser (login: StartLoginUser): Observable<StartLoginUser> {
+    return this.http.post<StartLoginUser>(this.loginUrl + '-start', login, httpOptions)
       .pipe(
-        catchError(this.handleError('registerUser', email))
+        catchError(this.handleError('loginUser', login))
       );
   }
 
+  contLoginUser (login: ContLoginUser): Observable<boolean> {
+    return this.http.post<ContLoginUser>(this.loginUrl + '-finish', login, httpOptions).map(
+      response => {
+        if (response.token) {
+          this.token = response.token;
+          this.loginState = response.loginState;
+          localStorage.setItem('currentUser', JSON.stringify({
+                                id: response.id,
+                                email: login.email,
+                                loginState: this.loginState,
+                                token: this.token }));
+          return true;
+        }
+        return false;
+    });
+  }
+
+  tryPing (): Observable<boolean> {
+    return this.http.get('http://localhost:8080/ping', httpOptionsAuthorized).map(
+      response => {
+        console.log(response);
+          return true;
+      });
+  }
+
+  logout(): void {
+    // clear token remove user from local storage to log user out
+    this.token = null;
+    localStorage.removeItem('currentUser');
+  }
 }
