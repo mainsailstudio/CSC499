@@ -17,7 +17,7 @@ import (
 
 func main() {
 	fmt.Println("Starting API")
-	dynauthapi.StartAPI()
+	dynauthapi.StartTestAPI()
 
 	fmt.Println("1. Add a new user (auths only)")
 	fmt.Println("2. Authenticate a user")

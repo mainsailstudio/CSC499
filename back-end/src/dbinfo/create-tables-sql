@@ -40,3 +40,8 @@ create table tempPass(
 	userid int primary key, pass char(60) binary,
 	foreign key (userid) references users(id)
 );
+
+drop table if exists testUsers;
+create table testUsers(
+	id int primary key auto_increment, fname varchar(30), lname varchar(30), email varchar(255), init boolean, testLevel int
+);

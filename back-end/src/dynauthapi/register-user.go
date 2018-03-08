@@ -16,15 +16,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-<<<<<<< HEAD
-	"os"
-	"github.com/mailjet/mailjet-apiv3-go"
-	
-=======
 	"time"
 
-	// . "github.com/mailjet/mailjet-apiv3-go"
->>>>>>> feaabbd8211692cf07793bd6b0a8aee0f4c629ca
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -123,11 +116,7 @@ func registerUser(email string, tempPass string) {
 	if err != nil {
 		panic(err.Error())
 	}
-<<<<<<< HEAD
-	confirmEmail()
-=======
 	// confirmEmail()
->>>>>>> feaabbd8211692cf07793bd6b0a8aee0f4c629ca
 	fmt.Println("Confirmation email was sent!!!")
 }
 
@@ -169,41 +158,36 @@ func CreateUserContinue(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, securityJSON) // prints to browser
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> feaabbd8211692cf07793bd6b0a8aee0f4c629ca
 /*
 * This call sends an email to one recipient, using a validated sender address
 * Do not forget to update the sender address used in the sample
  */
-<<<<<<< HEAD
-func confirmEmail() {
-	publicKey := os.Getenv("MJ_APIKEY_PUBLIC")
-	secretKey := os.Getenv("MJ_APIKEY_PRIVATE")
+// func confirmEmail() {
+// 	publicKey := os.Getenv("MJ_APIKEY_PUBLIC")
+// 	secretKey := os.Getenv("MJ_APIKEY_PRIVATE")
 
-	mj := mailjet.NewMailjetClient(publicKey, secretKey)
+// 	mj := mailjet.NewMailjetClient(publicKey, secretKey)
 
-	param := &mailjet.InfoSendMail{
-		FromEmail: "cpete4@u.brockport.edu",
-		FromName:  "Bob Patrick",
-		Recipients: []mailjet.Recipient{
-			mailjet.Recipient{
-				Email: "design@mainsailstudio.com",
-			},
-		},
-		Subject:  "Hello World!",
-		TextPart: "Hi there !",
-	}
-	res, err := mj.SendMail(param)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println("Success")
-		fmt.Println(res)
-	}
-}
-=======
+// 	param := &mailjet.InfoSendMail{
+// 		FromEmail: "cpete4@u.brockport.edu",
+// 		FromName:  "Bob Patrick",
+// 		Recipients: []mailjet.Recipient{
+// 			mailjet.Recipient{
+// 				Email: "design@mainsailstudio.com",
+// 			},
+// 		},
+// 		Subject:  "Hello World!",
+// 		TextPart: "Hi there !",
+// 	}
+// 	res, err := mj.SendMail(param)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	} else {
+// 		fmt.Println("Success")
+// 		fmt.Println(res)
+// 	}
+// }
+
 // func confirmEmail() {
 // 	type Payload struct {
 // 		Messages []struct {

@@ -8,13 +8,13 @@
 package dynauthconst
 
 // DatabaseName - the name of the database
-const DatabaseName = "dynauth_backend"
+const DatabaseName = "dynauth_dev"
 
 // DatabaseUser - the user of the database
 const DatabaseUser = "root"
 
 // DatabasePass - the password of the database
-const DatabasePass = "syUkyKWX9JPbT2sTN2zfUn29P7vuztYK"
+const DatabasePass = "root"
 
 // BcryptIterations - the amount of iterations to perform when hashing a password or auth using bcrypt
 const BcryptIterations = 1 // for testing
