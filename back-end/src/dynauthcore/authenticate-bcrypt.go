@@ -10,6 +10,8 @@ package dynauthcore
 import (
 	"fmt"
 	"log"
+	"math/big"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -56,6 +58,12 @@ func compareAuthsBcrypt(toCompare string, userid string) (bool, error) {
 	}
 	var authenticated bool
 	fmt.Println("Auth slice is", authSlice)
+
+	// start timer
+	start := time.Now()
+	r := new(big.Int)
+	fmt.Println(r.Binomial(1000, 10))
+
 	for i := range authSlice {
 		fmt.Println("Compare number", i)
 		authenticated = false
@@ -66,5 +74,9 @@ func compareAuthsBcrypt(toCompare string, userid string) (bool, error) {
 			break
 		}
 	}
+	// end timer
+	elapsed := time.Since(start)
+	log.Printf("--- Authentication using Bcrypt took %s", elapsed)
+
 	return authenticated, nil
 }

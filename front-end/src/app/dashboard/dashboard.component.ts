@@ -107,6 +107,7 @@ export class DashboardInitComponent implements OnInit {
   userData = JSON.parse(this.userDataJSON);
   email = this.userData['email'];
   userID = this.userData['id'];
+  init = this.userData['init'];
   startForm = true;
 
   constructor(private registrationService: AccountInitService) { }

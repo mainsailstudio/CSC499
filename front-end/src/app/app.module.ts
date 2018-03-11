@@ -36,6 +36,15 @@ import { RegisterUserService } from './register/register-user.service';
 import { HttpErrorHandler } from './http-error-handler.service';
 import { MessageService } from './message.service';
 import { AccountInitService } from './dashboard/account-init.service';
+import { TestingComponent } from './testing/testing.component';
+
+// test imports
+import { LandingTestComponent } from './landing/landing-test.component';
+import { RegisterTestComponent } from './register/register-test.component';
+import { RegisterTestService } from './register/register-test.service';
+import { LoginTestComponent } from './login/login-test.component';
+import { LoginTestService } from './login/login-test.service';
+import { DashboardTestComponent } from './dashboard/dashboard-test.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +62,12 @@ import { AccountInitService } from './dashboard/account-init.service';
     DashboardInitComponent,
     DashboardSidebarComponent,
     DashboardNavComponent,
-    ConfigurationComponent
+    ConfigurationComponent,
+    TestingComponent,
+    RegisterTestComponent,
+    LandingTestComponent,
+    LoginTestComponent,
+    DashboardTestComponent
    ],
   imports: [
     // MDBBootstrapModule.forRoot(),
@@ -73,7 +87,9 @@ import { AccountInitService } from './dashboard/account-init.service';
     RegisterUserService,
     HttpErrorHandler,
     MessageService,
-    BaseRequestOptions
+    BaseRequestOptions,
+    RegisterTestService,
+    LoginTestService
   ],
   bootstrap: [AppComponent]
 })

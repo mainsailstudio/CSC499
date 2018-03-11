@@ -1,6 +1,19 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+
+
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { catchError } from 'rxjs/operators';
+
+import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
+
+import { StartLoginUser, ContLoginUser } from './login.component';
+import { TestURL, APIURL } from '../api/api.constants';
 import { Component, OnInit } from '@angular/core';
 // import { AuthenticateService } from '../authenticate/authenticate.service';
-import { LoginUserService } from './login-user.service';
+import { LoginTestService } from './login-test.service';
 
 export interface StartLoginUser {
   email: string;
@@ -17,11 +30,11 @@ export interface ContLoginUser {
 }
 
 @Component({
-    selector: 'app-login',
-    templateUrl: 'login.component.html',
+    selector: 'app-login-test',
+    templateUrl: 'login-test.component.html',
     styleUrls: ['./login.component.css']
   })
-export class LoginComponent implements OnInit {
+export class LoginTestComponent implements OnInit {
 
   initLogin = true;
   loginState = '0';
@@ -30,7 +43,7 @@ export class LoginComponent implements OnInit {
   userEmail = '';
   showSuccess = false;
   showFail = false;
-  constructor(private loginService: LoginUserService) { }
+  constructor(private loginService: LoginTestService) { }
 
   ngOnInit() {
     // this.getHeroes();
@@ -141,23 +154,3 @@ export class LoginComponent implements OnInit {
 
 }
 
-@Component({
-  selector: 'app-login-success',
-  templateUrl: 'login-success.component.html',
-  styleUrls: ['./login.component.css']
-})
-export class LoginSuccessComponent implements OnInit {
-
-  constructor() {
-
-  }
-
-  ngOnInit() {
-
-  }
-
-  presentLogin(suc: string) {
-    console.log('success component is ' + suc);
-  }
-
-}

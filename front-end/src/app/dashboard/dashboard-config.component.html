@@ -1,0 +1,56 @@
+<form (ngSubmit)="finalizeRegistration(finalizeRegistrationForm.value)" [@myAnimation] #contRegistrationForm="ngForm" *ngIf="!startForm">
+    <label for="fname">Your lock and key combos:</label><br />
+    <input  *ngFor="let auth of auths" required 
+            ngModel lock name="lock{{ auth }}" 
+            #lock{{ auth }}="ngModel" type="text" value="" 
+            placeholder="{{ auth }}" style="width:20%">
+    <input  *ngFor="let auth of auths" required 
+            ngModel lock name="key{{ auth }}" 
+            #key{{ auth }}="ngModel" type="text" value="" 
+            placeholder="" style="width:50%">
+    <!-- error for email -->
+    <div    class="alert alert-danger" 
+            *ngIf="fname.touched && !fname.valid">
+            Make sure this is a valid email
+    </div>
+    
+    <label for="lname">Last name:</label><br />
+    <input  required ngModel lname name="lname" 
+            #lname="ngModel" type="text" value="" 
+            placeholder="Smith" 
+            style="width:70%"><br />
+    <!-- error for email -->
+    <div    class="alert alert-danger" 
+            *ngIf="lname.touched && !lname.valid">
+            Make sure this is a valid email
+    </div>
+    
+    <label for="security">Security level: </label>
+    <ul id="security-levels">
+            <li>
+                <input required ngModel securityLv name="securityLv" 
+                #securityLv="ngModel" type='radio' value='1' id='radio1'/>
+                <label for='radio1'>1</label>
+            </li>
+            <li>
+                <input required ngModel securityLv name="securityLv" 
+                #securityLv="ngModel" type='radio' value='2' id='radio2'/>
+                <label for='radio2'>2</label>
+            </li>
+            <li>
+                <input required ngModel securityLv name="securityLv" 
+                #securityLv="ngModel" type='radio' value='3' id='radio3'/>
+                <label for='radio3'>3</label>
+            </li>
+            <li>
+                <input required ngModel securityLv name="securityLv" 
+                #securityLv="ngModel" type='radio' value='4' id='radio4'/>
+                <label for='radio4'>4</label>
+            </li>
+        </ul>
+    <!-- <div    class="alert alert-danger" 
+            *ngIf="lname.touched && !lname.valid">
+            Make sure this is a valid email
+    </div> -->
+    <button type="submit">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+</form>

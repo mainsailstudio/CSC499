@@ -67,7 +67,7 @@ func StoreAuthsPlain(auths []string, userid string) {
 	defer db.Close()
 
 	// This is where each unique user auth table is created
-	createTable := "CREATE TABLE auth" + userid + " (auth char(60) binary)"
+	createTable := "CREATE TABLE auth" + userid + " (auth char(64) binary)"
 	_, err = db.Exec(createTable) // like lean cuisine no preperation needed
 
 	// Prepare statement for inserting the user's auth into the new table

@@ -1,0 +1,10 @@
+<h1>Register test</h1>
+    <form>
+        <label for="email">Email:</label><br />
+        <input required ngModel email name="email" #email="ngModel" type="email" value="" placeholder="example@example.com" style="width:70%"><br />
+        <!-- error for email -->
+        <div class="alert alert-danger" *ngIf="email.touched && !email.valid && email.errors?.email">
+            Make sure this is a valid email
+        </div>
+        <button type="submit" (click)="registerTestUser(email.value)">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+    </form>

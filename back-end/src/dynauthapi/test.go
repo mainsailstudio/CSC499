@@ -38,6 +38,27 @@ func testTestAPI(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "This thing is working") // prints to browser
 }
 
+// testRegister --- API call that checks if the test user is registered and then spits out the necessary information
+func testRegister(w http.ResponseWriter, r *http.Request) {
+	//params := mux.Vars(r)
+	var user testUser
+	_ = json.NewDecoder(r.Body).Decode(&user)
+	fmt.Println("User email was", user.Email)
+	userToken := issueTestJWT(user.Email)
+	userExists, userID, userInit, userTestLevel := getTestUserInit(user.Email)
+
+	if userExists {
+		returnUser := testUser{ID: userID, Email: user.Email, Init: userInit, TestLevel: userTestLevel, Token: userToken}
+		json.NewEncoder(w).Encode(returnUser)
+	} else {
+		http.Error(w, "This email is not pre-registered as a test user", 400)
+	}
+}
+
+func testLogin(w http.ResponseWriter, r *http.Request) {
+
+}
+
 // issueJWT - to get api users for testing
 func issueTestJWT(email string) string {
 
@@ -65,26 +86,6 @@ func issueTestJWT(email string) string {
 	}
 
 	return tokenString
-}
-
-func testRegister(w http.ResponseWriter, r *http.Request) {
-	//params := mux.Vars(r)
-	var user testUser
-	_ = json.NewDecoder(r.Body).Decode(&user)
-	fmt.Println("User email was", user.Email)
-	userToken := issueTestJWT(user.Email)
-	userExists, userID, userInit, userTestLevel := getTestUserInit(user.Email)
-
-	if userExists {
-		returnUser := testUser{ID: userID, Email: user.Email, Init: userInit, TestLevel: userTestLevel, Token: userToken}
-		json.NewEncoder(w).Encode(returnUser)
-	} else {
-		http.Error(w, "This email is not pre-registered as a test user", 400)
-	}
-}
-
-func testLogin(w http.ResponseWriter, r *http.Request) {
-
 }
 
 func getTestUserInit(email string) (bool, string, bool, int) {

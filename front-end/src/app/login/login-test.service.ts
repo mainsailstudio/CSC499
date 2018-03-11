@@ -27,7 +27,7 @@ const httpOptionsAuthorized = {
 };
 
 @Injectable()
-export class LoginUserService {
+export class LoginTestService {
   public token: string;
   public loginState: string;
   private handleError: HandleError;
@@ -36,7 +36,7 @@ export class LoginUserService {
   constructor(
     private http: HttpClient,
     httpErrorHandler: HttpErrorHandler) {
-    this.handleError = httpErrorHandler.createHandleError('LoginUserService');
+    this.handleError = httpErrorHandler.createHandleError('LoginTestService');
 
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;

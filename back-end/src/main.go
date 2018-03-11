@@ -8,16 +8,20 @@
 package main
 
 import (
-	dynauthapi "dynauthapi"
 	dynauthconst "dynauthconst"
 	dynauthcore "dynauthcore"
 	"fmt"
-	"os"
+	"log"
+	"math/big"
+	"time"
 )
 
 func main() {
-	fmt.Println("Starting API")
-	dynauthapi.StartTestAPI()
+	// fmt.Println("Starting API")
+	// dynauthapi.StartAPI()
+
+	//fmt.Println("Starting Test API")
+	//dynauthapi.StartTestAPI()
 
 	fmt.Println("1. Add a new user (auths only)")
 	fmt.Println("2. Authenticate a user")
@@ -97,7 +101,8 @@ func createUser() {
 	fmt.Println("Perms to hash is", permsToHash)
 	fmt.Println("Total number of permutations is", len(permsToHash))
 	// hashedPermsWithSalt := dynauthcore.HashPermsScrypt(permsToHash, hashIterations)
-	hashPerms := dynauthcore.HashPermsBcrypt(permsToHash)
+	hashPerms := dynauthcore.HashPermsSHA3(permsToHash)
+	//hashPerms := dynauthcore.HashPermsBcrypt(permsToHash)
 	//fmt.Println("Hashed perms is", hashedPermsWithSalt)
 	//fmt.Println("Let's try to store them!")
 	//dynauthcore.StoreAuthsWithSalts(hashedPermsWithSalt, userid)
@@ -109,22 +114,42 @@ func createUser() {
 func authenticateUser() {
 	fmt.Println("Enter in user id")
 	var userid string
-	var tempPass string
+	// var tempPass string
 	fmt.Scan(&userid)
-	fmt.Println("Enter is user tempPass")
-	fmt.Scan(&tempPass)
-	authenticated := dynauthcore.TempPassAuth(userid, tempPass)
-	if authenticated == true {
-		fmt.Println("Authenticated, continue")
-	} else {
-		fmt.Println("Not authenticated")
-		os.Exit(3)
-	}
+	// fmt.Println("Enter is user tempPass")
+	// fmt.Scan(&tempPass)
+	// authenticated := dynauthcore.TempPassAuth(userid, tempPass)
+	// if authenticated == true {
+	// 	fmt.Println("Authenticated, continue")
+	// } else {
+	// 	fmt.Println("Not authenticated")
+	// 	os.Exit(3)
+	// }
 	locks := dynauthcore.ServeLocks(userid, dynauthconst.DisplayLockNum) // receives the slice of locks from serve.go
 	fmt.Println("Locks are", locks)
 	var otp string
 	fmt.Println("Enter in OTP")
 	fmt.Scan(&otp)
+
+	// start timer
+	start := time.Now()
+	r := new(big.Int)
+	fmt.Println(r.Binomial(1000, 10))
+
 	dynauthcore.AuthenticateBcrypt(locks, otp, userid, dynauthconst.BcryptIterations)
 
+	// end timer
+	elapsed := time.Since(start)
+	log.Printf("--- Authentication using Bcrypt took %s", elapsed)
+
+	// // start timer
+	// start := time.Now()
+	// r := new(big.Int)
+	// fmt.Println(r.Binomial(1000, 10))
+
+	// dynauthcore.AuthenticateSHA3(locks, otp, userid, dynauthconst.BcryptIterations)
+
+	// // end timer
+	// elapsed := time.Since(start)
+	// log.Printf("--- Authentication using SHA3 took %s", elapsed)
 }
