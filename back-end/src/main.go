@@ -100,13 +100,14 @@ func createUser() {
 	permsToHash := dynauthcore.CombinePerms(lockPerms, keyPerms) // create the perms to hash (should most likely be in a package eventually)
 	fmt.Println("Perms to hash is", permsToHash)
 	fmt.Println("Total number of permutations is", len(permsToHash))
-	// hashedPermsWithSalt := dynauthcore.HashPermsScrypt(permsToHash, hashIterations)
-	hashPerms := dynauthcore.HashPermsSHA3(permsToHash)
+	hashedPermsWithSalt := dynauthcore.HashPermsWithSaltSHA3(permsToHash)
+	//hashPerms := dynauthcore.HashPermsSHA3(permsToHash)
+	//hashPerms := dynauthcore.HashPermsScrypt(permsToHash)
 	//hashPerms := dynauthcore.HashPermsBcrypt(permsToHash)
 	//fmt.Println("Hashed perms is", hashedPermsWithSalt)
 	//fmt.Println("Let's try to store them!")
-	//dynauthcore.StoreAuthsWithSalts(hashedPermsWithSalt, userid)
-	dynauthcore.StoreAuthsPlain(hashPerms, userid)
+	dynauthcore.StoreAuthsWithSalts(hashedPermsWithSalt, userid)
+	//dynauthcore.StoreAuthsPlain(hashPerms, userid)
 	fmt.Println("User's auths were stored")
 	//hash(lockKeySlice)
 }
@@ -131,25 +132,47 @@ func authenticateUser() {
 	fmt.Println("Enter in OTP")
 	fmt.Scan(&otp)
 
-	// start timer
-	start := time.Now()
-	r := new(big.Int)
-	fmt.Println(r.Binomial(1000, 10))
-
-	dynauthcore.AuthenticateBcrypt(locks, otp, userid, dynauthconst.BcryptIterations)
-
-	// end timer
-	elapsed := time.Since(start)
-	log.Printf("--- Authentication using Bcrypt took %s", elapsed)
-
-	// // start timer
+	// // start timer for BCRYPT
 	// start := time.Now()
 	// r := new(big.Int)
 	// fmt.Println(r.Binomial(1000, 10))
 
-	// dynauthcore.AuthenticateSHA3(locks, otp, userid, dynauthconst.BcryptIterations)
+	// dynauthcore.AuthenticateBcrypt(locks, otp, userid, dynauthconst.BcryptIterations)
 
 	// // end timer
 	// elapsed := time.Since(start)
-	// log.Printf("--- Authentication using SHA3 took %s", elapsed)
+	// log.Printf("--- Authentication using Bcrypt took %s", elapsed)
+
+	// // start timer for SCRYPT
+	// start := time.Now()
+	// r := new(big.Int)
+	// fmt.Println(r.Binomial(1000, 10))
+
+	// dynauthcore.AuthenticateScrypt(locks, otp, userid, dynauthconst.ScryptIterations)
+
+	// // end timer
+	// elapsed := time.Since(start)
+	// log.Printf("--- Authentication using Scrypt took %s", elapsed)
+
+	// // start timer for SHA256
+	// start := time.Now()
+	// r := new(big.Int)
+	// fmt.Println(r.Binomial(1000, 10))
+
+	// dynauthcore.AuthenticateSHA2(locks, otp, userid, dynauthconst.BcryptIterations)
+
+	// // end timer
+	// elapsed := time.Since(start)
+	// log.Printf("--- Authentication using SHA2 took %s", elapsed)
+
+	// start timer for SHA3
+	start := time.Now()
+	r := new(big.Int)
+	fmt.Println(r.Binomial(1000, 10))
+
+	dynauthcore.AuthenticateSHA3(locks, otp, userid, dynauthconst.BcryptIterations)
+
+	// end timer
+	elapsed := time.Since(start)
+	log.Printf("--- Authentication using SHA3 took %s", elapsed)
 }

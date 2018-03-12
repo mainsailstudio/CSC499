@@ -21,7 +21,7 @@ func AuthenticateSHA3(locks string, otp string, userid string, iterations int) {
 	// first prep auth for comparison
 	toHash := locks + otp
 
-	authenticated, err := compareAuthsSHA3(toHash, userid)
+	authenticated, err := compareAuthsWithSaltSHA3(toHash, userid)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,9 +49,10 @@ func AuthenticateSHA3(locks string, otp string, userid string, iterations int) {
 
 // }
 
-func compareAuthsSHA3(toCompare string, userid string) (bool, error) {
+func compareAuthsWithSaltSHA3(toCompare string, userid string) (bool, error) {
 	// initialize a false authentication return
 	authenticated := false
+	salts := getSalts(userid)
 
 	authSlice, err := getAuths(userid) // get all of the auths into a slice
 	if err != nil {
@@ -69,12 +70,12 @@ func compareAuthsSHA3(toCompare string, userid string) (bool, error) {
 		fmt.Println("Compare number", i)
 
 		// A MAC with 32 bytes of output has 256-bit security strength -- if you use at least a 32-byte-long key.
-		h := make([]byte, 32)
+		h := make([]byte, 64)
 		d := sha3.NewShake256()
 		// Write the key into the hash.
 		d.Write(pkSecret)
 		// Now write the data.
-		d.Write([]byte(toCompare))
+		d.Write([]byte(toCompare + salts[i]))
 		d.Read(h)
 
 		hashString := fmt.Sprintf("%x\n", h)

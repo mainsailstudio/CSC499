@@ -19,18 +19,19 @@ import (
 //AuthenticateScrypt - to do the authentication I suppose.
 func AuthenticateScrypt(locks string, otp string, userid string, iterations int) {
 	// first prep auth for comparison
-	salts := getSalts(userid)
+	//salts := getSalts(userid)
 	auths, err := getAuths(userid)
 	if err != nil {
 		log.Fatal(err)
 	}
 	authenticated := false
 	for i := range auths {
-		toHash := locks + otp + salts[i]
+		//toHash := locks + otp + salts[i]
+		toHash := locks + otp + "salt"
 		fmt.Println("========================")
 		fmt.Println("Comparison number is", i+1)
 		fmt.Println("To hash string is	", toHash)
-		saltByte := []byte(salts[i])
+		saltByte := []byte("salt")
 		hashedOTP := hashScrypt(toHash, saltByte, iterations) // hash the prepped otp
 		fmt.Println("Hashed string is	", hashedOTP)
 		fmt.Println("Auth to compare is	", auths[i])

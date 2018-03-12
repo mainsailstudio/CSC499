@@ -10,13 +10,12 @@ package dynauthcore
 import (
 	"database/sql"
 	dbinfo "dbinfo"
-	"fmt"
 
 	_ "github.com/go-sql-driver/mysql" // mysql driver helper
 )
 
 // StoreAuthsWithSalts - to store a slice of hashed permutations into a MySQL database.
-func StoreAuthsWithSalts(authsWithSalts [][][]byte, userid string) {
+func StoreAuthsWithSalts(authsWithSalts [][]string, userid string) {
 	dbinfo := dbinfo.Db()
 	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
 	if err != nil {
@@ -45,11 +44,7 @@ func StoreAuthsWithSalts(authsWithSalts [][][]byte, userid string) {
 	// casts the data to insert into a slice interface for variadic function inclusion below, quite elegant
 	dataPrepared := []interface{}{}
 	for i := 0; i < len(authsWithSalts); i++ {
-		tempAuth := fmt.Sprintf("%x", authsWithSalts[i][0])
-		fmt.Println("Temp auth is", tempAuth)
-		tempSalt := fmt.Sprintf("%x", authsWithSalts[i][1])
-		fmt.Println("Temp salt is", tempSalt)
-		dataPrepared = append(dataPrepared, tempAuth, tempSalt)
+		dataPrepared = append(dataPrepared, authsWithSalts[i][0], authsWithSalts[i][1])
 	}
 	_, err = stmtIns.Exec(dataPrepared...) // adds all data in the slice as a separate argument (variadic) BEAUTIFUL
 	if err != nil {
