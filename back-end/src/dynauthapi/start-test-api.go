@@ -11,7 +11,7 @@ package api
 import (
 	"fmt"
 	"net/http"
-
+	"log"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
@@ -74,7 +74,13 @@ func StartTestAPI() {
 	// Run the handler through CORS for testing
 	handler := cors.Default().Handler(r)
 
-	// Listen and serve the API over HTTPS
+	// Listen and serve the API over HTTP
 	// TODO: have this serve over TLS for the server
-	http.ListenAndServe(":8080", handler)
+	// http.ListenAndServe(":8080", handler)
+
+	// Listen and serve the API over TLS (HTTPS)
+	err := http.ListenAndServeTLS(":443", "server.crt", "server.key", handler)
+    	if err != nil {
+        	log.Fatal("ListenAndServe: ", err)
+    	}
 }
