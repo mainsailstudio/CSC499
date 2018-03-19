@@ -79,7 +79,7 @@ func StartTestAPI() {
 	// http.ListenAndServe(":8080", handler)
 
 	// Listen and serve the API over TLS (HTTPS)
-	err := http.ListenAndServeTLS(":443", "server.crt", "server.key", handler)
+	err := http.ListenAndServeTLS(":443", "certificate.crt", "private.key", handler)
     	if err != nil {
         	log.Fatal("ListenAndServe: ", err)
     	}
