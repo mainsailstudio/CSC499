@@ -26,7 +26,7 @@ func ServeLocks(userid string, lockNum int) string {
 
 	if len(locks) > 0 {
 		fmt.Println("Locks look good")
-		shuffle(locks) // from internet code
+		Shuffle(locks) // from internet code
 		locks = locks[:lockNum]
 
 		var lockString string
@@ -51,14 +51,15 @@ func ServeLockSlice(userid string, lockNum int) []string {
 		return nil
 	}
 	// shuffle.Slice(locks) - from imported package
-	shuffle(locks) // from internet code
+	Shuffle(locks) // from internet code
 
 	locks = locks[:lockNum]
 
 	return locks
 }
 
-func shuffle(slice []string) {
+// Shuffle - shuffles the slice baby
+func Shuffle(slice []string) {
 	r := rand.New(rand.NewSource(time.Now().Unix()))
 	for n := len(slice); n > 0; n-- {
 		randIndex := r.Intn(n)
@@ -71,7 +72,7 @@ func GetLocks(userid string) ([]string, error) {
 	dbinfo := dbinfo.Db()
 	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
 	if err != nil {
-		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+		return nil, errors.New("Unable to connect to the database in the GetLocks function in serve.go")
 	}
 	defer db.Close()
 

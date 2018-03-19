@@ -12,6 +12,7 @@ package dynauthcore
 import (
 	"bytes"
 	"dynauthconst"
+	"errors"
 	// "fmt"
 
 	"golang.org/x/crypto/bcrypt"
@@ -20,7 +21,7 @@ import (
 // CombinePerms - to correctly concat 2 slices of permutations into 1.
 // Needs 2 slices, 1 of locks and 1 of keys. It is assumed that they match up perfectly and will result in logic errors if they do not.
 func CombinePerms(locks []string, keys []string) []string {
-	combined := []string{} // assumes locks and keys are of same length (SHOULD ALWAYS BE)
+	combined := []string{} // assumes locks and keys are at the same index (SHOULD ALWAYS BE)
 	for i := 0; i < len(locks); i++ {
 		combineString := locks[i] + keys[i]
 		combined = append(combined, combineString)
@@ -30,16 +31,16 @@ func CombinePerms(locks []string, keys []string) []string {
 
 // HashPermsBcrypt - takes in the slice to hash and the amount of iterations to use for bcrypt and returns a completely hashed slice of strings.
 // Needs 1 slice to hash and the iteration number as an int.
-func HashPermsBcrypt(toHash []string) []string {
+func HashPermsBcrypt(toHash []string) ([]string, error) {
 	hashed := []string{}
 	for i := 0; i < len(toHash); i++ {
 		hashedPasswordBcrypt, err := bcrypt.GenerateFromPassword([]byte(toHash[i]), dynauthconst.BcryptIterations)
 		if err != nil {
-			panic(err)
+			return nil, errors.New("Hashing the permutation slice using Bcrypt caused an issue")
 		}
 		hashedToString := bytes.NewBuffer(hashedPasswordBcrypt).String()
 		// fmt.Println("Hashed string is", hashedToString)
 		hashed = append(hashed, hashedToString)
 	}
-	return hashed
+	return hashed, nil
 }

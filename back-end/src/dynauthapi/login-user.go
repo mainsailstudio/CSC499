@@ -1,5 +1,5 @@
 /*
-	Title:	Login the user
+	Title:	Login the user over the API
 	Author:	Connor Peters
 	Date:	2/26/2018
 	Desc:
@@ -27,7 +27,11 @@ func GetLoginState(w http.ResponseWriter, r *http.Request) {
 	if user.Email == "" {
 		http.Error(w, "The email is empty", 400)
 	}
-	userExists, userID := checkUserExists(user.Email)
+	userExists, userID, err := checkUserExists(user.Email)
+	if err != nil {
+		http.Error(w, "Error encountered when checking if the user exists", 500)
+	}
+
 	fmt.Println("User exists bool is", userExists)
 	if userExists == true {
 		lockString, passExpire := getUserLocksAndPass(userID)
@@ -56,7 +60,10 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "The email is empty", 400)
 	}
 
-	userExists, userID := checkUserExists(user.Email)
+	userExists, userID, err := checkUserExists(user.Email)
+	if err != nil {
+		http.Error(w, "Error encountered when checking if the user exists", 500)
+	}
 
 	if userExists == true {
 		fmt.Println("User login state is", user.LoginState)
@@ -75,7 +82,11 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 
 		if user.LoginState == "1" {
 			// if the user is loggin in via a temp pass
-			passwordCorrect := dynauthcore.TempPassAuth(userID, user.Secret)
+			passwordCorrect, err := dynauthcore.TempPassAuth(userID, user.Secret)
+			if err != nil {
+				http.Error(w, "There was an error encountered when authenticating the user with their password", 500)
+			}
+
 			if passwordCorrect {
 				fmt.Println("Correctly authenticated via a temp pass")
 				token := issueJWT(user.Email) // sending the user's email to be a part of the jwt claim

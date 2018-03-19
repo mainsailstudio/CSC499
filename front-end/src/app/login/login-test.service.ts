@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
 
 import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
 
-import { StartLoginUser, ContLoginUser } from './login.component';
+import { TestUser, ContTestUser } from './login-test.component';
 import { TestURL, APIURL } from '../api/api.constants';
 
 const httpOptions = {
@@ -29,7 +29,7 @@ const httpOptionsAuthorized = {
 @Injectable()
 export class LoginTestService {
   public token: string;
-  public loginState: string;
+  public testLevel: number;
   private handleError: HandleError;
   private email: string;
 
@@ -42,23 +42,23 @@ export class LoginTestService {
     this.token = currentUser && currentUser.token;
   }
 
-  startLoginUser (login: StartLoginUser): Observable<StartLoginUser> {
-    return this.http.post<StartLoginUser>(TestURL + 'login-start', login, httpOptions)
+  startLoginUser (login: TestUser): Observable<TestUser> {
+    return this.http.post<TestUser>(APIURL + 'test/login-start', login, httpOptions)
       .pipe(
         catchError(this.handleError('loginUser', login))
       );
   }
 
-  contLoginUser (login: ContLoginUser): Observable<boolean> {
-    return this.http.post<ContLoginUser>(TestURL + 'login-finish', login, httpOptions).map(
+  contLoginUser (login: ContTestUser): Observable<boolean> {
+    return this.http.post<ContTestUser>(APIURL + 'test/login-finish', login, httpOptions).map(
       response => {
         if (response.token) {
           this.token = response.token;
-          this.loginState = response.loginState;
+          this.testLevel = response.testLevel;
           localStorage.setItem('currentUser', JSON.stringify({
                                 id: response.id,
                                 email: login.email,
-                                loginState: this.loginState,
+                                loginState: this.testLevel,
                                 token: this.token }));
           return true;
         }

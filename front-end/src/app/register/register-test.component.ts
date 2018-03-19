@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { trigger, state, transition, style, animate } from '@angular/animations';
+import { Observable } from 'rxjs/Observable';
 
 import { RegisterTestService } from './register-test.service';
 import { LockKey } from './lock-key/lock-key';
@@ -48,10 +49,10 @@ export class RegisterTestComponent implements OnInit {
     const testUser: RegisterTestUser = { email } as RegisterTestUser;
     this.registerService.registerTest(testUser).subscribe(
       suc => {
-       // directUsers(testUser);
-       console.log('Test was a success');
-       console.log(suc);
-       this.directUsers(suc);
+        Observable.timer(1000)
+        .subscribe(i => {
+          this.router.navigate(['/dashboard']);
+        });
       },
       err => {
           console.log(err );
@@ -60,12 +61,12 @@ export class RegisterTestComponent implements OnInit {
     // this.directUsers(gotUser);
   }
 
-  directUsers(testUser: RegisterTestUser): void {
+  // directUsers(testUser: RegisterTestUser): void {
 
-    if (!testUser.init) {
-        console.log('User not initalized');
-        this.router.navigateByUrl('/dashboard');
-    }
-  }
+  //   if (!testUser.init) {
+  //       console.log('User not initalized');
+  //       this.router.navigateByUrl('/dashboard');
+  //   }
+  // }
 
 }

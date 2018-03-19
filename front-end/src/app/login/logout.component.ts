@@ -5,6 +5,7 @@ import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
 
+
 import { AuthenticationService } from '../_auth-guard/authentication.service';
 
 @Component({
@@ -16,7 +17,7 @@ export class LogoutComponent implements OnInit {
     countDown;
     counter = 4;
 
-    constructor(private authenticationService: AuthenticationService) {}
+    constructor(private authenticationService: AuthenticationService, private router: Router) {}
 
     ngOnInit() {
         // Logout
@@ -24,10 +25,10 @@ export class LogoutComponent implements OnInit {
         .take(this.counter)
         .map(() => --this.counter);
         this.authenticationService.logout();
-        setTimeout(function() {
-            // this.router.navigate(['/']);
-            window.location.replace('/');
-        }, 5000);
+        Observable.timer(4200)
+          .subscribe(i => {
+            this.router.navigate(['/test']);
+        });
         // this.authenticationService.logout();
         // setTimeout(function() {
         //     this.router.navigate(['/']);

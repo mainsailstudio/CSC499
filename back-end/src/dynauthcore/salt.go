@@ -8,9 +8,6 @@
 package dynauthcore
 
 import (
-
-	// "fmt"
-
 	"crypto/rand"
 	"errors"
 	"fmt"
@@ -18,7 +15,7 @@ import (
 
 // getSalt - generates a random byte salt with a saltLen, minimum length is 32
 func getSalt(saltLen int) ([]byte, error) {
-	// check to make sure the salt length is AT LEAST 32
+	// check to make sure the salt length is AT LEAST 32 bytes
 	if saltLen < 32 {
 		return nil, errors.New("Salt: salt length has to be at least 32")
 	}

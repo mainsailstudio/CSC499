@@ -1,8 +1,10 @@
 /*
-	Title:	Hash SHA3
+	Title:	Hash SHA3 (with salts)
 	Author:	Connor Peters
 	Date:	2/24/2018
-	Desc:
+	Desc:	Takes in a "toHash" slice and returns the corresponding hashes
+			Hash 2 options, 1 with salts and 1 without. It is recommended to use the one with salts wherever possible.
+	NOTE:	This was implemented for sake of efficiency, Bcrypt is a better password hasher but this isn't a password baby
 */
 
 package dynauthcore
@@ -12,11 +14,10 @@ import (
 	"io/ioutil"
 	"log"
 
-	. "golang.org/x/crypto/sha3"
+	sha3 "golang.org/x/crypto/sha3"
 )
 
-// HashPermsSHA3 - takes in the slice to hash and the amount of iterations to use for SHA3 and returns a completely hashed slice of strings.
-// Needs 1 slice to hash and the iteration number as an int.
+// HashPermsSHA3 - takes in the slice to hash for SHA3 and returns a completely hashed slice of strings.
 func HashPermsSHA3(toHash []string) []string {
 	hashed := []string{}
 
@@ -29,7 +30,7 @@ func HashPermsSHA3(toHash []string) []string {
 	// iterates through toHash and hashes them all
 	for i := 0; i < len(toHash); i++ {
 		h := make([]byte, 32)
-		d := NewShake256()
+		d := sha3.NewShake256()
 		// Write the key into the hash.
 		d.Write(pkSecret)
 		// Now write the data.
@@ -47,8 +48,7 @@ func HashPermsSHA3(toHash []string) []string {
 	return hashed
 }
 
-// HashPermsWithSaltSHA3 - takes in the slice to hash and the amount of iterations to use for SHA3 and returns a completely hashed slice of strings.
-// Needs 1 slice to hash and the iteration number as an int.
+// HashPermsWithSaltSHA3 - takes in the slice to hash for SHA3 and returns a 2d slice of completely hashed strings and their corresponding salts.
 func HashPermsWithSaltSHA3(toHash []string) [][]string {
 	hashed := [][]string{}
 
@@ -70,10 +70,8 @@ func HashPermsWithSaltSHA3(toHash []string) [][]string {
 
 		// add salt to hash
 		toHashWithSalt := toHash[i] + s
-		fmt.Println("Random salt is", s)
-		fmt.Println("To hash", toHashWithSalt)
 		// create a new SHA3 256
-		d := NewShake256()
+		d := sha3.NewShake256()
 		// Write the key into the hash.
 		d.Write(pkSecret)
 		// Now write the data.
@@ -81,7 +79,6 @@ func HashPermsWithSaltSHA3(toHash []string) [][]string {
 
 		// Read 32 bytes of output from the hash into h.
 		d.Read(h)
-		fmt.Printf("Hashed is %x\n", h)
 
 		hashString := fmt.Sprintf("%x\n", h)
 		//fmt.Println("Hash casted to string is", hashString)

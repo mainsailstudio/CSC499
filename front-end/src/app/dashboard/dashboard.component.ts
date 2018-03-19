@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RegisterUserService } from '../register/register-user.service';
 import { trigger, transition, style, animate, state } from '@angular/animations';
-import { AccountInitService } from './account-init.service';
+import { InitAccountService } from './init-account.service';
+// import { PracticeComponent } from './practice/practice.component';
 
 export interface InitUser {
   id: string;
@@ -18,14 +19,27 @@ export interface InitUser {
 })
 export class DashboardComponent implements OnInit {
 
-  tokenJSON = localStorage.getItem('currentUser');
-  loginState = (JSON.parse(this.tokenJSON).loginState);
-  // loginStateJson = localStorage.getItem('currentUser');
+  userDataJSON = localStorage.getItem('currentUser');
+  jwToken = (JSON.parse(this.userDataJSON).token);
+  userData = JSON.parse(this.userDataJSON);
+  email = this.userData['email'];
+  userID = this.userData['id'];
+  loginState = this.userData['loginState'];
+  testLevel = this.userData['testLevel'];
+  init = this.userData['init'];
+  startForm = true;
+
+  // the variable that swaps between main components
+  mainActiveComponent = 'test';
   constructor() { }
 
-  ngOnInit() {
-    console.log('Token JSON is ' + this.tokenJSON);
-    console.log('Login state is ' + this.loginState);
+  ngOnInit() { }
+
+  // the function that swaps between the components as needed
+  // kind of a view factory I guess
+  swapDashboardComponent(component: string) {
+      this.init = true;
+      this.mainActiveComponent = component;
   }
 
 }
@@ -104,13 +118,16 @@ export class DashboardMainComponent implements OnInit {
 export class DashboardInitComponent implements OnInit {
 
   userDataJSON = localStorage.getItem('currentUser');
+  jwToken = (JSON.parse(this.userDataJSON).token);
   userData = JSON.parse(this.userDataJSON);
   email = this.userData['email'];
   userID = this.userData['id'];
+  loginState = this.userData['loginState'];
+  testLevel = this.userData['testLevel'];
   init = this.userData['init'];
   startForm = true;
 
-  constructor(private registrationService: AccountInitService) { }
+  constructor(private initAccountService: InitAccountService) { }
 
   ngOnInit() { }
 
@@ -130,7 +147,7 @@ export class DashboardInitComponent implements OnInit {
 
     this.startForm = false;
     const registerUser: InitUser = { id, email, fname, lname, securityLv } as InitUser;
-    this.registrationService.initAccount(registerUser).subscribe(
+    this.initAccountService.initAccount(registerUser, this.jwToken).subscribe(
       suc => {
         console.log(suc);
       },

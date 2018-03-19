@@ -1,10 +1,11 @@
+  <h3 *ngIf="redirectMessage !== ''" style="color:red;">{{ redirectMessage }}</h3>
 <h1>Login</h1>
   <!-- <form (ngSubmit)="onSubmit()" #loginForm="ngForm"> -->
   <form *ngIf="initLogin">
     <label for="email">Email:</label><br />
         <input required ngModel email name="email" #email="ngModel" type="email" value="" placeholder="example@example.com" style="width:70%"><br />
         <!-- error for email -->
-        <div class="alert alert-danger" *ngIf="email.touched && !email.valid && email.errors?.email">
+        <div class="alert alert-danger" role="alert" *ngIf="email.touched && !email.valid && email.errors?.email">
             Make sure this is a valid email
         </div>
 
@@ -13,42 +14,32 @@
 
   <form (ngSubmit)="contLogin(contLoginForm.value)" #contLoginForm="ngForm" *ngIf="!initLogin">
     <label for="email">Email:</label><br />
-    <input disabled required ngModel fakeEmail name="fakeEmail" #fakeEmail="ngModel" type="email" style="width:70%" [(ngModel)]="userEmail"><br />
+    <input disabled required ngModel fakeEmail name="fakeEmail" #fakeEmail="ngModel" type="email" style="width:70%" [(ngModel)]="userEmail" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"><br />
 
-    <!-- if the loginstate is 1 -->
-    <div id="loginState1" *ngIf="loginState === '1'">
-      <label for="locks">Temporary password:</label><br />
-      <input autofocus required ngModel tempPass name="tempPass" #tempPass="ngModel" type="password" style="width:70%"><br />
+    <!-- if the testLevel is 1 -->
+    <div id="testLevel1" *ngIf="testLevel === 1">
+      <label for="locks">Password:</label><br />
+      <input autofocus required ngModel tempPass name="tempPass" #tempPass="ngModel" type="password" style="width:70%" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"><br />
     </div>
 
-    <!-- if the loginstate is 2 -->
-    <div id="loginState2" *ngIf="loginState === '2'">
-      <label for="locks" *ngIf="!allowTempPass" >Locks: {{ locks }}</label><br *ngIf="!allowTempPass" />
-      <input autofocus required ngModel *ngIf="!allowTempPass" keys name="keys" #keys="ngModel" type="password" style="width:70%"><br *ngIf="!allowTempPass" />
-      <span *ngIf="!allowTempPass" (click)="toggleTempPass()" class="small">Use your temporary password instead</span><br />
-      <input ngModel tempPass *ngIf="allowTempPass" name="tempPass" #tempPass="ngModel" type="password" style="width:70%"><br />
-      <span *ngIf="allowTempPass" (click)="toggleTempPass()" class="small">Switch back to lock-key authentication</span><br />
-    </div>
-
-    <!-- if the loginstate is 3 -->
-    <div id="loginState3" *ngIf="loginState === '3'">
-      <label for="locks">Locks: {{ locks }}</label><br />
-      <input autofocus required ngModel keys name="keys" #keys="ngModel" type="password" style="width:70%"><br />
+    <!-- if the testLevel is 2 or 3 -->
+    <div id="testLevel2-3" *ngIf="testLevel === 2 || testLevel === 3">
+      <label for="locks">Locks: {{ locks }}</label>&nbsp;<i (click)="refreshLocks()" title="Refresh the locks" class="fas fa-sync"></i><br />
+      <input autofocus required ngModel keys name="keys" #keys="ngModel" type="password" style="width:70%" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"><br />
     </div>
 
      <!-- if the loginstate is unknown -->
-    <div class="alert alert-danger" *ngIf="loginState === 'Unknown'">
-        This email doesn't exist
+    <div class="alert alert-danger" role="alert" *ngIf="testLevel === 4">
+        {{  errorMessage }}
     </div>
     
     <!-- if the form is has aready been submitted  -->
     <!-- <button [disabled]="!ngForm.valid" type="submit" *ngIf="!initLogin">Login <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button> -->
     <button type="submit">Login <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+    <div *ngIf="showSuccess" class="alert alert-success" role="alert">
+      Success! Redirecting... <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+    </div>
+    <div *ngIf="showFail" class="alert alert-danger" role="alert">
+      Failure, please try again
+    </div>
   </form>
-  <div *ngIf="showSuccess">
-    <h1>Success!</h1>
-    <button (click)="tryPing()">PING!</button>
-  </div>
-  <div *ngIf="showFail">
-    <h1>Failure</h1>
-  </div>

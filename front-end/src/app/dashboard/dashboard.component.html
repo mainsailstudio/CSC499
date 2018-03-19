@@ -10,6 +10,7 @@
   <div class="col-md-10 right-side" [ngSwitch]="registerState">
     <app-dashboard-main *ngIf="loginState === '3'"></app-dashboard-main>
     <app-dashboard-init *ngIf="loginState === '1'"></app-dashboard-init>
-    <app-dashboard-test *ngIf="!init"></app-dashboard-test>
+    <app-dashboard-test *ngIf="!init && mainActiveComponent === 'test'"></app-dashboard-test>
+    <app-dashboard-practice *ngIf="mainActiveComponent === 'practice'"></app-dashboard-practice>
   </div>
 </div>

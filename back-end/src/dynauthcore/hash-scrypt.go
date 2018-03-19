@@ -12,7 +12,6 @@ import (
 	// "fmt"
 
 	"fmt"
-	"log"
 
 	"golang.org/x/crypto/scrypt"
 )
@@ -25,7 +24,6 @@ func HashPermsScrypt(toHash []string) []string {
 		hashedPasswordScrypt, err := scrypt.Key([]byte(toHash[i]), []byte("salt"), 16384, 8, 1, 32)
 		if err != nil {
 			fmt.Println("Error generating Scrypt with salt")
-			log.Fatal(err)
 		}
 
 		hashedToString := fmt.Sprintf("%x\n", hashedPasswordScrypt)

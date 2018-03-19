@@ -1,0 +1,29 @@
+- API
+    - Authenticate
+        - GetAPIUsers: can most likely be tossed, was used as an example
+    - JSON
+        - GetJSONFromSQLSelect: takes an SQL select query string and returns all data as json
+        - InsertSQLFromJSON: takes a JSON object and returns the values () equivelent for SQL insertion
+    - JWT
+        - issueJWT: takes in the user's email and returns a JWT with the email as a claim
+    - Login user
+        - 
+
+- TestAPI
+    - Test
+        - testUser struct: for test GetAPIUsers
+        - testPass struct: for test users registering with a password
+        - testAuth struct: for test users registering with dynauth standard
+        - testRegister: API call that checks if the test user is registered and then spits out the necessary information
+        - testLoginLevel: API call to get the test users type of login and start the process. NOTE - this stores the user's random locks to prepend for authentication
+        - testLogin: API call finishes the user login process
+        - testRegisterPass: PROTECTED API call that posts the user's pass into the database
+        - testRegisterAuth: PROTECTED API call that posts the user's auths into the database
+        - getTestUserInit: get the test users information needed for the front-end
+        - initTestUser: flip the flag to initialize a user after the are registered
+        - storeTestLocks: stores the test user' locks. Needs the user's locks in a slice of strings, the user's id as a string, and the lockType as a string
+        - serveTestLocks: to query the database and return the test user's locks in a string
+        - storeTestPass: stores the test users password
+        - storeTestTempLocks: stores the test user' locks TEMPORARILY for session based authentication
+- core
+    - 

@@ -10,6 +10,7 @@ package dynauthcore
 import (
 	"database/sql"
 	dbinfo "dbinfo"
+	"errors"
 	"fmt"
 	"log"
 
@@ -32,7 +33,11 @@ func AuthenticateScrypt(locks string, otp string, userid string, iterations int)
 		fmt.Println("Comparison number is", i+1)
 		fmt.Println("To hash string is	", toHash)
 		saltByte := []byte("salt")
-		hashedOTP := hashScrypt(toHash, saltByte, iterations) // hash the prepped otp
+		hashedOTP, err := hashScrypt(toHash, saltByte, iterations) // hash the prepped otp
+		if err != nil {
+			fmt.Println("Error encountered:", err)
+		}
+
 		fmt.Println("Hashed string is	", hashedOTP)
 		fmt.Println("Auth to compare is	", auths[i])
 		if hashedOTP == auths[i] {
@@ -94,14 +99,14 @@ func AuthenticateScrypt(locks string, otp string, userid string, iterations int)
 	// fmt.Println()
 }
 
-func hashScrypt(otp string, salt []byte, iterations int) string {
+func hashScrypt(otp string, salt []byte, iterations int) (string, error) {
 	otpByte := []byte(otp)
 	hashedPasswordScrypt, err := scrypt.Key(otpByte, salt, iterations, 8, 1, 64)
 	if err != nil {
-		panic(err)
+		return "", errors.New("there was an issue hashing the string using scrypt")
 	}
 	hashedToString := fmt.Sprintf("%x", hashedPasswordScrypt)
-	return hashedToString
+	return hashedToString, nil
 }
 
 func compareAuthsString(toCompare string, userid string) bool {
@@ -125,7 +130,7 @@ func getAuths(userid string) ([]string, error) {
 	dbinfo := dbinfo.Db()
 	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
 	if err != nil {
-		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+		return nil, errors.New("Opening the database connection for getAuths went wrong")
 	}
 
 	defer db.Close()
@@ -152,11 +157,11 @@ func getAuths(userid string) ([]string, error) {
 	return authSlice, nil
 }
 
-func getSalts(userid string) []string {
+func getSalts(userid string) ([]string, error) {
 	dbinfo := dbinfo.Db()
 	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
 	if err != nil {
-		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+		return nil, errors.New("Opening the database connection for getSalts went wrong")
 	}
 
 	defer db.Close()
@@ -164,7 +169,7 @@ func getSalts(userid string) []string {
 	query := "SELECT salt FROM auth" + userid
 	locks, err := db.Query(query)
 	if err != nil {
-		log.Fatal(err)
+		return nil, errors.New("Getting the user's salts caused an error")
 	}
 
 	defer locks.Close()
@@ -180,5 +185,23 @@ func getSalts(userid string) []string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return lockSlice
+	return lockSlice, nil
+}
+
+// this gets the user's temp locks that were stored when served to enable the authentication
+func getTestTempLocks(userid string) (string, error) {
+	dbinfo := dbinfo.Db()
+	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
+	if err != nil {
+		return "", errors.New("Opening the database connection for getTestTempLocks went wrong")
+	}
+	defer db.Close()
+
+	// select the temp pass of the user
+	var lockString string
+	err = db.QueryRow("SELECT locks FROM tempTestLocks WHERE userid = ?", userid).Scan(&lockString)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return lockString, nil
 }

@@ -1,7 +1,6 @@
 TODO
 
 1. Organize Github so it isn't difficult pulling new packages into the remote server
-2. Make working SHA3 CLI prototype to test performance vs Bcrypt
 3. If it works, make the SHA3 API ready
 4. Make the front-end ability to finish registration and testing stuff
 5. Organize API package into Dynauthcore

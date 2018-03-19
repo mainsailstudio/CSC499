@@ -95,3 +95,14 @@ type KeyDisplay struct {
 	Key     string `json:"keysAre"`
 	KeyType string `json:"keyType"`
 }
+
+// LogActivity structure - logs the user front-end activity
+// Note that the testLevel variable defines what form they are using to login
+type LogActivity struct {
+	UserID       int `json:"userID"`
+	TestLevel    int `json:"testLevel"`
+	LoginTime    int `json:"loginTime"`
+	Failures     int `json:"failures"`
+	Refreshes    int `json:"refreshes"`
+	SecretLength int `json:"secretLength"`
+}

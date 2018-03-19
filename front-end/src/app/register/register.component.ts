@@ -42,7 +42,6 @@ export class RegisterStartComponent implements OnInit {
     console.log('tempPass is ' + tempPass);
     if (!tempPass) { return; }
 
-    // The server will generate the id for this new hero
     const newUser: StartRegisterUser = { email, tempPass } as StartRegisterUser;
     console.log('newUser to be posted is ' + newUser);
     this.registerService.addUser(newUser).subscribe(

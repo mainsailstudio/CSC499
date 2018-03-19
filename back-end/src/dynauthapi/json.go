@@ -1,7 +1,8 @@
-/*	Title:	RESTful API using Mux
+/*
+	Title:	JSON interface for MySQL queries
 	Author:	Connor Peters
 	Date:	2/3/2018
-	Desc:
+	Desc:	This isn't necessary currently, but it could be useful in the future
 */
 
 package api
@@ -13,8 +14,8 @@ import (
 	"fmt"
 )
 
-// GetJSONFromSQL - takes an SQL query string and returns all data as json
-func GetJSONFromSQL(sqlString string) (string, error) {
+// GetJSONFromSQLSelect - takes an SQL select query string and returns all data as json
+func GetJSONFromSQLSelect(sqlString string) (string, error) {
 	dbinfo := dbinfo.Db()
 	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
 	if err != nil {

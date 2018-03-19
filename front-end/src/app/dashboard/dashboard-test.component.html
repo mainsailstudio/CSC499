@@ -1,53 +1,58 @@
-<h1>Continue with your registration</h1>
-    <form (ngSubmit)="contRegistration(contRegistrationForm.value)" [@myAnimation] #contRegistrationForm="ngForm">
-        <label for="fname">First name:</label><br />
-        <input  required ngModel fname name="fname" 
-                #fname="ngModel" type="text" value="" 
-                placeholder="Jamie" 
-                style="width:70%"><br />
-        <!-- error for email -->
-        <div    class="alert alert-danger" 
-                *ngIf="fname.touched && !fname.valid">
-                Make sure this is a valid email
-        </div>
-        
-        <label for="lname">Last name:</label><br />
-        <input  required ngModel lname name="lname" 
-                #lname="ngModel" type="text" value="" 
-                placeholder="Smith" 
-                style="width:70%"><br />
-        <!-- error for email -->
-        <div    class="alert alert-danger" 
-                *ngIf="lname.touched && !lname.valid">
-                Make sure this is a valid email
-        </div>
-        
-        <label for="security">Security level: </label>
-        <ul id="security-levels">
-                <li>
-                    <input required ngModel securityLv name="securityLv" 
-                    #securityLv="ngModel" type='radio' value='1' id='radio1'/>
-                    <label for='radio1'>1</label>
-                </li>
-                <li>
-                    <input required ngModel securityLv name="securityLv" 
-                    #securityLv="ngModel" type='radio' value='2' id='radio2'/>
-                    <label for='radio2'>2</label>
-                </li>
-                <li>
-                    <input required ngModel securityLv name="securityLv" 
-                    #securityLv="ngModel" type='radio' value='3' id='radio3'/>
-                    <label for='radio3'>3</label>
-                </li>
-                <li>
-                    <input required ngModel securityLv name="securityLv" 
-                    #securityLv="ngModel" type='radio' value='4' id='radio4'/>
-                    <label for='radio4'>4</label>
-                </li>
-            </ul>
-        <!-- <div    class="alert alert-danger" 
-                *ngIf="lname.touched && !lname.valid">
-                Make sure this is a valid email
-        </div> -->
-        <button type="submit">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
-    </form>
+<h1>Configure your account</h1>
+<form *ngIf="testLevel === 1" (ngSubmit)="configPass(configurationPassForm)" #configurationPassForm="ngForm">
+    <!-- if user is using a password -->
+    <label for="tempPass">
+        Temporary password:
+    </label><br />
+    <input  required
+            ngModel
+            password
+            name="tempPass"
+            #tempPass="ngModel"
+            type="password"
+            value=""
+            placeholder="$tr0ngTEMPpasswordddd"
+            style="width:70%">
+    <br />
+    <!-- error for tempPass -->
+    <div class="alert alert-danger" *ngIf="tempPass.touched && !tempPass.valid">
+        Make sure this is a strong password
+    </div>
+
+    <label for="confirmPass">
+        Confirm password:
+    </label><br />
+    <input  required
+            ngModel
+            password
+            name="confirmPass"
+            #confirmPass="ngModel"
+            (keyup)="validateRegistration(tempPass.value, confirmPass.value)"
+            type="password"
+            value=""
+            placeholder="Confirm $tr0ngTEMPpasswordddd"
+            style="width:70%">
+    <i  class="fas fa-check-square fa-lg fa-alignWithText"
+        style="color:rgba(255, 255, 255, .6);"
+        *ngIf="confirmPass.touched && !validateRegistration(tempPass.value, confirmPass.value) === false">
+    </i><br />
+    <button type="submit">
+        Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i>
+    </button>
+</form>
+    <!-- if user is using lock and keys -->
+<form *ngIf="testLevel === 2 || testLevel === 3" (ngSubmit)="configAuths(configurationAuthForm)" #configurationAuthForm="ngForm">
+    <div *ngFor="let auth of auths" class="keyLockComboContain{{ auth }}">
+        <label for="fname">Lock and key combo {{ auth }}</label><br />
+        <input  required disabled
+                [(ngModel)]="auths[auth - 1]" 
+                ngModel name="lock{{ auth }}" 
+                type="text"
+                style="width:10%; text-align:right;"> : 
+        <input  required 
+                ngModel name="key{{ auth }}" 
+                type="text" value="{{ randomWordArray[auth - 1] }}" 
+                placeholder="{{ randomWordArray[auth - 1] }}" style="width:30%">
+    </div>
+    <button type="submit">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+</form>

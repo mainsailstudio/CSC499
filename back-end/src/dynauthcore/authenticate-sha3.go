@@ -1,13 +1,14 @@
 /*
 	Title:	Authentication package
 	Author:	Connor Peters
-	Date:	2/12/2018
+	Date:	3/12/2018
 	Desc:	Authenticates a user using the SHA3 hashing algorithm
 */
 
 package dynauthcore
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -23,7 +24,7 @@ func AuthenticateSHA3(locks string, otp string, userid string, iterations int) {
 
 	authenticated, err := compareAuthsWithSaltSHA3(toHash, userid)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("Error encountered:", err)
 	}
 
 	if authenticated == true {
@@ -33,26 +34,50 @@ func AuthenticateSHA3(locks string, otp string, userid string, iterations int) {
 	}
 }
 
-// // AuthenticateSHA3API - to perform authentication for the restful API
-// func AuthenticateSHA3API(userid string, auth string) bool {
-// 	authenticated, err := compareAuthsBcrypt(auth, userid)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+// AuthenticateSHA3API - to perform authentication for the restful API
+func AuthenticateSHA3API(userid string, auth string) (bool, error) {
+	authenticated, err := compareAuthsWithSaltSHA3(auth, userid)
+	if err != nil {
+		return false, errors.New("There was an issue comparing the user's auths. Chances are this is because they don't have an auth table setup")
+	}
 
-// 	if authenticated == true {
-// 		fmt.Println("AUTHENTICATED")
-// 		return true
-// 	}
-// 	fmt.Println("NO MATCH FOUND")
-// 	return false
+	if authenticated == true {
+		fmt.Println("AUTHENTICATED")
+		return true, nil
+	}
+	fmt.Println("NO MATCH FOUND")
+	return false, nil
 
-// }
+}
+
+// AuthenticateSHA3WithLocksAPI - to perform authentication using the locks that were stored when the user was served, this is NOT a RESTful API anymore, but who cares?
+func AuthenticateSHA3WithLocksAPI(userid string, auth string) (bool, error) {
+	tempLocks, err := getTestTempLocks(userid)
+	if err != nil {
+		fmt.Println("Error enountered:", err)
+	}
+	auth = tempLocks + auth
+	authenticated, err := compareAuthsWithSaltSHA3(auth, userid)
+	if err != nil {
+		return false, errors.New("There was an issue comparing the user's auths. Chances are this is because they don't have an auth table setup")
+	}
+
+	if authenticated == true {
+		fmt.Println("AUTHENTICATED")
+		return true, nil
+	}
+	fmt.Println("NO MATCH FOUND")
+	return false, nil
+
+}
 
 func compareAuthsWithSaltSHA3(toCompare string, userid string) (bool, error) {
 	// initialize a false authentication return
 	authenticated := false
-	salts := getSalts(userid)
+	salts, err := getSalts(userid)
+	if err != nil {
+		fmt.Println("Error encountered:", err)
+	}
 
 	authSlice, err := getAuths(userid) // get all of the auths into a slice
 	if err != nil {
@@ -67,9 +92,8 @@ func compareAuthsWithSaltSHA3(toCompare string, userid string) (bool, error) {
 
 	for i := range authSlice {
 
-		fmt.Println("Compare number", i)
+		// DEBUG fmt.Println("Compare number", i)
 
-		// A MAC with 32 bytes of output has 256-bit security strength -- if you use at least a 32-byte-long key.
 		h := make([]byte, 64)
 		d := sha3.NewShake256()
 		// Write the key into the hash.
@@ -78,16 +102,11 @@ func compareAuthsWithSaltSHA3(toCompare string, userid string) (bool, error) {
 		d.Write([]byte(toCompare + salts[i]))
 		d.Read(h)
 
-		hashString := fmt.Sprintf("%x\n", h)
-
-		// need to trim the hash since it contains a \n character that ruins comparison
-		hashString = strings.ToLower(strings.Trim(hashString, " \r\n"))
-
+		hashString := fmt.Sprintf("%x", h)
 		if strings.Compare(hashString, authSlice[i]) == 0 {
 			authenticated = true
 			break
 		}
-
 	}
 
 	return authenticated, nil

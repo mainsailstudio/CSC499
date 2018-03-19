@@ -27,7 +27,6 @@ import { LogoutComponent } from './login/logout.component';
 import { AppRoutingModule } from './app-routing.module';
 
 // service imports
-// import { AuthenticateService } from './authenticate/authenticate.service';
 import { AuthenticationService } from './_auth-guard/authentication.service';
 import { AuthGuard } from './_auth-guard/auth.guard';
 import { UserService } from './_auth-guard/user.service';
@@ -35,8 +34,12 @@ import { LoginUserService } from './login/login-user.service';
 import { RegisterUserService } from './register/register-user.service';
 import { HttpErrorHandler } from './http-error-handler.service';
 import { MessageService } from './message.service';
-import { AccountInitService } from './dashboard/account-init.service';
-import { TestingComponent } from './testing/testing.component';
+import { InitAccountService } from './dashboard/init-account.service';
+import { PermutateService } from './hash/perm.service';
+import { HashSha256Service } from './hash/hash-sha256.service';
+import { CombinePermsService } from './hash/combine.service';
+import { RedirectMessageService } from './misc/redirect-message.service';
+
 
 // test imports
 import { LandingTestComponent } from './landing/landing-test.component';
@@ -45,6 +48,8 @@ import { RegisterTestService } from './register/register-test.service';
 import { LoginTestComponent } from './login/login-test.component';
 import { LoginTestService } from './login/login-test.service';
 import { DashboardTestComponent } from './dashboard/dashboard-test.component';
+import { PracticeComponent } from './dashboard/practice/practice.component';
+import { ActivityLogService } from './activity-log/activity-log.service';
 
 @NgModule({
   declarations: [
@@ -63,12 +68,12 @@ import { DashboardTestComponent } from './dashboard/dashboard-test.component';
     DashboardSidebarComponent,
     DashboardNavComponent,
     ConfigurationComponent,
-    TestingComponent,
     RegisterTestComponent,
     LandingTestComponent,
     LoginTestComponent,
-    DashboardTestComponent
-   ],
+    DashboardTestComponent,
+    PracticeComponent
+  ],
   imports: [
     // MDBBootstrapModule.forRoot(),
     BrowserModule,
@@ -82,14 +87,19 @@ import { DashboardTestComponent } from './dashboard/dashboard-test.component';
     AuthenticationService,
     AuthGuard,
     UserService,
-    AccountInitService,
+    InitAccountService,
     LoginUserService,
     RegisterUserService,
     HttpErrorHandler,
     MessageService,
     BaseRequestOptions,
     RegisterTestService,
-    LoginTestService
+    LoginTestService,
+    PermutateService,
+    HashSha256Service,
+    CombinePermsService,
+    RedirectMessageService,
+    ActivityLogService
   ],
   bootstrap: [AppComponent]
 })

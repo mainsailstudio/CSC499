@@ -8,7 +8,7 @@
 package dynauthconst
 
 // DatabaseName - the name of the database
-const DatabaseName = "dynauth_dev"
+const DatabaseName = "dynauth_backend"
 
 // DatabaseUser - the user of the database
 const DatabaseUser = "root"

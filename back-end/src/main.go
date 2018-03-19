@@ -8,8 +8,10 @@
 package main
 
 import (
+	dynauthapi "dynauthapi"
 	dynauthconst "dynauthconst"
 	dynauthcore "dynauthcore"
+	"encoding/json"
 	"fmt"
 	"log"
 	"math/big"
@@ -20,8 +22,8 @@ func main() {
 	// fmt.Println("Starting API")
 	// dynauthapi.StartAPI()
 
-	//fmt.Println("Starting Test API")
-	//dynauthapi.StartTestAPI()
+	fmt.Println("Starting Test API")
+	dynauthapi.StartTestAPI()
 
 	fmt.Println("1. Add a new user (auths only)")
 	fmt.Println("2. Authenticate a user")
@@ -97,6 +99,8 @@ func createUser() {
 	// create and store auths
 	lockPerms := dynauthcore.LimPerms(lockSlice, dynauthconst.DisplayLockNum) // create the limited permutations for the locks from the dynauthcore permutations.go package
 	keyPerms := dynauthcore.LimPerms(keySlice, dynauthconst.DisplayLockNum)
+	keyPermsJSON, _ := json.Marshal(keyPerms)
+	fmt.Println("Lim perms are", string(keyPermsJSON))
 	permsToHash := dynauthcore.CombinePerms(lockPerms, keyPerms) // create the perms to hash (should most likely be in a package eventually)
 	fmt.Println("Perms to hash is", permsToHash)
 	fmt.Println("Total number of permutations is", len(permsToHash))
@@ -109,6 +113,8 @@ func createUser() {
 	dynauthcore.StoreAuthsWithSalts(hashedPermsWithSalt, userid)
 	//dynauthcore.StoreAuthsPlain(hashPerms, userid)
 	fmt.Println("User's auths were stored")
+	fmt.Println("Total number of permutations is", len(permsToHash))
+
 	//hash(lockKeySlice)
 }
 
