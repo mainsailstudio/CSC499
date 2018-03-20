@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
 
 import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
 import { APIURL, TestURL } from '../api/api.constants';
-import { LogActivity } from './log.interface';
+import { LoginActivity, ConfigActivity } from './log.interface';
 
 
 @Injectable()
@@ -23,18 +23,32 @@ export class ActivityLogService {
     this.handleError = httpErrorHandler.createHandleError('ActivityLogService');
   }
 
-  // log a user succesfully logging in
-  // NOTE: the testLevel variable tells if it is a password or dynauth
-  logActivity(log: LogActivity) {
+  // log a user succesfully configuring their account in
+  logConfigActivity(log: ConfigActivity) {
     const httpOptionsAuthorized = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
       })
     };
 
-    return this.http.post<LogActivity>(APIURL + 'test/log-activity', log, httpOptionsAuthorized)
+    return this.http.post<ConfigActivity>(APIURL + 'test/log-config', log, httpOptionsAuthorized)
       .pipe(
-        catchError(this.handleError('logActivity', log))
+        catchError(this.handleError('configActivityLog', log))
+      );
+  }
+
+  // log a user succesfully logging in
+  // NOTE: the testLevel variable tells if it is a password or dynauth
+  logLoginActivity(log: LoginActivity) {
+    const httpOptionsAuthorized = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+      })
+    };
+
+    return this.http.post<LoginActivity>(APIURL + 'test/log-login', log, httpOptionsAuthorized)
+      .pipe(
+        catchError(this.handleError('loginActivityLog', log))
       );
   }
 

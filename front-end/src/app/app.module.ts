@@ -50,6 +50,8 @@ import { LoginTestService } from './login/login-test.service';
 import { DashboardTestComponent } from './dashboard/dashboard-test.component';
 import { PracticeComponent } from './dashboard/practice/practice.component';
 import { ActivityLogService } from './activity-log/activity-log.service';
+import { PracticeService } from './dashboard/practice/practice.service';
+import { UserConstantsService } from './dashboard/user-constants/user-constants.service';
 
 @NgModule({
   declarations: [
@@ -99,7 +101,9 @@ import { ActivityLogService } from './activity-log/activity-log.service';
     HashSha256Service,
     CombinePermsService,
     RedirectMessageService,
-    ActivityLogService
+    ActivityLogService,
+    PracticeService,
+    UserConstantsService
   ],
   bootstrap: [AppComponent]
 })

@@ -61,6 +61,29 @@ export class InitAccountService {
     );
   }
 
+  postKeys(userID: string, keys: string[], locks: string[], token: string) {
+    const httpOptionsAuthorized = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+      })
+    };
+
+    interface UserKeys {
+      id: string;
+      keys:  string[];
+      locks: string[];
+    }
+
+    const userKeys: UserKeys = { id: userID, keys: keys, locks: locks} as UserKeys;
+    console.log('User auth before sending is ' + JSON.stringify(userKeys));
+
+    return this.http.post(APIURL + 'test/register-keys', userKeys, httpOptionsAuthorized)
+    .pipe(
+      catchError(this.handleError('Register auth hash array', userKeys))
+    );
+  }
+
+
   postAuthArray(userID: string, locks: string[], hashArray: string[], token: string) {
 
     const httpOptionsAuthorized = {

@@ -11,6 +11,7 @@ import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
 
 import { TestUser, ContTestUser } from './login-test.component';
 import { TestURL, APIURL } from '../api/api.constants';
+import { UserConstantsService } from '../dashboard/user-constants/user-constants.service';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -33,9 +34,9 @@ export class LoginTestService {
   private handleError: HandleError;
   private email: string;
 
-  constructor(
-    private http: HttpClient,
-    httpErrorHandler: HttpErrorHandler) {
+  constructor(private http: HttpClient,
+              httpErrorHandler: HttpErrorHandler,
+              private userConstants: UserConstantsService) {
     this.handleError = httpErrorHandler.createHandleError('LoginTestService');
 
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -53,13 +54,15 @@ export class LoginTestService {
     return this.http.post<ContTestUser>(APIURL + 'test/login-finish', login, httpOptions).map(
       response => {
         if (response.token) {
-          this.token = response.token;
-          this.testLevel = response.testLevel;
+          this.userConstants.ID = response.id;
+          this.userConstants.Email = response.email;
+          this.userConstants.TestLevel = response.testLevel;
+          this.userConstants.Token = response.token;
           localStorage.setItem('currentUser', JSON.stringify({
                                 id: response.id,
                                 email: login.email,
-                                loginState: this.testLevel,
-                                token: this.token }));
+                                testLevel: login.testLevel,
+                                token: response.token }));
           return true;
         }
         return false;

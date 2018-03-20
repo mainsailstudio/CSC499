@@ -91,10 +91,6 @@ func GetLocks(userid string) ([]string, error) {
 		}
 		lockSlice = append(lockSlice, lockInfo)
 	}
-	// err = locks.Err()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 
 	return lockSlice, nil
 }

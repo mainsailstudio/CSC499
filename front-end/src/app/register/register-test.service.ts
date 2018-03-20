@@ -11,6 +11,7 @@ import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
 
 import { RegisterTestUser } from './register-test.component';
 import { APIURL, TestURL } from '../api/api.constants';
+import { UserConstantsService } from '../dashboard/user-constants/user-constants.service';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -27,7 +28,8 @@ export class RegisterTestService {
 
   constructor(
     private http: HttpClient,
-    httpErrorHandler: HttpErrorHandler) {
+    httpErrorHandler: HttpErrorHandler,
+    private userConstants: UserConstantsService) {
     this.handleError = httpErrorHandler.createHandleError('RegisterStartService');
   }
 
@@ -40,14 +42,18 @@ export class RegisterTestService {
     return this.http.post<RegisterTestUser>(TestURL + 'test/register', register, httpOptions).map(
       response => {
         if (response.token) {
-          this.token = response.token;
-          this.testLevel = response.testLevel;
+          this.userConstants.ID = response.id;
+          this.userConstants.Email = response.email;
+          console.log('====== User constant email is ======= ' + this.userConstants.Email);
+          this.userConstants.TestLevel = response.testLevel;
+          this.userConstants.Token = response.token;
+          this.userConstants.Init = response.init;
           localStorage.setItem('currentUser', JSON.stringify({
                                 id: response.id,
                                 email: response.email,
-                                testLevel: this.testLevel,
+                                testLevel: response.testLevel,
                                 init: response.init,
-                                token: this.token }));
+                                token: response.token }));
           return response;
         }
         return response;

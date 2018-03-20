@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { RegisterUserService } from '../register/register-user.service';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { InitAccountService } from './init-account.service';
-// import { PracticeComponent } from './practice/practice.component';
+import { PracticeComponent } from './practice/practice.component';
+import { UserConstantsService } from './user-constants/user-constants.service';
 
 export interface InitUser {
   id: string;
@@ -30,16 +31,31 @@ export class DashboardComponent implements OnInit {
   startForm = true;
 
   // the variable that swaps between main components
-  mainActiveComponent = 'test';
-  constructor() { }
+  mainActiveComponentNum = 0;
 
-  ngOnInit() { }
+  constructor(private userConstants: UserConstantsService) {
+    console.log('Base user constants are:\n');
+    console.log('ID ' + this.userConstants.ID);
+    console.log('Email ' + this.userConstants.Email);
+    console.log('Init ' + this.userConstants.Init);
+    console.log('LoginState ' + this.userConstants.LoginState);
+    console.log('TestLevel ' + this.userConstants.TestLevel);
+    console.log('Token ' + this.userConstants.Token);
+  }
+
+  ngOnInit() {
+    if (this.init === false) {
+      this.mainActiveComponentNum = 1;
+    } else {
+      this.mainActiveComponentNum = 2;
+    }
+  }
 
   // the function that swaps between the components as needed
   // kind of a view factory I guess
-  swapDashboardComponent(component: string) {
-      this.init = true;
-      this.mainActiveComponent = component;
+  swapDashboardComponent(componentNum: number) {
+    console.log('Swapping to view ' + componentNum);
+    this.mainActiveComponentNum = componentNum;
   }
 
 }

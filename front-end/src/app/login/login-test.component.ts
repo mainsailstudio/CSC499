@@ -17,7 +17,8 @@ import { RedirectMessageService } from '../misc/redirect-message.service';
 import { ActivityLogService } from '../activity-log/activity-log.service';
 
 import * as shajs from 'sha.js';
-import { LogActivity } from '../activity-log/log.interface';
+import { LoginActivity } from '../activity-log/log.interface';
+import { UserConstantsService } from '../dashboard/user-constants/user-constants.service';
 
 export interface TestUser {
   email: string;
@@ -45,6 +46,7 @@ export class LoginTestComponent implements OnInit {
   locks = '';
   allowTempPass = false;
   userEmail = '';
+  showLoading = false;
   showSuccess = false;
   showFail = false;
   errorMessage = '';
@@ -60,6 +62,7 @@ export class LoginTestComponent implements OnInit {
   constructor(private loginService: LoginTestService,
               private redirect: RedirectMessageService,
               private activityLog: ActivityLogService,
+              private userConstants: UserConstantsService,
               private router: Router) { }
 
   ngOnInit() {
@@ -116,6 +119,12 @@ export class LoginTestComponent implements OnInit {
 
   // the form that logs in the user regardless if they are using a password or dynauth due to the testLevel variable
   contLogin(contLoginForm: any) {
+
+    // initialize notifications
+    this.showSuccess = false;
+    this.showFail = false;
+    this.showLoading = true;
+
     const email = this.userEmail;
     const testLevel = this.testLevel;
     let tempPass = contLoginForm.tempPass;
@@ -133,11 +142,11 @@ export class LoginTestComponent implements OnInit {
     console.log('Secret length is ' + this.secretLength);
     const secret = shajs('sha256').update(secretBeforeHash).digest('hex'); // due to the if's one or the other should be empty
     const loginUser: ContTestUser = { email, testLevel, secret } as ContTestUser;
-
     this.loginService.contLoginUser(loginUser).subscribe(
       suc => {
         if (suc) {
           // let the user know that it was successful
+          this.showLoading = false;
           this.showSuccess = true;
           this.showFail = false;
 
@@ -147,16 +156,14 @@ export class LoginTestComponent implements OnInit {
           const userid = Number((JSON.parse(userDataJSON).id));
 
           // log the login activity
-          const logged: LogActivity = { userID: userid,
+          const logged: LoginActivity = { userID: userid,
                                         testLevel: testLevel,
                                         loginTime: loginTime,
                                         failures: this.failures,
                                         refreshes: this.refreshes,
                                         secretLength: this.secretLength
-                                       } as LogActivity;
-            this.activityLog.logActivity(logged).subscribe();
-            console.log('UserID is ' + userid);
-            console.log('Called logActivity');
+                                       } as LoginActivity;
+            this.activityLog.logLoginActivity(logged).subscribe();
 
           // 2 second delay before redirecting
           Observable.timer(1200)
@@ -164,6 +171,7 @@ export class LoginTestComponent implements OnInit {
             this.router.navigate(['/dashboard']);
           });
         } else {
+          this.showLoading = false;
           this.showFail = true;
           this.showSuccess = false;
         }
@@ -171,6 +179,7 @@ export class LoginTestComponent implements OnInit {
       err => {
         // add the failure to the failure variable
         this.failures++;
+        this.showLoading = false;
         this.showFail = true;
         this.showSuccess = false;
         console.log('Error is ' + err);

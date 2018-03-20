@@ -29,10 +29,5 @@ export class LogoutComponent implements OnInit {
           .subscribe(i => {
             this.router.navigate(['/test']);
         });
-        // this.authenticationService.logout();
-        // setTimeout(function() {
-        //     this.router.navigate(['/']);
-        //     // window.location.replace('/');
-        // }, 5000);
     }
 }

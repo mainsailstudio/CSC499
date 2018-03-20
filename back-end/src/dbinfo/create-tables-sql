@@ -26,8 +26,8 @@ create table locks(
 
 drop table if exists keysDisplay;
 create table keysDisplay(
-	id int primary key auto_increment, userid int not null, keysAre varchar(16), keyType int,
-	foreign key (userid) references users(id)
+	id int primary key auto_increment, userid int not null, keysAre varchar(16), keyLocks int, keyType int,
+	foreign key (userid) references testUsers(id)
 );
 
 drop table if exists securityLevels;
@@ -62,10 +62,9 @@ create table testLocks(
 );
 
 drop table if exists tempTestLocks;
-USE dynauth_backend;
 create table tempTestLocks(
 	userid int primary key, locks char(60), expireDate varchar(50),
-	foreign key (userid) references dynauth_backend.testusers(id)
+	foreign key (userid) references dynauth_backend.testUsers(id)
 );
 
 drop table if exists testPass;
@@ -74,8 +73,20 @@ create table testPass(
 	foreign key (userid) references testUsers(id)
 );
 
-drop table if exists testLog;
-create table testLog(
+drop table if exists testConfigLog;
+create table testConfigLog(
+	id int primary key auto_increment, userid int, totalCreationTime int, avgSecretLength float,
+	foreign key (userid) references testUsers(id)
+);
+
+drop table if exists testLoginLog;
+create table testLoginLog(
 	id int primary key auto_increment, userid int, loginTime int, failures int, refreshes int, secretLength int,
+	foreign key (userid) references testUsers(id)
+);
+
+drop table if exists testKeysDisplay;
+create table testKeysDisplay(
+	id int primary key auto_increment, userid int not null, keysAre varchar(16), keyLocks int, keyType int,
 	foreign key (userid) references testUsers(id)
 );

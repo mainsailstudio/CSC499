@@ -17,6 +17,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -49,6 +50,13 @@ type testAuth struct {
 	ID    string   `json:"id"`
 	Locks []string `json:"locks"`
 	Auths []string `json:"auths"`
+}
+
+// testKeys struct - for the user's plaintext keys
+type testKeys struct {
+	ID    string   `json:"id"`
+	Keys  []string `json:"keys"`
+	Locks []string `json:"locks"`
 }
 
 // testRegister - API call that checks if the test user is registered and then spits out the necessary information
@@ -110,12 +118,12 @@ func testLoginLevel(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// create a new testUser and return it
-			newUserLogin := testUser{ID: user.ID, Email: user.Email, Locks: lockString, TestLevel: userTestLevel}
+			newUserLogin := testUser{ID: user.ID, Email: user.Email, Init: userInit, Locks: lockString, TestLevel: userTestLevel}
 			json.NewEncoder(w).Encode(newUserLogin)
 
 			// The user isn't initialized so return a blank string for the locks
 		} else {
-			newUserLogin := testUser{ID: user.ID, Email: user.Email, Locks: "", TestLevel: userTestLevel}
+			newUserLogin := testUser{ID: user.ID, Email: user.Email, Init: userInit, Locks: "", TestLevel: userTestLevel}
 			json.NewEncoder(w).Encode(newUserLogin)
 		}
 	} else {
@@ -180,12 +188,25 @@ func testLogin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// logUserActivity - API call that logs the user's front-end activity
-func logUserActivity(w http.ResponseWriter, r *http.Request) {
-	var log LogActivity
+// logConfigActivity - API call that logs the user's front-end activity
+func logConfigActivity(w http.ResponseWriter, r *http.Request) {
+	var log ConfigActivity
 	_ = json.NewDecoder(r.Body).Decode(&log)
 
-	err := insertLogActivity(log)
+	err := insertConfigActivity(log)
+	if err != nil {
+		message := []string{"There was an issue logging the user's activity", err.Error()}
+		errorString := strings.Join(message, " ")
+		http.Error(w, errorString, 500)
+	}
+}
+
+// logLoginActivity - API call that logs the user's front-end activity
+func logLoginActivity(w http.ResponseWriter, r *http.Request) {
+	var log LoginActivity
+	_ = json.NewDecoder(r.Body).Decode(&log)
+
+	err := insertLoginActivity(log)
 	if err != nil {
 		message := []string{"There was an issue logging the user's activity", err.Error()}
 		errorString := strings.Join(message, " ")
@@ -200,10 +221,13 @@ func testRegisterPass(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&user)
 
 	// assume everything is set and store that password
-	storeTestPass(user.ID, user.Password)
+	err := storeTestPass(user.ID, user.Password)
+	if err != nil {
+		http.Error(w, "There was an error storing the test user's test password", 500)
+	}
 
 	// flip the user's init flag
-	err := initTestUser(user.ID)
+	err = initTestUser(user.ID)
 	if err != nil {
 		fmt.Println("Error encountered when initializing the user. Error is", err)
 		return
@@ -218,7 +242,10 @@ func testRegisterAuth(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&user)
 
 	// store the user's locks in the form of a received slice
-	storeTestLocks(user.Locks, user.ID, "1") // using 1 as the locktype since it does nothing currently
+	err := storeTestLocks(user.Locks, user.ID, "1") // using 1 as the locktype since it does nothing currently
+	if err != nil {
+		http.Error(w, "There was an error storing the test user's locks", 500)
+	}
 
 	// generate the permutations of the slice, assuming that FOR NOW 4 is the default
 	lockPermArray := dynauthcore.LimPerms(user.Locks, 4) // 4 is the default
@@ -231,7 +258,7 @@ func testRegisterAuth(w http.ResponseWriter, r *http.Request) {
 	hashedPermsWithSalt := dynauthcore.HashPermsWithSaltSHA3(combineArray)
 
 	// store the final slice of auths
-	err := dynauthcore.StoreAuthsWithSalts(hashedPermsWithSalt, user.ID)
+	err = dynauthcore.StoreAuthsWithSalts(hashedPermsWithSalt, user.ID)
 	if err != nil {
 		http.Error(w, "Error encountered when storing the user's auth with salts", 500)
 		return
@@ -242,6 +269,34 @@ func testRegisterAuth(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Error encountered when initializing the user. Error is", 500)
 	}
+}
+
+// PROTECTED
+// testRegisterKeys - API call that posts the user's PLAINTEXT keys into the database
+// NOTE: This is for testing only, the user;s entire key should not be kept in plaintext EVER
+func testRegisterKeys(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Registering keys...?")
+	var user testKeys
+	_ = json.NewDecoder(r.Body).Decode(&user)
+
+	// store the user's locks in the form of a received slice
+	err := storeTestKeys(user.Keys, user.Locks, user.ID) // using 1 as the locktype since it does nothing currently
+	if err != nil {
+		http.Error(w, "There was an issue storing the test user's plaintext keys", 500)
+	}
+}
+
+// PROTECTED
+// testGetUserKeys - API call that get's the user's keys in plaintext for testing
+func testGetUserKeys(w http.ResponseWriter, r *http.Request) {
+	params := r.URL.Query()
+	fmt.Println("UserID is", params["userID"])
+	keyArray, err := getTestKeys(params["userID"][0])
+	if err != nil {
+		http.Error(w, "There was an issue getting your keys", 500)
+	}
+
+	json.NewEncoder(w).Encode(keyArray)
 }
 
 // getTestUserInit - get the test users information needed for the front-end
@@ -288,7 +343,7 @@ func initTestUser(userid string) error {
 	updateInit := "UPDATE testUsers SET init = true WHERE id = ?"
 	smtUpdateInit, err := db.Prepare(updateInit)
 	if err != nil {
-		return errors.New("preparing to update the user's init flag went wrong\nServed error was")
+		return errors.New("preparing to update the user's init flag went wrong")
 	}
 	defer smtUpdateInit.Close()
 
@@ -296,7 +351,7 @@ func initTestUser(userid string) error {
 	if err != nil {
 		return errors.New("executing the query to update the user's init flag went wrong")
 	}
-
+	fmt.Println("The user was initialized")
 	return nil
 }
 
@@ -479,4 +534,76 @@ func storeTestTempLocks(userid string, locks string) error {
 	}
 
 	return nil
+}
+
+// storeTestKeys - stores the test user's plaintext keys
+func storeTestKeys(keys []string, locks []string, userid string) error {
+	dbinfo := dbinfo.Db()
+	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
+	if err != nil {
+		return errors.New("opening the database connection for storeTestKeys went wrong")
+	}
+	defer db.Close()
+
+	// Prepare statement for inserting the user's auth into the new table
+	prepareStatement := "INSERT INTO testKeysDisplay VALUES("
+	// for loop adds all perms into prepared statement
+	for i := 1; i < len(keys); i++ {
+		prepareStatement += "DEFAULT, ?, ?, ?, ?), ("
+	}
+	prepareStatement += "DEFAULT, ?, ?, ?, ?)"
+
+	stmtIns, err := db.Prepare(prepareStatement)
+	if err != nil {
+		return errors.New("error encountered when preparing to insert the test user's keys")
+	}
+	defer stmtIns.Close()
+
+	// casts the data to insert into a slice interface for variadic function inclusion below, quite elegant
+	dataPrepared := []interface{}{}
+	for i := 0; i < len(keys); i++ {
+		dataPrepared = append(dataPrepared, userid)
+		dataPrepared = append(dataPrepared, keys[i])
+		dataPrepared = append(dataPrepared, locks[i])
+		dataPrepared = append(dataPrepared, 1) // the 1 is the default key type, not relevent for now
+	}
+	_, err = stmtIns.Exec(dataPrepared...) // adds all data in the slice as a separate argument (variadic) BEAUTIFUL
+	if err != nil {
+		fmt.Println("Err was", err)
+		return errors.New("error encountered when executing the query to insert the test user's keys")
+	}
+
+	return nil // no errors, yay!
+}
+
+// getTestKeys queries the database and returns all of the user's locks into a slice
+func getTestKeys(userid string) ([][]string, error) {
+	dbinfo := dbinfo.Db()
+	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
+	if err != nil {
+		return nil, errors.New("Unable to connect to the database in the GetLocks function in serve.go")
+	}
+	defer db.Close()
+
+	comboSlice := [][]string{}
+	keys, err := db.Query("SELECT keysAre, keyLocks FROM testKeysDisplay WHERE userid = ?", userid)
+	if err != nil {
+		log.Fatal(err)
+		return nil, errors.New("No locks were receieved from the database, user must not have initialized them")
+	}
+	defer keys.Close()
+	for keys.Next() {
+		keyLockSlice := []string{}
+		var keyInfo string
+		var lockInfo string
+		err := keys.Scan(&keyInfo, &lockInfo)
+		if err != nil {
+			return nil, errors.New("Locks weren't added to the slice properly for unknown reasons")
+		}
+		keyLockSlice = append(keyLockSlice, lockInfo)
+		keyLockSlice = append(keyLockSlice, keyInfo)
+		comboSlice = append(comboSlice, keyLockSlice)
+	}
+
+	return comboSlice, nil
 }

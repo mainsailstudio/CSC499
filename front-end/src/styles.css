@@ -81,13 +81,13 @@ input[type=password]:focus,
 input[type=email]:focus,
 textarea:focus,
 button:focus,
-button[type=submit]:hover {
+button:hover {
     outline:0px !important;
     -webkit-appearance:none;
     border-bottom: 1px solid rgba(19, 76, 122, 0.65);
 }
 /* 
-button[type=submit]{
+button{
     font-size:24px;
     border: 1px solid rgba(0,0,0,.3);
     border-radius: 10px;
@@ -98,17 +98,18 @@ button[type=submit]{
     padding-right: 12px;
 }
 
-button[type=submit]:hover{
+button:hover{
     border: 1px solid rgba(1, 27, 48, 0.3);
     background-color: rgba(255,255,255,0.52);
 } 
 */
 
-button[type=submit],
+button,
 .button{
     font-size:24px;
     background-color:transparent;
     border:none;
+    border-bottom:1px solid transparent;
     padding-top: 6px;
     padding-bottom: 6px;
     padding-right: 12px;
@@ -116,7 +117,7 @@ button[type=submit],
     margin-bottom:18px;
 }
 
-button[type=submit]:hover,
+button:hover,
 .button:hover{
     color: rgba(19, 76, 122, 0.85);
 } 
@@ -128,10 +129,6 @@ button[type=submit]:hover,
 .alert-danger {
     color: #9a1f1f;
     background-color:rgb(253, 214, 190);
-}
-
-.alert-success{
-    
 }
 
 input.ng-invalid.ng-dirty.ng-touched{

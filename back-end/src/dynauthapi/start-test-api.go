@@ -11,7 +11,7 @@ package api
 import (
 	"fmt"
 	"net/http"
-	"log"
+
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
@@ -53,9 +53,12 @@ func StartTestAPI() {
 	r.HandleFunc("/test/login-start", testLoginLevel).Methods("POST")
 	r.HandleFunc("/test/login-finish", testLogin).Methods("POST")
 	r.HandleFunc("/test/register", testRegister).Methods("POST")
-	r.HandleFunc("/test/log-activity", logUserActivity).Methods("POST")
+	r.HandleFunc("/test/log-config", logConfigActivity).Methods("POST")
+	r.HandleFunc("/test/log-login", logLoginActivity).Methods("POST")
 	r.HandleFunc("/test/register-auth", testRegisterAuth).Methods("POST")
+	r.HandleFunc("/test/register-keys", testRegisterKeys).Methods("POST")
 	r.HandleFunc("/test/register-pass", testRegisterPass).Methods("POST")
+	r.HandleFunc("/test/get-keys", testGetUserKeys).Methods("GET")
 
 	// // restricted API call to register a user with a password
 	// // requires a proper JWT token to access
@@ -76,11 +79,11 @@ func StartTestAPI() {
 
 	// Listen and serve the API over HTTP
 	// TODO: have this serve over TLS for the server
-	// http.ListenAndServe(":8080", handler)
+	http.ListenAndServe(":8080", handler)
 
 	// Listen and serve the API over TLS (HTTPS)
-	err := http.ListenAndServeTLS(":443", "server.crt", "server.key", handler)
-    	if err != nil {
-        	log.Fatal("ListenAndServe: ", err)
-    	}
+	// err := http.ListenAndServeTLS(":443", "server.crt", "server.key", handler)
+	// if err != nil {
+	// 	log.Fatal("ListenAndServe: ", err)
+	// }
 }

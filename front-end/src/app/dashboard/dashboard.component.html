@@ -7,10 +7,10 @@
   <div class="col-md-2 left-side">
     <app-dashboard-sidebar></app-dashboard-sidebar>
   </div>
-  <div class="col-md-10 right-side" [ngSwitch]="registerState">
-    <app-dashboard-main *ngIf="loginState === '3'"></app-dashboard-main>
-    <app-dashboard-init *ngIf="loginState === '1'"></app-dashboard-init>
-    <app-dashboard-test *ngIf="!init && mainActiveComponent === 'test'"></app-dashboard-test>
-    <app-dashboard-practice *ngIf="mainActiveComponent === 'practice'"></app-dashboard-practice>
+  <div class="col-md-10 right-side" [ngSwitch]="mainActiveComponentNum">
+    <!-- <app-dashboard-main *ngIf="loginState === '3'"></app-dashboard-main>
+    <app-dashboard-init *ngIf="loginState === '1'"></app-dashboard-init> -->
+    <app-dashboard-test *ngSwitchCase="1" (submit)="swapDashboardComponent(2)"></app-dashboard-test>
+    <app-dashboard-practice *ngSwitchCase="2"></app-dashboard-practice>
   </div>
 </div>

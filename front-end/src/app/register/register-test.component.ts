@@ -24,23 +24,17 @@ export interface RegisterTestUser {
 export class RegisterTestComponent implements OnInit {
 
   register: RegisterTestUser[];
+  showSuccess = false;
+  showFail = false;
 
   constructor(private registerService: RegisterTestService, private router: Router) { }
 
   ngOnInit() { }
 
-  testAPI() {
-      const testUser = this.registerService.testAPI().subscribe(
-          suc => {
-            console.log(suc);
-          },
-          err => {
-              console.log(err );
-          }
-      );
-  }
-
   registerTestUser(email: string): void {
+    this.showSuccess = false;
+    this.showFail = false;
+
     this.register = undefined;
     email = email.trim();
     if (!email) { return; }
@@ -49,12 +43,17 @@ export class RegisterTestComponent implements OnInit {
     const testUser: RegisterTestUser = { email } as RegisterTestUser;
     this.registerService.registerTest(testUser).subscribe(
       suc => {
+        this.showSuccess = true;
+        this.showFail = false;
+
         Observable.timer(1000)
         .subscribe(i => {
           this.router.navigate(['/dashboard']);
         });
       },
       err => {
+        this.showSuccess = false;
+        this.showFail = true;
           console.log(err );
       }
     );

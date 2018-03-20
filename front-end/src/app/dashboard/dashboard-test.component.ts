@@ -9,8 +9,12 @@ import { HashSha256Service } from '../hash/hash-sha256.service';
 import { CombinePermsService } from '../hash/combine.service';
 import { InitAccountService } from './init-account.service';
 import { WordArray } from '../api/api.constants';
+import { ActivityLogService } from '../activity-log/activity-log.service';
+
+import { ConfigActivity } from '../activity-log/log.interface';
 
 import * as shajs from 'sha.js';
+import { UserConstantsService } from './user-constants/user-constants.service';
 
 export interface InitUser {
   id: string;
@@ -25,7 +29,7 @@ export interface InitUser {
   templateUrl: './dashboard-test.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardTestComponent extends DashboardComponent implements OnInit {
+export class DashboardTestComponent implements OnInit {
 
   // get token data
   userDataJSON = localStorage.getItem('currentUser');
@@ -49,17 +53,20 @@ export class DashboardTestComponent extends DashboardComponent implements OnInit
   randomWordArray = [];
 
   // this is the success variable that shows after the user account is configured
+  showInsertion = false;
   showSuccess = false;
-  showFail = true;
+  showFail = false;
+
+  // activity logging variables
+  loginStartTime = new Date().getTime();
 
   constructor(
     private permService: PermutateService,
     private hashService: HashSha256Service,
     private combineService: CombinePermsService,
-    private postConfigFormService: InitAccountService
-  ) {
-      super(); // extend the dashboard
-    }
+    private postConfigFormService: InitAccountService,
+    private activityLog: ActivityLogService
+  ) { }
 
   validateRegistration(pass: string, confirmPass: string): boolean {
     if (pass === confirmPass) {
@@ -96,19 +103,31 @@ export class DashboardTestComponent extends DashboardComponent implements OnInit
       console.log('Passwords didnt match');
       return;
     } else {
+      this.showInsertion = true;
       const hashedPass = shajs('sha256').update(password).digest('hex');
       this.postConfigFormService.postPassword(this.userID, hashedPass, this.jwToken).subscribe(
         suc => {
           console.log(suc);
+          this.showInsertion = false;
+          this.showSuccess = true;
+          this.showFail = false;
         },
         err => {
           console.log(err );
+          this.showInsertion = false;
+          this.showFail = true;
+          this.showSuccess = false;
         }
       );
     }
   }
 
   configAuths(formData: any) {
+    // show the insertion loading
+    this.showInsertion = true;
+    this.showSuccess = false;
+    this.showFail = false;
+
     const lockArray = [];
     const keyArray = [];
 
@@ -118,23 +137,49 @@ export class DashboardTestComponent extends DashboardComponent implements OnInit
       keyArray.push(formData.value['key' + i]);
     }
 
-    // permutate the locks and keys
-    // const lockPermArray = this.permService.generateLimPerms(lockArray, this.displayLength);
-    const keyPermArray = this.permService.generateLimPerms(keyArray, this.displayLength);
+    // store keys in plaintext here for usability testing
+    this.postConfigFormService.postKeys(this.userID, keyArray, lockArray, this.jwToken).subscribe(
+      suc => {
+        console.log(suc);
+      },
+      err => {
+        console.log(err );
+      }
+    );
 
-    // combine the lock and key permutations
-    // const combineArray = this.combineService.combinePerms(lockPermArray, keyPermArray);
+    // permutate the locks and keys
+    const keyPermArray = this.permService.generateLimPerms(keyArray, this.displayLength);
 
     // hash the lock and key combos
     const hashArray = this.hashService.hashPermsSHA256(keyPermArray);
 
+    // submit the final form
     this.postConfigFormService.postAuthArray(this.userID, lockArray, hashArray, this.jwToken).subscribe(
       suc => {
+        this.showInsertion = false;
+        this.showSuccess = true;
+        this.showFail = false;
+
         console.log(suc);
-        console.log('That was success, swapping to practice');
-        this.swapDashboardComponent('practice');
+        // first initialize the user's storage
+        const setInit = JSON.stringify({'init': true});
+        localStorage.setItem('currentUser', setInit);
+
+        // then log everything
+        const endTime = new Date().getTime();
+        const totalCreationTime = endTime - this.loginStartTime; // time to configure
+        const avgLength = keyArray.join('').length / keyArray.length; // average length of keys
+        const logged: ConfigActivity =  {  userID: Number(this.userID),
+                                          totalCreationTime: totalCreationTime,
+                                          avgSecretLength: avgLength
+                                        } as ConfigActivity;
+        this.activityLog.logConfigActivity(logged).subscribe();
+        // swap to practice now in the parent component using ngSwitch
       },
       err => {
+        this.showInsertion = false;
+        this.showSuccess = false;
+        this.showFail = true;
         console.log(err );
       }
     );
