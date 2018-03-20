@@ -10,6 +10,7 @@ package api
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -79,11 +80,11 @@ func StartTestAPI() {
 
 	// Listen and serve the API over HTTP
 	// TODO: have this serve over TLS for the server
-	http.ListenAndServe(":8080", handler)
+	// http.ListenAndServe(":8080", handler)
 
 	// Listen and serve the API over TLS (HTTPS)
-	// err := http.ListenAndServeTLS(":443", "certificate.crt", "private.key", handler)
-	// if err != nil {
-	// 	log.Fatal("ListenAndServe: ", err)
-	// }
+	err := http.ListenAndServeTLS(":443", "certificate.crt", "private.key", handler)
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
 }
