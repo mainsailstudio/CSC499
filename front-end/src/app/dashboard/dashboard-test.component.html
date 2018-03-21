@@ -1,11 +1,11 @@
 <h1>Configure your account</h1>
-<form *ngIf="testLevel === 1" (ngSubmit)="configPass(configurationPassForm)" #configurationPassForm="ngForm">
+<form *ngIf="!init && testLevel === 1" (ngSubmit)="configPass(configurationPassForm)" #configurationPassForm="ngForm">
     <!-- if user is using a password -->
     <label for="tempPass">
         Temporary password:
     </label><br />
     <input  required
-            ngModel
+            [(ngModel)]="account.tempPass"
             password
             name="tempPass"
             #tempPass="ngModel"
@@ -36,12 +36,18 @@
         style="color:rgba(255, 255, 255, .6);"
         *ngIf="confirmPass.touched && !validateRegistration(tempPass.value, confirmPass.value) === false">
     </i><br />
+    <!-- password strength -->
+    <password-strength-bar [passwordToCheck]="account.tempPass" [barLabel]="barLabel"></password-strength-bar>
     <button type="submit">
         Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i>
     </button>
+    <div class="alert alert-success" role="alert" *ngIf="showInsertion">Loading... <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></div>
+    <div class="alert alert-success" role="alert" *ngIf="showSuccess">Success!</div>
+    <div class="alert alert-danger" role="alert" *ngIf="showFail">Failure</div>
+    <div class="alert alert-info" role="alert" *ngIf="showPasswordError">The passwords don't meet the requirements, make sure they match</div>
 </form>
     <!-- if user is using lock and keys -->
-<form *ngIf="testLevel === 2 || testLevel === 3" (ngSubmit)="configAuths(configurationAuthForm)" #configurationAuthForm="ngForm">
+<form *ngIf="!init && testLevel === 2 || testLevel === 3" (ngSubmit)="configAuths(configurationAuthForm)" #configurationAuthForm="ngForm">
     <div *ngFor="let auth of auths" class="keyLockComboContain{{ auth }}">
         <label for="fname">Lock and key combo {{ auth }}</label><br />
         <input  required disabled
@@ -54,8 +60,11 @@
                 type="text" value="{{ randomWordArray[auth - 1] }}" 
                 placeholder="{{ randomWordArray[auth - 1] }}" style="width:30%">
     </div>
-    <div class="alert alert-success" role="alert" *ngIf="showInsertion">Inserting... <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></div>
+    <div class="alert alert-success" role="alert" *ngIf="showInsertion">Loading... <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></div>
     <div class="alert alert-success" role="alert" *ngIf="showSuccess">Success!</div>
-    <div class="alert alert-warning" role="alert" *ngIf="showFail">Failure</div>
+    <div class="alert alert-danger" role="alert" *ngIf="showFail">Failure</div>
     <button type="submit">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
 </form>
+<div *ngIf="init">
+    <h1>You have already configured your account, consider practicing using the link to the left</h1>
+</div>

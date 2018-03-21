@@ -26,6 +26,7 @@ export class RegisterTestComponent implements OnInit {
   register: RegisterTestUser[];
   showSuccess = false;
   showFail = false;
+  showInit = false;
 
   constructor(private registerService: RegisterTestService, private router: Router) { }
 
@@ -39,12 +40,18 @@ export class RegisterTestComponent implements OnInit {
     email = email.trim();
     if (!email) { return; }
 
-    // The server will generate the id for this new hero
     const testUser: RegisterTestUser = { email } as RegisterTestUser;
     this.registerService.registerTest(testUser).subscribe(
       suc => {
+        if (suc == null) {
+          this.showSuccess = false;
+          this.showFail = false;
+          this.showInit = true;
+          return;
+        }
         this.showSuccess = true;
         this.showFail = false;
+        this.showInit = false;
 
         Observable.timer(1000)
         .subscribe(i => {
@@ -54,18 +61,10 @@ export class RegisterTestComponent implements OnInit {
       err => {
         this.showSuccess = false;
         this.showFail = true;
-          console.log(err );
+        this.showInit = false;
+          console.log(err);
       }
     );
-    // this.directUsers(gotUser);
   }
-
-  // directUsers(testUser: RegisterTestUser): void {
-
-  //   if (!testUser.init) {
-  //       console.log('User not initalized');
-  //       this.router.navigateByUrl('/dashboard');
-  //   }
-  // }
 
 }

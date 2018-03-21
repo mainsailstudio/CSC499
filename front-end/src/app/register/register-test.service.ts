@@ -33,15 +33,14 @@ export class RegisterTestService {
     this.handleError = httpErrorHandler.createHandleError('RegisterStartService');
   }
 
-  testAPI() {
-    return this.http.get(TestURL + 'test', httpOptions);
-  }
-
   /** POST: add a new user to the database */
   registerTest (register: RegisterTestUser): Observable<RegisterTestUser> {
-    return this.http.post<RegisterTestUser>(TestURL + 'test/register', register, httpOptions).map(
+    return this.http.post<RegisterTestUser>(APIURL + 'test/register', register, httpOptions).map(
       response => {
-        if (response.token) {
+        // first check if the user is already initialized, ie registered
+        if (response.init) {
+          return null;
+        } else if (response.token) {
           this.userConstants.ID = response.id;
           this.userConstants.Email = response.email;
           console.log('====== User constant email is ======= ' + this.userConstants.Email);
@@ -61,7 +60,7 @@ export class RegisterTestService {
   }
 
   loginTestUser (loginUser: RegisterTestUser): Observable<boolean> {
-    return this.http.post<RegisterTestUser>(TestURL + 'test/login-token', loginUser, httpOptions).map(
+    return this.http.post<RegisterTestUser>(APIURL + 'test/login-token', loginUser, httpOptions).map(
       response => {
         if (response.token) {
           this.token = response.token;

@@ -44,10 +44,10 @@ export class LoginTestService {
   }
 
   startLoginUser (login: TestUser): Observable<TestUser> {
-    return this.http.post<TestUser>(APIURL + 'test/login-start', login, httpOptions)
-      .pipe(
-        catchError(this.handleError('loginUser', login))
-      );
+    return this.http.post<TestUser>(APIURL + 'test/login-start', login, httpOptions);
+      // .pipe(
+      //   catchError(this.handleError('loginUser', login))
+      // );
   }
 
   contLoginUser (login: ContTestUser): Observable<boolean> {
@@ -62,19 +62,12 @@ export class LoginTestService {
                                 id: response.id,
                                 email: login.email,
                                 testLevel: login.testLevel,
+                                init: response.init,
                                 token: response.token }));
           return true;
         }
         return false;
     });
-  }
-
-  tryPing (): Observable<boolean> {
-    return this.http.get(TestURL + 'ping', httpOptionsAuthorized).map(
-      response => {
-        console.log(response);
-          return true;
-      });
   }
 
   logout(): void {

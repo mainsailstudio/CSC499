@@ -27,7 +27,7 @@ export class LogoutComponent implements OnInit {
         this.authenticationService.logout();
         Observable.timer(4200)
           .subscribe(i => {
-            this.router.navigate(['/test']);
+            this.router.navigate(['/']);
         });
     }
 }

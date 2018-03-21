@@ -28,15 +28,15 @@ import (
 // testUser struct - for test users
 // the main difference with a test user is the 'TestLevel' attribute
 type testUser struct {
-	ID        string `json:"id"`
-	Fname     string `json:"fname"`
-	Lname     string `json:"Lname"`
-	Email     string `json:"email"`
-	Init      bool   `json:"init"`
-	Locks     string `json:"locks"`
-	TestLevel int    `json:"testLevel"`
-	Token     string `json:"token"`
-	Secret    string `json:"secret"`
+	ID        string   `json:"id"`
+	Fname     string   `json:"fname"`
+	Lname     string   `json:"Lname"`
+	Email     string   `json:"email"`
+	Init      bool     `json:"init"`
+	Locks     []string `json:"locks"`
+	TestLevel int      `json:"testLevel"`
+	Token     string   `json:"token"`
+	Secret    string   `json:"secret"`
 }
 
 // testPass struct - for test users registering with a password
@@ -112,18 +112,18 @@ func testLoginLevel(w http.ResponseWriter, r *http.Request) {
 		// test levels 2 and 3 are typical dynauth, the differentiator is the amount of auths
 		if userTestLevel == 2 || userTestLevel == 3 {
 			// this function also stores the served locks in the testTempLocks table
-			lockString, err := serveTestLocks(userID, dynauthconst.DisplayLockNum)
+			lockSlice, err := serveTestLocks(userID, dynauthconst.DisplayLockNum)
 			if err != nil {
 				http.Error(w, "An error was encountered when getting the locks", 400)
 			}
 
 			// create a new testUser and return it
-			newUserLogin := testUser{ID: user.ID, Email: user.Email, Init: userInit, Locks: lockString, TestLevel: userTestLevel}
+			newUserLogin := testUser{ID: user.ID, Email: user.Email, Init: userInit, Locks: lockSlice, TestLevel: userTestLevel}
 			json.NewEncoder(w).Encode(newUserLogin)
 
 			// The user isn't initialized so return a blank string for the locks
 		} else {
-			newUserLogin := testUser{ID: user.ID, Email: user.Email, Init: userInit, Locks: "", TestLevel: userTestLevel}
+			newUserLogin := testUser{ID: user.ID, Email: user.Email, Init: userInit, Locks: nil, TestLevel: userTestLevel}
 			json.NewEncoder(w).Encode(newUserLogin)
 		}
 	} else {
@@ -395,27 +395,27 @@ func storeTestLocks(locks []string, userid string, lockType string) error {
 }
 
 // serveTestLocks - to query the database and return the test user's locks in a string
-func serveTestLocks(userid string, lockNum int) (string, error) {
+func serveTestLocks(userid string, lockNum int) ([]string, error) {
 
 	// this is a copy of the bode from GetLocks in the serve dynauthcorem package, it is here for AGILE development boy
 	dbinfo := dbinfo.Db()
 	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
 	if err != nil {
-		return "", errors.New("error encountered when opening the database connection for serveTestLocks")
+		return nil, errors.New("error encountered when opening the database connection for serveTestLocks")
 	}
 	defer db.Close()
 
 	lockSlice := []string{}
 	locks, err := db.Query("SELECT locksAre FROM testLocks WHERE userid = ?", userid)
 	if err != nil {
-		return "", errors.New("no locks were receieved from the database, user must not have initialized them")
+		return nil, errors.New("no locks were receieved from the database, user must not have initialized them")
 	}
 	defer locks.Close()
 	for locks.Next() {
 		var lockInfo string
 		err := locks.Scan(&lockInfo)
 		if err != nil {
-			return "", errors.New("locks weren't added to the slice properly for unknown reasons")
+			return nil, errors.New("locks weren't added to the slice properly for unknown reasons")
 		}
 		lockSlice = append(lockSlice, lockInfo)
 	}
@@ -425,6 +425,7 @@ func serveTestLocks(userid string, lockNum int) (string, error) {
 		dynauthcore.Shuffle(lockSlice) // from internet code
 		lockSlice = lockSlice[:lockNum]
 
+		// to make into string
 		var lockString string
 
 		for i := range lockSlice {
@@ -432,12 +433,13 @@ func serveTestLocks(userid string, lockNum int) (string, error) {
 		}
 		err := storeTestTempLocks(userid, lockString)
 		if err != nil {
-			return "", errors.New("there was an issue storing the user's temporary locks")
+			return nil, errors.New("there was an issue storing the user's temporary locks")
 		}
-		return lockString, nil
+		// return the slice NOT string
+		return lockSlice, nil
 	}
 
-	return "", errors.New("No locks received")
+	return nil, errors.New("No locks received")
 
 }
 

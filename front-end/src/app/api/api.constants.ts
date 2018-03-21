@@ -1,7 +1,9 @@
 export const TestURL = 'http://localhost:8080/';
 export const RealURL = 'https://dev.dynauth.io/';
-export const APIURL = 'http://localhost:8080/'; // real url
-export const WordArray = ['ignore',
+// export const APIURL = 'http://localhost:8080/'; // real url
+export const APIURL = 'https://dev.dynauth.io/'; // real url
+export const WordArray = [
+'ignore',
 'flesh',
 'guess',
 'float',
@@ -1213,7 +1215,6 @@ export const WordArray = ['ignore',
 'tense',
 'gigantic',
 'sparkle',
-'rambunctious',
 'interest',
 'wilderness',
 'title',

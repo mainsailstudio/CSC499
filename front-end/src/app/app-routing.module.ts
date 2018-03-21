@@ -5,7 +5,10 @@ import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './login/logout.component';
 import { LandingComponent } from './landing/landing.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardComponent,
+         DashboardPracticeComponent,
+         DashboardHintsComponent,
+         DashboardAboutComponent } from './dashboard/dashboard.component';
 
 // test imports
 import { LandingTestComponent } from './landing/landing-test.component';
@@ -14,16 +17,22 @@ import { DashboardTestComponent } from './dashboard/dashboard-test.component';
 // new imports for authentication
 import { LoginNewComponent } from './login/login-new.component';
 import { AuthGuard } from './_auth-guard/auth.guard';
+import { PracticeComponent } from './dashboard/practice/practice.component';
+import { AboutComponent } from './about/about.component';
+import { HintsComponent } from './hints/hints.component';
 
 const routes: Routes = [
-  { path: '',  component: LandingComponent },
-  { path: 'test',  component: LandingTestComponent },
-  { path: 'register', component: RegisterStartComponent },
-  { path: 'login', component: LoginNewComponent },
-  { path: 'login-real', component: LoginComponent },
-  { path: 'logout', component: LogoutComponent },
+  { path: '',  component: LandingTestComponent },
+  // { path: 'test',  component: LandingComponent },
+  // { path: 'register', component: RegisterStartComponent },
+  // { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
-  { path: 'dashboard-test', component: DashboardTestComponent, canActivate: [AuthGuard] },
+  { path: 'practice',  component: DashboardPracticeComponent, canActivate: [AuthGuard] },
+  { path: 'logout', component: LogoutComponent },
+  { path: 'about', component: DashboardAboutComponent },
+  { path: 'hints', component: DashboardHintsComponent },
+
+  // { path: 'dashboard-test', component: DashboardTestComponent, canActivate: [AuthGuard] },
   { path: '**', component: NotFoundComponent } // make sure this is always at the bottom so it doesn't superscede legitimate routes
 ];
 

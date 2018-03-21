@@ -6,7 +6,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule, BaseRequestOptions } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { MDBBootstrapModule } from 'angular-bootstrap-md';
+// password strength bar
+import { PasswordStrengthBar } from './misc/password-strength';
 
 // app component imports
 import { AppComponent } from './app.component';
@@ -19,7 +20,10 @@ import {  DashboardComponent,
   DashboardMainComponent,
   DashboardInitComponent,
   DashboardSidebarComponent,
-  DashboardNavComponent } from './dashboard/dashboard.component';
+  DashboardNavComponent,
+  DashboardPracticeComponent,
+  DashboardHintsComponent,
+  DashboardAboutComponent} from './dashboard/dashboard.component';
 import { ConfigurationComponent } from './dashboard/configuration/configuration.component';
 import { LogoutComponent } from './login/logout.component';
 
@@ -52,6 +56,8 @@ import { PracticeComponent } from './dashboard/practice/practice.component';
 import { ActivityLogService } from './activity-log/activity-log.service';
 import { PracticeService } from './dashboard/practice/practice.service';
 import { UserConstantsService } from './dashboard/user-constants/user-constants.service';
+import { AboutComponent } from './about/about.component';
+import { HintsComponent } from './hints/hints.component';
 
 @NgModule({
   declarations: [
@@ -74,10 +80,15 @@ import { UserConstantsService } from './dashboard/user-constants/user-constants.
     LandingTestComponent,
     LoginTestComponent,
     DashboardTestComponent,
-    PracticeComponent
+    PracticeComponent,
+    DashboardPracticeComponent,
+    AboutComponent,
+    HintsComponent,
+    DashboardHintsComponent,
+    DashboardAboutComponent,
+    PasswordStrengthBar
   ],
   imports: [
-    // MDBBootstrapModule.forRoot(),
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

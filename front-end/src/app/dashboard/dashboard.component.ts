@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import { RegisterUserService } from '../register/register-user.service';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { InitAccountService } from './init-account.service';
@@ -53,9 +54,12 @@ export class DashboardComponent implements OnInit {
 
   // the function that swaps between the components as needed
   // kind of a view factory I guess
-  swapDashboardComponent(componentNum: number) {
-    console.log('Swapping to view ' + componentNum);
-    this.mainActiveComponentNum = componentNum;
+  swapDashboardComponent(componentNum: number, delay: number) {
+    Observable.timer(delay)
+        .subscribe(i => {
+          console.log('Swapping to view ' + componentNum);
+          this.mainActiveComponentNum = componentNum;
+        });
   }
 
 }
@@ -81,9 +85,16 @@ export class DashboardNavComponent implements OnInit {
 })
 export class DashboardSidebarComponent implements OnInit {
 
+  init: boolean;
+  userDataJSON = localStorage.getItem('currentUser');
+  userData = JSON.parse(this.userDataJSON);
+
   constructor() { }
 
   ngOnInit() {
+    this.userDataJSON = localStorage.getItem('currentUser');
+    this.userData = JSON.parse(this.userDataJSON);
+    this.init = this.userData['init'];
   }
 
 }
@@ -171,6 +182,52 @@ export class DashboardInitComponent implements OnInit {
         console.log(err );
       }
     );
+  }
+
+}
+
+
+@Component({
+  selector: 'app-dashboard-practice',
+  templateUrl: './dashboard-practice.component.html',
+  styleUrls: ['./dashboard.component.css']
+})
+export class DashboardPracticeComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+
+  }
+
+}
+
+@Component({
+  selector: 'app-dashboard-hints',
+  templateUrl: './dashboard-hints.component.html',
+  styleUrls: ['./dashboard.component.css']
+})
+export class DashboardHintsComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+
+  }
+
+}
+
+@Component({
+  selector: 'app-dashboard-about',
+  templateUrl: './dashboard-about.component.html',
+  styleUrls: ['./dashboard.component.css']
+})
+export class DashboardAboutComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+
   }
 
 }

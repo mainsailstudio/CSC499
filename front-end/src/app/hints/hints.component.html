@@ -1,0 +1,19 @@
+<div clas="container">
+  <div clas="row">
+    <div class="col">
+    <h1>Your locks and keys are:</h1>
+    <li *ngFor="let key of keys" id="key-list">
+        <span *ngIf="key[0] <= 9" style="padding-right:10px;">
+            {{ key[0] }}
+        </span>
+        <span *ngIf="key[0] > 9">
+            {{ key[0] }}
+        </span>
+        -> <span style="padding-left:12px; text-align:right;">{{key[1] }}</span>
+    </li>
+    </div>
+    <div class="col">
+        <h1>Memorization tips</h1>
+    </div>
+  </div>
+</div>

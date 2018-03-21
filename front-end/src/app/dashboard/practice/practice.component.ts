@@ -23,7 +23,7 @@ import { PracticeService } from './practice.service';
 import { UserConstantsService } from '../user-constants/user-constants.service';
 
 @Component({
-    selector: 'app-dashboard-practice',
+    selector: 'app-dashboard-main-practice',
     templateUrl: 'practice.component.html',
     styleUrls: ['./practice.component.css']
   })
@@ -33,7 +33,11 @@ export class PracticeComponent implements OnInit {
   keys = [];
 
   // will be filled by postData
-  locks = '';
+  locks = [];
+  locksString = '';
+
+  // variable for authInput (for clearing on refresh)
+  authInput = '';
 
   // variables to programatically display
   showLoading = false;
@@ -74,7 +78,10 @@ export class PracticeComponent implements OnInit {
   refreshLocks() {
     // first add to the refreshes variable
     this.refreshes++;
-    console.log('Refreshes are ' + this.refreshes);
+    this.authInput = '';
+    this.showLoading = false;
+    this.showSuccess = false;
+    this.showFail = false;
     // since they can't refresh it until postData has already been called once, this should have their email
     this.postData(this.userConstants.Email);
   }
@@ -107,6 +114,7 @@ export class PracticeComponent implements OnInit {
     } else if (user.testLevel === 2 || user.testLevel === 3) { // test user with auths
       this.userConstants.Init = false;
       this.locks = user.locks;
+      this.locksString = this.locks.join(' - ');
     } else {
       this.userConstants.Init = true;
       this.userConstants.TestLevel = 4;

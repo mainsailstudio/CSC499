@@ -1,7 +1,15 @@
 <h1>Practice</h1>
 <button type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">View your keys</button>
 <div class="collapse" id="collapseExample">
-   Keys are {{ keys }}
+    <li *ngFor="let key of keys" id="key-list">
+        <span *ngIf="key[0] <= 9" style="padding-right:10px;">
+            {{ key[0] }}
+        </span>
+        <span *ngIf="key[0] > 9">
+            {{ key[0] }}
+        </span>
+        -> <span style="padding-left:12px; text-align:right;">{{key[1] }}</span>
+    </li>
 </div>
 
 <form (ngSubmit)="contLogin(contLoginForm.value)" #contLoginForm="ngForm" *ngIf="!initLogin">
@@ -16,8 +24,8 @@
 
     <!-- if the testLevel is 2 or 3 -->
     <div id="testLevel2-3" *ngIf="this.userConstants.TestLevel === 2 || this.userConstants.TestLevel === 3">
-        <label for="locks">Locks: {{ locks }}</label>&nbsp;<i (click)="refreshLocks()" title="Refresh the locks" class="fas fa-sync"></i><br />
-        <input autofocus required ngModel keys name="keys" #keys="ngModel" type="password" style="width:70%" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"><br />
+        <label for="locks">Locks: {{ locksString }}</label>&nbsp;<i (click)="refreshLocks()" title="Refresh the locks" class="fas fa-sync"></i><br />
+        <input autofocus required ngModel keys name="keys" [(ngModel)]="authInput" type="password" style="width:70%" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"><br />
     </div>
 
         <!-- if the loginstate is unknown -->

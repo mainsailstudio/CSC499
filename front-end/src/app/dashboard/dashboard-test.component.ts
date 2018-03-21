@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RegisterUserService } from '../register/register-user.service';
 import { trigger, transition, style, animate, state } from '@angular/animations';
+import * as zxcvbn from 'zxcvbn';
 
 import { DashboardComponent } from './dashboard.component';
 
@@ -15,6 +16,8 @@ import { ConfigActivity } from '../activity-log/log.interface';
 
 import * as shajs from 'sha.js';
 import { UserConstantsService } from './user-constants/user-constants.service';
+import { RegisterTestUser } from '../register/register-test.component';
+import { RegisterTestService } from '../register/register-test.service';
 
 export interface InitUser {
   id: string;
@@ -30,6 +33,11 @@ export interface InitUser {
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardTestComponent implements OnInit {
+
+  public account = {
+    password: null
+  };
+  public barLabel = 'Password strength:';
 
   // get token data
   userDataJSON = localStorage.getItem('currentUser');
@@ -56,6 +64,7 @@ export class DashboardTestComponent implements OnInit {
   showInsertion = false;
   showSuccess = false;
   showFail = false;
+  showPasswordError = false;
 
   // activity logging variables
   loginStartTime = new Date().getTime();
@@ -65,7 +74,8 @@ export class DashboardTestComponent implements OnInit {
     private hashService: HashSha256Service,
     private combineService: CombinePermsService,
     private postConfigFormService: InitAccountService,
-    private activityLog: ActivityLogService
+    private activityLog: ActivityLogService,
+    private registerService: RegisterTestService
   ) { }
 
   validateRegistration(pass: string, confirmPass: string): boolean {
@@ -77,6 +87,11 @@ export class DashboardTestComponent implements OnInit {
   }
 
   ngOnInit() {
+    // get token data
+    this.userDataJSON = localStorage.getItem('currentUser');
+    // parse that data
+    this.userData = JSON.parse(this.userDataJSON);
+    this.init = this.userData['init'];
     if (this.testLevel === 1) {
         console.log('Password here');
     } else if (this.testLevel === 2) {
@@ -95,14 +110,18 @@ export class DashboardTestComponent implements OnInit {
   }
 
   configPass(formData: any) {
+    this.showPasswordError = false;
     // verify the pass and confirm pass are the same again
     const password = formData.value['tempPass'];
     const confirmPass = formData.value['confirmPass'];
+    const zxcvbnResult = zxcvbn(password);
+    console.log('Zxcvbn result is ' + JSON.parse(zxcvbnResult.score));
 
-    if (password !== confirmPass) {
-      console.log('Passwords didnt match');
+    if (password !== confirmPass || JSON.parse(zxcvbnResult.score) < 2) {
+      this.showPasswordError = true;
       return;
     } else {
+      this.showPasswordError = false;
       this.showInsertion = true;
       const hashedPass = shajs('sha256').update(password).digest('hex');
       this.postConfigFormService.postPassword(this.userID, hashedPass, this.jwToken).subscribe(
@@ -174,6 +193,20 @@ export class DashboardTestComponent implements OnInit {
                                           avgSecretLength: avgLength
                                         } as ConfigActivity;
         this.activityLog.logConfigActivity(logged).subscribe();
+
+        // get a new token to prevent errors
+        const testUser: RegisterTestUser = { email: this.email } as RegisterTestUser;
+        this.registerService.registerTest(testUser).subscribe(
+          success => {
+            this.showSuccess = true;
+            this.showFail = false;
+          },
+          error => {
+            this.showSuccess = false;
+            this.showFail = true;
+              console.log(error);
+          }
+        );
         // swap to practice now in the parent component using ngSwitch
       },
       err => {

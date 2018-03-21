@@ -1,0 +1,24 @@
+<h1 style="margin-top:0px;">Introduction</h1>
+Passwords have long been the de facto standard when it comes to authentication. It makes sense; implementing a password authentication scheme is easy and cheap for the developers, while being familiar for most users. However, the drawbacks of using passwords as the single point of authentication are diverse and well documented. Just Google search “Problems with passwords” and read through the 9,000,000+ results (or at least the first 3).
+
+Dynauth seeks to solve the problems that are inherent to passwords by providing a robust framework that centers around users dynamically authenticating into applications using both a password manager and the OAuth 2.0 protocol.
+<h1>How does it work?</h1>
+Each user configures a database of words (known as “auths”) that correlate to numbers (known as “tokens”). The list below displays what a basic configuration might look like.
+<ul>
+  <li>wolf</li>
+  <li>stick</li>
+  <li>huff</li>
+  <li>blow</li>
+  <li>three</li>
+</ul>
+While there are only 5 listed for this example, the typical database will be at least 10 auths long, preferably 15 for additional strength. Now, whenever a user needs to authenticate, Dynauth lists out a random string of the tokens in a set length, without repeats. For our example, the length will be 4:
+  <blockquote>1 – 2 – 3 – 4</blockquote>
+The user then simply needs to list out the auths that correlates to the string of tokens.
+  <blockquote>threestickhuffblow</blockquote>
+Should the auths match, the user will then be authenticated. There are more intricacies to Dynauth than this simple visualization, but that is the general idea behind the concept.
+
+<h1>How is this better than a password?</h1>
+
+The main issue that arises with the use of passwords is the fact that passwords are just not typically that secure. Due to the fact that a password is a single phrase, there will always be a backend database entry with a standalone password that is directly connected to a user’s ID. While most websites are smart enough to hash those password entries, it doesn’t stop the fact that if an attacker gets into the backend of an account based website, they can easily compile massive tables of user data with the correlating passwords and later brute force their way through them. Once an attacker has an email address and a correlating password, they can test that combination against every major online application, gaining access and causing damage along the way.
+
+Dynauth fixes this fatal flaw by being inherently different than passwords, not just a modified version. The dynamic nature of Dynauth makes it so when a user’s auths are configured, the system does not know what they are or even how they are stored. Instead, Dynauth uses a clever algorithm that secures each user’s information in such a way that even if all the personal information was obtained it would be useless.

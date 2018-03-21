@@ -23,13 +23,14 @@ import { UserConstantsService } from '../dashboard/user-constants/user-constants
 export interface TestUser {
   email: string;
   testLevel: number;
-  locks: string;
+  locks: string[];
 }
 
 export interface ContTestUser {
   id: string;
   email: string;
   testLevel: number;
+  init: boolean;
   secret: string;
   token: string;
 }
@@ -43,12 +44,14 @@ export class LoginTestComponent implements OnInit {
 
   initLogin = true;
   testLevel = 0;
-  locks = '';
+  locks = [];
+  locksString = '';
   allowTempPass = false;
   userEmail = '';
   showLoading = false;
   showSuccess = false;
   showFail = false;
+  showInitError = false;
   errorMessage = '';
 
   redirectMessage = this.redirect.message;
@@ -88,12 +91,20 @@ export class LoginTestComponent implements OnInit {
     const loginUser: TestUser = { email } as TestUser;
     this.loginService.startLoginUser(loginUser).subscribe(
       suc => {
-        console.log(suc);
+        if (suc == null) {
+          this.showSuccess = false;
+          this.showFail = false;
+          this.showLoading = false;
+          this.showInitError = true;
+          return;
+        }
         this.nextFormInput(suc);
       },
       err => {
-        console.log(err);
-        console.log('Error log here');
+        this.showSuccess = false;
+        this.showFail = false;
+        this.showLoading = false;
+        this.showInitError = true;
       }
     );
   }
@@ -106,6 +117,7 @@ export class LoginTestComponent implements OnInit {
     } else if (user.testLevel === 2 || user.testLevel === 3) { // test user with auths
       this.initLogin = false;
       this.locks = user.locks;
+      this.locksString = this.locks.join(' - ');
     } else {
       this.initLogin = true;
       this.testLevel = 4;
@@ -124,6 +136,7 @@ export class LoginTestComponent implements OnInit {
     this.showSuccess = false;
     this.showFail = false;
     this.showLoading = true;
+    this.showInitError = false;
 
     const email = this.userEmail;
     const testLevel = this.testLevel;
@@ -149,6 +162,8 @@ export class LoginTestComponent implements OnInit {
           this.showLoading = false;
           this.showSuccess = true;
           this.showFail = false;
+          this.showInitError = false;
+
 
           const endTime = new Date().getTime();
           const loginTime = endTime - this.loginStartTime;
@@ -174,6 +189,7 @@ export class LoginTestComponent implements OnInit {
           this.showLoading = false;
           this.showFail = true;
           this.showSuccess = false;
+          this.showInitError = false;
         }
       },
       err => {
@@ -182,6 +198,7 @@ export class LoginTestComponent implements OnInit {
         this.showLoading = false;
         this.showFail = true;
         this.showSuccess = false;
+        this.showInitError = false;
         console.log('Error is ' + err);
       }
     );
