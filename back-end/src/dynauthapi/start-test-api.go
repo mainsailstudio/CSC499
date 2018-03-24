@@ -55,6 +55,7 @@ func StartTestAPI() {
 	r.HandleFunc("/test/register", testRegister).Methods("POST")
 	r.HandleFunc("/test/log-config", logConfigActivity).Methods("POST")
 	r.HandleFunc("/test/log-login", logLoginActivity).Methods("POST")
+	r.HandleFunc("/test/log-practice", logPracticeActivity).Methods("POST")
 	r.HandleFunc("/test/register-auth", testRegisterAuth).Methods("POST")
 	r.HandleFunc("/test/register-keys", testRegisterKeys).Methods("POST")
 	r.HandleFunc("/test/register-pass", testRegisterPass).Methods("POST")

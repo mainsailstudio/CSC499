@@ -2,7 +2,7 @@
 <ul id="sidebar">
     <li><a routerLink="/dashboard"><i class="fas fa-home"></i>Dashboard</a></li>
     <!-- <li><i class="fas fa-cog"></i>Settings</li> -->
-    <li *ngIf="init" ><a routerLink="/hints"><i class="fas fa-tasks"></i>Hints</a></li>
+    <li *ngIf="init && testLevel !== 1" ><a routerLink="/hints"><i class="fas fa-tasks"></i>Hints</a></li>
     <li *ngIf="init" ><a routerLink="/practice"><i class="fas fa-chart-line"></i>Practice</a></li>
     <li><a routerLink="/about"><i class="fas fa-info-circle"></i>Learn more</a></li>
     <li><a href="mailto:cpete4@u.brockport.edu"><i class="fas fa-bug"></i>Report a bug</a></li>

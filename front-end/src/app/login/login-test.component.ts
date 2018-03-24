@@ -152,7 +152,6 @@ export class LoginTestComponent implements OnInit {
 
     const secretBeforeHash = tempPass + auth;
     this.secretLength = secretBeforeHash.length;
-    console.log('Secret length is ' + this.secretLength);
     const secret = shajs('sha256').update(secretBeforeHash).digest('hex'); // due to the if's one or the other should be empty
     const loginUser: ContTestUser = { email, testLevel, secret } as ContTestUser;
     this.loginService.contLoginUser(loginUser).subscribe(
@@ -178,9 +177,9 @@ export class LoginTestComponent implements OnInit {
                                         refreshes: this.refreshes,
                                         secretLength: this.secretLength
                                        } as LoginActivity;
-            this.activityLog.logLoginActivity(logged).subscribe();
+          this.activityLog.logLoginActivity(logged).subscribe();
 
-          // 2 second delay before redirecting
+          // 1.2 second delay before redirecting
           Observable.timer(1200)
           .subscribe(i => {
             this.router.navigate(['/dashboard']);

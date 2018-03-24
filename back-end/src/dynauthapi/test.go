@@ -64,7 +64,6 @@ func testRegister(w http.ResponseWriter, r *http.Request) {
 	// create a testUser and decode the call
 	var user testUser
 	_ = json.NewDecoder(r.Body).Decode(&user)
-	fmt.Println("User email was", user.Email)
 	userExists, userID, userFname, userLname, userInit, userTestLevel, err := getTestUserInit(user.Email)
 	if err != nil {
 		fmt.Println("Error encountered when seeing if the user exists. Error is", err)
@@ -207,6 +206,19 @@ func logLoginActivity(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&log)
 
 	err := insertLoginActivity(log)
+	if err != nil {
+		message := []string{"There was an issue logging the user's activity", err.Error()}
+		errorString := strings.Join(message, " ")
+		http.Error(w, errorString, 500)
+	}
+}
+
+// logPracticeActivity - API call that logs the user's practice front-end activity
+func logPracticeActivity(w http.ResponseWriter, r *http.Request) {
+	var log LoginActivity
+	_ = json.NewDecoder(r.Body).Decode(&log)
+
+	err := insertPracticeActivity(log)
 	if err != nil {
 		message := []string{"There was an issue logging the user's activity", err.Error()}
 		errorString := strings.Join(message, " ")

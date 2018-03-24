@@ -9,19 +9,19 @@ import { catchError } from 'rxjs/operators';
 
 import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
 
-import { RegisterTestUser } from './register-test.component';
+import { RegisterTestUser } from '../register/register-test.component';
 import { APIURL, TestURL } from '../api/api.constants';
 import { UserConstantsService } from '../dashboard/user-constants/user-constants.service';
 
 const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type':  'application/json',
-    // 'Authorization': 'my-auth-token' --------------- add here
-  })
-};
+    headers: new HttpHeaders({
+      'Content-Type':  'application/json',
+      // 'Authorization': 'my-auth-token' --------------- add here
+    })
+  };
 
 @Injectable()
-export class RegisterTestService {
+export class GetTokenService {
   private handleError: HandleError;
   public token;
   public testLevel;
@@ -30,17 +30,13 @@ export class RegisterTestService {
     private http: HttpClient,
     httpErrorHandler: HttpErrorHandler,
     private userConstants: UserConstantsService) {
-    this.handleError = httpErrorHandler.createHandleError('RegisterStartService');
+    this.handleError = httpErrorHandler.createHandleError('FussFreeTokenBaby');
   }
 
-  /** POST: register the user */
-  registerTest (register: RegisterTestUser): Observable<RegisterTestUser> {
+  /** get a fuss free token */
+  getFussFreeToken (register: RegisterTestUser): Observable<RegisterTestUser> {
     return this.http.post<RegisterTestUser>(APIURL + 'test/register', register, httpOptions).map(
       response => {
-        // first check if the user is already initialized, ie registered
-        if (response.init) {
-          return null;
-        } else if (response.token) {
           this.userConstants.ID = response.id;
           this.userConstants.Email = response.email;
           console.log('====== User constant email is ======= ' + this.userConstants.Email);
@@ -54,26 +50,7 @@ export class RegisterTestService {
                                 init: response.init,
                                 token: response.token }));
           return response;
-        }
-        return response;
-    });
-  }
-
-  loginTestUser (loginUser: RegisterTestUser): Observable<boolean> {
-    return this.http.post<RegisterTestUser>(APIURL + 'test/login-token', loginUser, httpOptions).map(
-      response => {
-        if (response.token) {
-          this.token = response.token;
-          this.testLevel = response.testLevel;
-          localStorage.setItem('currentUser', JSON.stringify({
-                                id: response.id,
-                                email: loginUser.email,
-                                testLevel: this.testLevel,
-                                token: this.token }));
-          return true;
-        }
-        return false;
-    });
+        });
   }
 
 }

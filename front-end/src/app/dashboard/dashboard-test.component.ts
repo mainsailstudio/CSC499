@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RegisterUserService } from '../register/register-user.service';
 import { trigger, transition, style, animate, state } from '@angular/animations';
+import { Observable } from 'rxjs/Observable';
 import * as zxcvbn from 'zxcvbn';
 
 import { DashboardComponent } from './dashboard.component';
@@ -17,6 +18,8 @@ import * as shajs from 'sha.js';
 import { UserConstantsService } from './user-constants/user-constants.service';
 import { RegisterTestUser } from '../register/register-test.component';
 import { RegisterTestService } from '../register/register-test.service';
+import { GetTokenService } from '../misc/get-token.service';
+import { Router } from '@angular/router';
 
 export interface InitUser {
   id: string;
@@ -62,6 +65,7 @@ export class DashboardTestComponent implements OnInit {
   showFail = false;
   showLengthError = false;
   showPasswordError = false;
+  showAuthLengthError = false;
 
   // activity logging variables
   loginStartTime = new Date().getTime();
@@ -72,7 +76,9 @@ export class DashboardTestComponent implements OnInit {
     private combineService: CombinePermsService,
     private postConfigFormService: InitAccountService,
     private activityLog: ActivityLogService,
-    private registerService: RegisterTestService
+    private registerService: RegisterTestService,
+    private getMeThatThereTokenPleaseSir: GetTokenService, // I hate myself sometimes
+    private router: Router
   ) { }
 
   validateRegistration(pass: string, confirmPass: string): boolean {
@@ -105,7 +111,7 @@ export class DashboardTestComponent implements OnInit {
     const zxcvbnResult = zxcvbn(password);
     console.log('Zxcvbn result is ' + JSON.parse(zxcvbnResult.score));
 
-    if (password !== confirmPass || JSON.parse(zxcvbnResult.score) < 2) {
+    if (password !== confirmPass || JSON.parse(zxcvbnResult.score) < 3) {
       this.showPasswordError = true;
       return;
     } else {
@@ -114,10 +120,56 @@ export class DashboardTestComponent implements OnInit {
       const hashedPass = shajs('sha256').update(password).digest('hex');
       this.postConfigFormService.postPassword(this.userID, hashedPass, this.jwToken).subscribe(
         suc => {
-          console.log(suc);
           this.showInsertion = false;
           this.showSuccess = true;
           this.showFail = false;
+
+          // first initialize the user's storage
+          const setInit = JSON.stringify({'init': true});
+          localStorage.setItem('currentUser', setInit);
+
+          // then log everything
+          const endTime = new Date().getTime();
+          const totalCreationTime = endTime - this.loginStartTime; // time to configure
+          const logged: ConfigActivity =  {  userID: Number(this.userID),
+                                            totalCreationTime: totalCreationTime,
+                                            avgSecretLength: password.length
+                                          } as ConfigActivity;
+          this.activityLog.logConfigActivity(logged).subscribe();
+
+          // get a new token to prevent errors
+          const testUser: RegisterTestUser = { email: this.email } as RegisterTestUser;
+          this.registerService.registerTest(testUser).subscribe(
+            success => {
+              this.showSuccess = true;
+              this.showFail = false;
+
+               // get a new token to prevent errors
+              const newTokenUser: RegisterTestUser = { email: this.email } as RegisterTestUser;
+              this.getMeThatThereTokenPleaseSir.getFussFreeToken(newTokenUser).subscribe(
+                successAgain => {
+                  this.showSuccess = true;
+                  this.showFail = false;
+                },
+                error => {
+                  this.showSuccess = false;
+                  this.showFail = true;
+                    console.log(error);
+                }
+              );
+
+              // 1.2 second delay before redirecting to practice
+              Observable.timer(1200)
+              .subscribe(i => {
+                this.router.navigate(['/practice']);
+              });
+            },
+            error => {
+              this.showSuccess = false;
+              this.showFail = true;
+                console.log(error);
+            }
+          );
         },
         err => {
           console.log(err );
@@ -131,13 +183,24 @@ export class DashboardTestComponent implements OnInit {
 
   configAuths(formData: any) {
 
+    // show the insertion loading
+    this.showInsertion = true;
+    this.showSuccess = false;
+    this.showFail = false;
+    this.showLengthError = false;
+    this.showAuthLengthError = false;
+
+    // start by validating that the keys are long enough and that there are no duplicates
     const lockArray = [];
     const keyArray = [];
 
     // get all the locks and keys
     for (let i = 1; i <= this.auths.length; i++) {
       const key = formData.value['key' + i];
+
+      // make sure they are least 4 characters
       if (key.length < 3) {
+        this.showInsertion = false;
         this.showLengthError = true;
         return;
       }
@@ -146,11 +209,20 @@ export class DashboardTestComponent implements OnInit {
       keyArray.push(key);
     }
 
-    // show the insertion loading
-    this.showInsertion = true;
-    this.showSuccess = false;
-    this.showFail = false;
-    this.showLengthError = false;
+    // make sure there are no duplicates in the key array
+    const valuesSoFar = Object.create(null);
+    for (let i = 0; i < keyArray.length; ++i) {
+        const value = keyArray[i];
+        if (value in valuesSoFar) {
+          // there are duplicates
+          this.showInsertion = false;
+          this.showAuthLengthError = true;
+          return;
+        }
+        valuesSoFar[value] = true;
+    }
+    // there are NO duplicates
+    this.showAuthLengthError = false;
 
     // store keys in plaintext here for usability testing
     this.postConfigFormService.postKeys(this.userID, keyArray, lockArray, this.jwToken).subscribe(
@@ -175,7 +247,6 @@ export class DashboardTestComponent implements OnInit {
         this.showSuccess = true;
         this.showFail = false;
 
-        console.log(suc);
         // first initialize the user's storage
         const setInit = JSON.stringify({'init': true});
         localStorage.setItem('currentUser', setInit);
@@ -192,7 +263,7 @@ export class DashboardTestComponent implements OnInit {
 
         // get a new token to prevent errors
         const testUser: RegisterTestUser = { email: this.email } as RegisterTestUser;
-        this.registerService.registerTest(testUser).subscribe(
+        this.getMeThatThereTokenPleaseSir.getFussFreeToken(testUser).subscribe(
           success => {
             this.showSuccess = true;
             this.showFail = false;
@@ -203,7 +274,12 @@ export class DashboardTestComponent implements OnInit {
               console.log(error);
           }
         );
-        // swap to practice now in the parent component using ngSwitch
+
+        // 1.2 second delay before redirecting to practice
+        Observable.timer(1200)
+        .subscribe(i => {
+           this.router.navigate(['/practice']);
+        });
       },
       err => {
         this.showInsertion = false;

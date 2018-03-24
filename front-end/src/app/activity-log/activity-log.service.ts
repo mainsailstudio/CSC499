@@ -52,4 +52,19 @@ export class ActivityLogService {
       );
   }
 
+  // log a user practicing in
+  // NOTE: the testLevel variable tells if it is a password or dynauth
+  logPracticeActivity(log: LoginActivity) {
+    const httpOptionsAuthorized = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+      })
+    };
+
+    return this.http.post<LoginActivity>(APIURL + 'test/log-practice', log, httpOptionsAuthorized)
+      .pipe(
+        catchError(this.handleError('loginActivityLog', log))
+      );
+  }
+
 }

@@ -59,6 +59,7 @@ import { UserConstantsService } from './dashboard/user-constants/user-constants.
 import { AboutComponent } from './about/about.component';
 import { HintsComponent } from './hints/hints.component';
 import { UsabilityTestComponent, UsabilityTestInstructionsComponent } from './dashboard/usability-test/usability-test.component';
+import { GetTokenService } from './misc/get-token.service';
 
 @NgModule({
   declarations: [
@@ -117,7 +118,8 @@ import { UsabilityTestComponent, UsabilityTestInstructionsComponent } from './da
     RedirectMessageService,
     ActivityLogService,
     PracticeService,
-    UserConstantsService
+    UserConstantsService,
+    GetTokenService
   ],
   bootstrap: [AppComponent]
 })

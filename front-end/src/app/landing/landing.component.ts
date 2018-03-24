@@ -31,27 +31,4 @@ export class LandingComponent implements OnInit {
     this.registerState = state;
   }
 
-  // register(): void {
-  //   if (this.displayRegisterStart === true) {
-
-  //     this.displayRegisterStart = false;
-  //     this.displayRegisterContinue = true;
-  //   } else if (this.displayRegisterContinue === true) {
-  //       this.displayRegisterContinue = false;
-  //       this.displayRegisterFinal = true;
-
-  //   }
-  // }
-
-  // getUsers() {
-  //   this._testService.getUsers().subscribe(
-  //     // the first argument is a function which runs on success
-  //     data => { this.users = data; },
-  //     // the second argument is a function which runs on error
-  //     err => console.error(err),
-  //     // the third argument is a function which runs on completion
-  //     () => console.log('done loading users')
-  //   );
-  // }
-
 }

@@ -45,7 +45,7 @@ export class PracticeComponent implements OnInit {
   showFail = false;
 
   // activity logging variables
-  tries = 0;
+  loginStartTime = new Date().getTime();
   failures = 0;
   refreshes = 0;
   secretLength = 0;
@@ -90,13 +90,10 @@ export class PracticeComponent implements OnInit {
    // this.register = undefined;
     email = email.trim();
     this.userConstants.Email = email;
-    console.log('Email is ' + this.userConstants.Email);
-
 
     const loginUser: TestUser = { email } as TestUser;
     this.loginService.startLoginUser(loginUser).subscribe(
       suc => {
-        console.log(suc);
         this.nextFormInput(suc);
       },
       err => {
@@ -147,7 +144,6 @@ export class PracticeComponent implements OnInit {
 
     const secretBeforeHash = tempPass + auth;
     this.secretLength = secretBeforeHash.length;
-    console.log('Secret length is ' + this.secretLength);
     const secret = shajs('sha256').update(secretBeforeHash).digest('hex'); // due to the if's one or the other should be empty
     const loginUser: ContTestUser = { email, testLevel, secret } as ContTestUser;
     this.loginService.contLoginUser(loginUser).subscribe(
@@ -157,6 +153,28 @@ export class PracticeComponent implements OnInit {
           this.showLoading = false;
           this.showSuccess = true;
           this.showFail = false;
+
+          const endTime = new Date().getTime();
+          const loginTime = endTime - this.loginStartTime;
+          const userDataJSON = localStorage.getItem('currentUser');
+          const userid = Number((JSON.parse(userDataJSON).id));
+
+          // log the login activity
+          const logged: LoginActivity = { userID: userid,
+                                        testLevel: testLevel,
+                                        loginTime: loginTime,
+                                        failures: this.failures,
+                                        refreshes: this.refreshes,
+                                        secretLength: this.secretLength
+                                       } as LoginActivity;
+          this.activityLog.logPracticeActivity(logged).subscribe();
+
+          // this is where the practice logging differs from the actual logging, all variables are reset
+          this.loginStartTime = new Date().getTime();
+          this.failures = 0;
+          this.refreshes = 0;
+          this.secretLength = 0;
+
         } else {
           this.showLoading = false;
           this.showFail = true;

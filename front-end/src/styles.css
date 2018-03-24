@@ -23,6 +23,10 @@ h1{
     font-weight:600;
 }
 
+h6 {
+    font-size:.80rem;
+}
+
 a{
     color:#024c8c;
 }

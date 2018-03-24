@@ -85,6 +85,12 @@ create table testLoginLog(
 	foreign key (userid) references testUsers(id)
 );
 
+drop table if exists testPracticeLog;
+create table testPracticeLog(
+	id int primary key auto_increment, userid int, loginTime int, failures int, refreshes int, secretLength int,
+	foreign key (userid) references testUsers(id)
+);
+
 drop table if exists testKeysDisplay;
 create table testKeysDisplay(
 	id int primary key auto_increment, userid int not null, keysAre varchar(16), keyLocks int, keyType int,

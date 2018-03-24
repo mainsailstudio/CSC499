@@ -24,7 +24,9 @@ export class UsabilityTestComponent implements OnInit {
 export class UsabilityTestInstructionsComponent implements OnInit {
 
   // passphrase XKCD comic, great for illustrations
-  private xkcdImage = '/assets/password_strength.png';
+  private relativePath = '../../assets/';
+  private xkcdImage = 'password_strength.png';
+  private sharkImage = 'rainbow-shark.png';
 
   // random word array for suggested words
   randomWordArray = [];
@@ -42,6 +44,11 @@ export class UsabilityTestInstructionsComponent implements OnInit {
 
   ngOnInit() {
     this.refreshWords();
+  }
+
+  imagePath(image: string): string {
+    const newImage = this.relativePath + image;
+    return newImage;
   }
 
   refreshWords() {
@@ -80,9 +87,9 @@ export class UsabilityTestInstructionsComponent implements OnInit {
   }
 
   /**
- * Shuffles array in place.
- * @param {Array} a items An array containing the items.
- */
+   * Shuffles array in place.
+   * @param {Array} a items An array containing the items.
+  */
   shuffle(a) {
     let j, x, i;
     for (i = a.length - 1; i > 0; i--) {

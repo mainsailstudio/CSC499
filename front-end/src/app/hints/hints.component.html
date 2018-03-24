@@ -2,18 +2,53 @@
   <div clas="row">
     <div class="col">
     <h1>Your locks and keys are:</h1>
-    <li *ngFor="let key of keys" id="key-list">
-        <span *ngIf="key[0] <= 9" style="padding-right:10px;">
-            {{ key[0] }}
-        </span>
-        <span *ngIf="key[0] > 9">
-            {{ key[0] }}
-        </span>
-        -> <span style="padding-left:12px; text-align:right;">{{key[1] }}</span>
-    </li>
+    <ul>
+        <li *ngFor="let key of keys" id="key-list">
+                <span *ngIf="key[0] <= 9" style="padding-right:10px;">
+                    {{ key[0] }}
+                </span>
+                <span *ngIf="key[0] > 9">
+                    {{ key[0] }}
+                </span>
+                -> <span style="padding-left:12px; text-align:right;">{{key[1] }}</span>
+        </li>
+    </ul>
     </div>
     <div class="col">
-        <h1>Memorization tips</h1>
+        <h1>Memorization techniques</h1>
+        <p>Memorizing words in this fashion can seem difficult, but there are some simple tricks that make it much easier. Try following the instructions below when you are configuring your locks and keys.</p>
+        <ol>
+            <li>Pick 3 or 4 random words from this list</li>
+                <button type="button" data-toggle="collapse" data-target="#collapseRandomWords" aria-expanded="false" aria-controls="collapseRandomWords">View some randomly generated words <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+                <div class="collapse" id="collapseRandomWords">
+                    <h3 style="margin-top:0px; margin-bottom:10px;">Random words <i (click)="refreshWords()" title="Refresh the locks" class="fas fa-sync" style="vertical-align: 3px;"></i></h3>
+                    <div  style="margin-bottom:25px;">
+                        <span *ngFor="let randomWord of randomWordArray" style="margin-right:20px;">{{ randomWord }}</span>
+                    </div>
+                </div> 
+            <li>Create a nonsensical sentence incorporating those words</li>
+                <button type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">View an example <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+                <div class="collapse" id="collapseExample">
+                    <h3 style="margin-top:0px;">Random words given</h3>
+                    <ul>
+                        <li>Shark</li>
+                        <li>Horn</li>
+                        <li>Angel</li>
+                        <li>Color</li>
+                    </ul>
+                    <div  style="margin-bottom:25px;">
+                        <h3>Sentence constructed</h3>
+                        <p>The <sub>1</sub><strong>winged</strong> <sub>2</sub><em>angels</em> are <sub>3</sub><strong>riding</strong> the <sub>4</sub><strong>silly</strong> <sub>5</sub><em>horned</em> <sub>6</sub><em>shark</em> <sub>7</sub><strong>over</strong> the <sub>8</sub><strong>brightly</strong> <sub>9</sub><em>colored</em> <sub>10</sub><em>rainbow</em></p>
+                        <h6>The subscript numbers represent the associated lock</h6>
+                        <h6>The italicized words are the random words given and the bolded words are the words added to make the sentance coherent</h6>
+                    </div>
+                </div> 
+            <li>Imagine a picture that displays the sentence</li>
+            <button type="button" data-toggle="collapse" data-target="#collapseRandomImage" aria-expanded="false" aria-controls="collapseRandomImage">View an example <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+            <div class="collapse" id="collapseRandomImage">
+                <img [src]="imagePath(sharkImage)" />
+            </div> 
+        </ol>
     </div>
   </div>
 </div>

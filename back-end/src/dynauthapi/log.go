@@ -37,7 +37,7 @@ func insertConfigActivity(log ConfigActivity) error {
 
 	_, err = stmtIns.Exec(log.UserID, log.TotalTime, log.AvgSecretLength)
 	if err != nil {
-		errMessage := fmt.Sprintf("There was an issue executing the query to insert a new config activity log.\nError is", err)
+		errMessage := fmt.Sprintf("%v\nThere was an issue executing the query to insert a new config activity log.\nError is", err)
 		return errors.New(errMessage)
 	}
 
@@ -62,7 +62,32 @@ func insertLoginActivity(log LoginActivity) error {
 
 	_, err = stmtIns.Exec(log.UserID, log.LoginTime, log.Failures, log.Refreshes, log.SecretLength)
 	if err != nil {
-		errMessage := fmt.Sprintf("There was an issue executing the query to insert a new login activity log.\nError is", err)
+		errMessage := fmt.Sprintf("%v\nThere was an issue executing the query to insert a new login activity log.\nError is", err)
+		return errors.New(errMessage)
+	}
+
+	return nil
+}
+
+// insertPracticeActivity - inserts the user's practice activity on the front-end
+func insertPracticeActivity(log LoginActivity) error {
+	dbinfo := dbinfo.Db()
+	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
+	if err != nil {
+		return errors.New("Unable to open the database connecting in the insertPracticeActivity log")
+	}
+	defer db.Close()
+
+	initUser := "INSERT INTO testPracticeLog (id, userid, loginTime, failures, refreshes, secretLength) VALUES (DEFAULT, ?, ?, ?, ?, ?)"
+	stmtIns, err := db.Prepare(initUser)
+	if err != nil {
+		return errors.New("Issue preparing to log user's practice activity")
+	}
+	defer stmtIns.Close()
+
+	_, err = stmtIns.Exec(log.UserID, log.LoginTime, log.Failures, log.Refreshes, log.SecretLength)
+	if err != nil {
+		errMessage := fmt.Sprintf("%v\nThere was an issue executing the query to insert a new practice activity log.\nError is", err)
 		return errors.New(errMessage)
 	}
 

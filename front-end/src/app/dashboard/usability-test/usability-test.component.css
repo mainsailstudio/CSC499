@@ -5,3 +5,8 @@ ol > li {
 h3 {
     margin-top:25px;
 }
+
+.info-dropdown {
+    margin-left:15px;
+    cursor: pointer;
+}

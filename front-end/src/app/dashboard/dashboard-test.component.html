@@ -1,8 +1,7 @@
 <form *ngIf="!init && testLevel === 1" (ngSubmit)="configPass(configurationPassForm)" #configurationPassForm="ngForm">
-    <h2>Please configure a password</h2>
     <!-- if user is using a password -->
     <label for="tempPass">
-        Temporary password:
+        Password:
     </label><br />
     <input  required
             [(ngModel)]="account.tempPass"
@@ -11,7 +10,6 @@
             #tempPass="ngModel"
             type="password"
             value=""
-            placeholder="$tr0ngTEMPpasswordddd"
             style="width:70%">
     <br />
     <!-- error for tempPass -->
@@ -30,7 +28,6 @@
             (keyup)="validateRegistration(tempPass.value, confirmPass.value)"
             type="password"
             value=""
-            placeholder="Confirm $tr0ngTEMPpasswordddd"
             style="width:70%">
     <i  class="fas fa-check-square fa-lg fa-alignWithText"
         style="color:rgba(255, 255, 255, .6);"
@@ -41,13 +38,12 @@
     <button type="submit">Submit <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
 
     <div class="alert alert-success" role="alert" *ngIf="showInsertion">Loading... <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></div>
-    <div class="alert alert-success" role="alert" *ngIf="showSuccess">Success!</div>
+    <div class="alert alert-success" role="alert" *ngIf="showSuccess">Success! You are being redirected to the practice page...</div>
     <div class="alert alert-danger" role="alert" *ngIf="showFail">Failure</div>
-    <div class="alert alert-info" role="alert" *ngIf="showPasswordError">The passwords don't meet the requirements, make sure they match</div>
+    <div class="alert alert-info" role="alert" *ngIf="showPasswordError">The passwords don't meet the requirements, make sure the password fills the password strength meter and that the confirmation password matches</div>
 </form>
     <!-- if user is using lock and keys -->
 <form *ngIf="!init && testLevel === 2 || testLevel === 3" (ngSubmit)="configAuths(configurationAuthForm)" #configurationAuthForm="ngForm">
-    <h2>Now you're ready to set up your own database of locks and keys</h2>
     <div *ngFor="let auth of auths" class="keyLockComboContain{{ auth }}">
         <label for="fname">Lock and key combo {{ auth }}</label><br />
         <input  required disabled
@@ -61,9 +57,10 @@
                 placeholder="" style="width:30%">
     </div>
     <div class="alert alert-success" role="alert" *ngIf="showInsertion">Loading... <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></div>
-    <div class="alert alert-success" role="alert" *ngIf="showSuccess">Success!</div>
+    <div class="alert alert-success" role="alert" *ngIf="showSuccess">Success! You are being redirected to the practice page...</div>
     <div class="alert alert-danger" role="alert" *ngIf="showFail">Failure, please submit a bug report</div>
     <div class="alert alert-danger" role="alert" *ngIf="showLengthError">Your keys aren't long enough, each key needs to be at least 4 characters</div>
+    <div class="alert alert-danger" role="alert" *ngIf="showAuthLengthError">There are duplicate keys, make sure all the keys are different</div>
     <button type="submit">Submit <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
 </form>
 <div *ngIf="init">
