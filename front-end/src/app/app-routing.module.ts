@@ -20,6 +20,7 @@ import { AuthGuard } from './_auth-guard/auth.guard';
 import { PracticeComponent } from './dashboard/practice/practice.component';
 import { AboutComponent } from './about/about.component';
 import { HintsComponent } from './hints/hints.component';
+import { UsabilityTestComponent } from './dashboard/usability-test/usability-test.component';
 
 const routes: Routes = [
   { path: '',  component: LandingTestComponent },
@@ -31,6 +32,7 @@ const routes: Routes = [
   { path: 'logout', component: LogoutComponent },
   { path: 'about', component: DashboardAboutComponent },
   { path: 'hints', component: DashboardHintsComponent },
+  { path: 'instructions', component: UsabilityTestComponent },
 
   // { path: 'dashboard-test', component: DashboardTestComponent, canActivate: [AuthGuard] },
   { path: '**', component: NotFoundComponent } // make sure this is always at the bottom so it doesn't superscede legitimate routes

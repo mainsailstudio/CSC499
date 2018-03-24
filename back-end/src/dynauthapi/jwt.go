@@ -24,7 +24,6 @@ func issueJWT(email string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Print(string(pkSecret))
 
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.

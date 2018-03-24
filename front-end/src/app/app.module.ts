@@ -58,6 +58,7 @@ import { PracticeService } from './dashboard/practice/practice.service';
 import { UserConstantsService } from './dashboard/user-constants/user-constants.service';
 import { AboutComponent } from './about/about.component';
 import { HintsComponent } from './hints/hints.component';
+import { UsabilityTestComponent, UsabilityTestInstructionsComponent } from './dashboard/usability-test/usability-test.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,9 @@ import { HintsComponent } from './hints/hints.component';
     HintsComponent,
     DashboardHintsComponent,
     DashboardAboutComponent,
-    PasswordStrengthBar
+    PasswordStrengthBar,
+    UsabilityTestComponent,
+    UsabilityTestInstructionsComponent
   ],
   imports: [
     BrowserModule,

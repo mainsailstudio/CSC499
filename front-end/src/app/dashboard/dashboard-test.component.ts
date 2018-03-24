@@ -9,7 +9,6 @@ import { PermutateService } from '../hash/perm.service';
 import { HashSha256Service } from '../hash/hash-sha256.service';
 import { CombinePermsService } from '../hash/combine.service';
 import { InitAccountService } from './init-account.service';
-import { WordArray } from '../api/api.constants';
 import { ActivityLogService } from '../activity-log/activity-log.service';
 
 import { ConfigActivity } from '../activity-log/log.interface';
@@ -57,13 +56,11 @@ export class DashboardTestComponent implements OnInit {
   // will also have to grab from db eventually
   displayLength = 4; // for now!!
 
-  // the random words that autofill when creating a new setup
-  randomWordArray = [];
-
   // this is the success variable that shows after the user account is configured
   showInsertion = false;
   showSuccess = false;
   showFail = false;
+  showLengthError = false;
   showPasswordError = false;
 
   // activity logging variables
@@ -93,19 +90,10 @@ export class DashboardTestComponent implements OnInit {
     this.userData = JSON.parse(this.userDataJSON);
     this.init = this.userData['init'];
     if (this.testLevel === 1) {
-        console.log('Password here');
     } else if (this.testLevel === 2) {
         this.auths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        for (let i = 0; i < this.auths.length; i++) {
-          this.randomWordArray.push(WordArray[Math.floor(Math.random() * 2627)]);
-        }
-        console.log('Easy security here');
     } else if (this.testLevel === 3) {
-        this.auths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-        for (let i = 0; i < this.auths.length; i++) {
-          this.randomWordArray.push(WordArray[Math.floor(Math.random() * 2627)]);
-        }
-        console.log('Hard security here');
+        this.auths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     }
   }
 
@@ -142,19 +130,27 @@ export class DashboardTestComponent implements OnInit {
   }
 
   configAuths(formData: any) {
-    // show the insertion loading
-    this.showInsertion = true;
-    this.showSuccess = false;
-    this.showFail = false;
 
     const lockArray = [];
     const keyArray = [];
 
     // get all the locks and keys
     for (let i = 1; i <= this.auths.length; i++) {
+      const key = formData.value['key' + i];
+      if (key.length < 3) {
+        this.showLengthError = true;
+        return;
+      }
+
       lockArray.push(this.auths[i - 1].toString());
-      keyArray.push(formData.value['key' + i]);
+      keyArray.push(key);
     }
+
+    // show the insertion loading
+    this.showInsertion = true;
+    this.showSuccess = false;
+    this.showFail = false;
+    this.showLengthError = false;
 
     // store keys in plaintext here for usability testing
     this.postConfigFormService.postKeys(this.userID, keyArray, lockArray, this.jwToken).subscribe(

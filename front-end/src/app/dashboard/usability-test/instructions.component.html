@@ -1,0 +1,65 @@
+<h1>Instructions</h1>
+<div [ngSwitch]="instructions" *ngIf="testLevel === 1">
+    <div *ngSwitchCase="1">
+        <app-dashboard-test></app-dashboard-test>
+    </div>
+</div>
+<div [ngSwitch]="instructions" *ngIf="testLevel === 2 || testLevel === 3">
+    <div *ngSwitchCase="1">
+        <h2>Success! Now, what is this?</h2>
+        <h5>To put it simply, this system is a proposed alternative to passwords called Dynauth (dynamic authentication).</h5>
+        <p>Instead of having 1 static <em>secret</em> as a password, users configure a database of 10 words (known as keys) that are associated with the numbers 1 through 10 (known as locks).</p>
+        <p>Each key has to be at leat 4 characters</p>
+            <button type="button" data-toggle="collapse" data-target="#collaspeExampleKeys" aria-expanded="false" aria-controls="collaspeExampleKeys">Visualization <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+            <div class="collapse" id="collaspeExampleKeys">
+                <ol>
+                    <li *ngFor="let randomWord of randomWordArray" style="font-size:18px;">{{ randomWord }}</li>
+                </ol>
+            </div> 
+        <p>Whenever the user wants to authenticate, 4 of their locks are chosen at random and presented. The user then simply enters in the auths associated with the locks as one long string.</p>
+            <button type="button" data-toggle="collapse" data-target="#collaspeExampleAuth" aria-expanded="false" aria-controls="collaspeExampleAuth">Visualization <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+                <div class="collapse" id="collaspeExampleAuth">
+                    <h3 style="margin-top:0px;">Locks: {{ lockString }}</h3>
+                    <h3 style="margin-bottom:35px;">Keys: <span *ngFor="let key of keyArray" style="font-size:1.75rem;">{{ key }}</span></h3>
+                </div> 
+        <p>That's it! Not so hard really.</p>
+        <h5>You are going to set up your own words soon, but first, a bit about memorization</h5>
+        <button (click)="changeInstructions(2)" style="float:right">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+    </div>
+    <div *ngSwitchCase="2">
+        <h2>Memorization techniques</h2>
+        <p>Memorizing words in this fashion can seem difficult, but there are some simple tricks that make it incredibly easy.</p>
+        <ol>
+            <li>Pick 3 or 4 random words from this list</li>
+                <button type="button" data-toggle="collapse" data-target="#collapseRandomWords" aria-expanded="false" aria-controls="collapseRandomWords">View some randomly generated words <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+                <div class="collapse" id="collapseRandomWords">
+                    <h3 style="margin-top:0px; margin-bottom:10px;">Random words <i (click)="refreshWords()" title="Refresh the locks" class="fas fa-sync" style="vertical-align: 3px;"></i></h3>
+                    <div  style="margin-bottom:25px;">
+                        <span *ngFor="let randomWord of randomWordArray" style="margin-right:20px;">{{ randomWord }}</span>
+                    </div>
+                </div> 
+            <li>Create a nonsensical sentence incorporating those words</li>
+                <button type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">View an example <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+                <div class="collapse" id="collapseExample">
+                    <h3 style="margin-top:0px;">Random words given</h3>
+                    <ul>
+                        <li>Scattered</li>
+                        <li>Fearful</li>
+                        <li>Tray</li>
+                        <li>Acoustic</li>
+                    </ul>
+                    <div  style="margin-bottom:25px;">
+                        <h3>Sentence constructed</h3>
+                        The <sub>1</sub><em>fearful</em> <sub>2</sub><em>tray</em> <sub>3</sub><em>scattered</em> <sub>4</sub><strong>quite</strong> <sub>5</sub><strong>a lot</strong> of <sub>6</sub><em>acoustic</em> <sub>7</sub><strong>violins</strong> <sub>8</sub><strong>that</strong> <sub>9</sub><strong>made</strong> a <sub>10</sub><strong>racket</strong>
+                    </div>
+                </div> 
+            <li>More instructions here</li>
+        </ol>
+        <!-- <img src="{{ xkcdImage }}"> -->
+        <button (click)="changeInstructions(1)"><i class="fas fa-angle-double-left fa-lg fa-alignWithText"></i> Back</button> <button (click)="changeInstructions(3)" style="float:right">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+    </div>
+    <div *ngSwitchCase="3">
+        <app-dashboard-test></app-dashboard-test>
+        <button (click)="changeInstructions(2)"><i class="fas fa-angle-double-left fa-lg fa-alignWithText"></i> Back</button> 
+    </div>
+</div>
