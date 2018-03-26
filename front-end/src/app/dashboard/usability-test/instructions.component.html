@@ -32,7 +32,7 @@
         <p>To put it simply, this system is a proposed alternative to passwords called Dynauth (dynamic authentication).</p>
         <ol>
             <li>Users configure a table of "keys" associated with "locks"</li>
-            <button type="button" data-toggle="collapse" data-target="#collapseExampleKeys" aria-expanded="false" aria-controls="collapseExampleKeys">Visualization <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+            <button type="button" data-toggle="collapse" data-target="#collapseExampleKeys" aria-expanded="false" aria-controls="collapseExampleKeys">View an example <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
             <div class="collapse" id="collapseExampleKeys">
                 <h3 style="margin-top:0px;">Locks -> Keys</h3>
                 <ol>
@@ -40,13 +40,13 @@
                 </ol>
             </div> 
             <li>On login, 4 of the locks are chosen at random and presented</li>
-            <button type="button" data-toggle="collapse" data-target="#collapseExampleLocks" aria-expanded="false" aria-controls="collapseExampleLocks">Visualization <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+            <button type="button" data-toggle="collapse" data-target="#collapseExampleLocks" aria-expanded="false" aria-controls="collapseExampleLocks">View an example <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
             <div class="collapse" id="collapseExampleLocks">
                <h3 style="margin-top:0px;">Locks:</h3>
                {{ lockString }}
             </div> 
             <li>The user enters in the keys associated with the locks</li>
-            <button type="button" data-toggle="collapse" data-target="#collapseExampleAuth" aria-expanded="false" aria-controls="collapseExampleAuth">Visualization <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+            <button type="button" data-toggle="collapse" data-target="#collapseExampleAuth" aria-expanded="false" aria-controls="collapseExampleAuth">View an example <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
             <div class="collapse" id="collapseExampleAuth">
                 <h3 style="margin-top:0px;">Keys:</h3>
                 <span *ngFor="let key of keyArray">{{ key }}</span>

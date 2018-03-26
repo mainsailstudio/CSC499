@@ -97,9 +97,9 @@ export class DashboardTestComponent implements OnInit {
     this.init = this.userData['init'];
     if (this.testLevel === 1) {
     } else if (this.testLevel === 2) {
-        this.auths = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        this.auths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     } else if (this.testLevel === 3) {
-        this.auths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+        this.auths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     }
   }
 

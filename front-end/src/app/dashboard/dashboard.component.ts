@@ -77,7 +77,7 @@ export class DashboardNavComponent implements OnInit {
 export class DashboardSidebarComponent implements OnInit {
 
   init: boolean;
-  testLevel: string;
+  testLevel: number;
   userDataJSON = localStorage.getItem('currentUser');
   userData = JSON.parse(this.userDataJSON);
 
