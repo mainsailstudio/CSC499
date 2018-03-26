@@ -39,7 +39,6 @@ export class GetTokenService {
       response => {
           this.userConstants.ID = response.id;
           this.userConstants.Email = response.email;
-          console.log('====== User constant email is ======= ' + this.userConstants.Email);
           this.userConstants.TestLevel = response.testLevel;
           this.userConstants.Token = response.token;
           this.userConstants.Init = response.init;

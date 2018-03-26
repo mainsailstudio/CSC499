@@ -109,7 +109,6 @@ export class DashboardTestComponent implements OnInit {
     const password = formData.value['tempPass'];
     const confirmPass = formData.value['confirmPass'];
     const zxcvbnResult = zxcvbn(password);
-    console.log('Zxcvbn result is ' + JSON.parse(zxcvbnResult.score));
 
     if (password !== confirmPass || JSON.parse(zxcvbnResult.score) < 3) {
       this.showPasswordError = true;
@@ -118,7 +117,10 @@ export class DashboardTestComponent implements OnInit {
       this.showPasswordError = false;
       this.showInsertion = true;
       const hashedPass = shajs('sha256').update(password).digest('hex');
-      this.postConfigFormService.postPassword(this.userID, hashedPass, this.jwToken).subscribe(
+
+      // send the plaintext password as well as the hashed on for testing purposes
+      // this allows the user to get "hints" as to what their original password was
+      this.postConfigFormService.postPassword(this.userID, password, hashedPass, this.jwToken).subscribe(
         suc => {
           this.showInsertion = false;
           this.showSuccess = true;
@@ -154,7 +156,6 @@ export class DashboardTestComponent implements OnInit {
                 error => {
                   this.showSuccess = false;
                   this.showFail = true;
-                    console.log(error);
                 }
               );
 
@@ -167,12 +168,10 @@ export class DashboardTestComponent implements OnInit {
             error => {
               this.showSuccess = false;
               this.showFail = true;
-                console.log(error);
             }
           );
         },
         err => {
-          console.log(err );
           this.showInsertion = false;
           this.showFail = true;
           this.showSuccess = false;
@@ -198,7 +197,7 @@ export class DashboardTestComponent implements OnInit {
     for (let i = 1; i <= this.auths.length; i++) {
       const key = formData.value['key' + i];
 
-      // make sure they are least 4 characters
+      // make sure they are least 3 characters
       if (key.length < 3) {
         this.showInsertion = false;
         this.showLengthError = true;
@@ -227,10 +226,10 @@ export class DashboardTestComponent implements OnInit {
     // store keys in plaintext here for usability testing
     this.postConfigFormService.postKeys(this.userID, keyArray, lockArray, this.jwToken).subscribe(
       suc => {
-        console.log(suc);
+        // console.log(suc);
       },
       err => {
-        console.log(err );
+        // console.log(err );
       }
     );
 
@@ -271,7 +270,6 @@ export class DashboardTestComponent implements OnInit {
           error => {
             this.showSuccess = false;
             this.showFail = true;
-              console.log(error);
           }
         );
 
@@ -285,7 +283,6 @@ export class DashboardTestComponent implements OnInit {
         this.showInsertion = false;
         this.showSuccess = false;
         this.showFail = true;
-        console.log(err );
       }
     );
 

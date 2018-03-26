@@ -60,6 +60,7 @@ func StartTestAPI() {
 	r.HandleFunc("/test/register-keys", testRegisterKeys).Methods("POST")
 	r.HandleFunc("/test/register-pass", testRegisterPass).Methods("POST")
 	r.HandleFunc("/test/get-keys", testGetUserKeys).Methods("GET")
+	r.HandleFunc("/test/get-pass", testGetUserDisplayPass).Methods("GET")
 
 	// // restricted API call to register a user with a password
 	// // requires a proper JWT token to access

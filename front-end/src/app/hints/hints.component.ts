@@ -11,6 +11,7 @@ import { WordArray } from '../api/api.constants';
 export class HintsComponent implements OnInit {
 
   keys = [];
+  password = '';
 
   // image path stuff
   private relativePath = '../../assets/';
@@ -26,19 +27,28 @@ export class HintsComponent implements OnInit {
               private userConstants: UserConstantsService) { }
 
   ngOnInit() {
-    this.refreshWords();
-    this.practiceService.getTestUserKeys(this.userConstants.ID).subscribe(
-      suc => {
-        console.log(suc);
-        this.keys = Array.from(suc); // what in the hell is going on with this, idk internet code works
-        console.log('Base suc is ' + suc);
-        console.log('This keys is ' + this.keys);
-      },
-      err => {
-        console.log(err);
-        console.log('Error log here');
-      }
-    );
+    if (this.userConstants.TestLevel === 1) {
+      this.practiceService.getTestUserDisplayPassword(this.userConstants.ID).subscribe(
+        suc => {
+          this.password = suc;
+        },
+        err => {
+        }
+      );
+    }
+
+    if (this.userConstants.TestLevel === 2 || this.userConstants.TestLevel === 3) {
+      this.refreshWords();
+
+      this.practiceService.getTestUserKeys(this.userConstants.ID).subscribe(
+        suc => {
+          this.keys = Array.from(suc); // what in the hell is going on with this, idk internet code works
+        },
+        err => {
+        }
+      );
+    }
+
   }
 
   imagePath(image: string): string {

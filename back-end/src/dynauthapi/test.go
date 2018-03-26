@@ -41,8 +41,9 @@ type testUser struct {
 
 // testPass struct - for test users registering with a password
 type testPass struct {
-	ID       string `json:"id"`
-	Password string `json:"password"`
+	ID             string `json:"id"`
+	Password       string `json:"password"`
+	HashedPassword string `json:"hashedPassword"`
 }
 
 // testAuth struct - for test users registering with dynauth standard
@@ -232,10 +233,16 @@ func testRegisterPass(w http.ResponseWriter, r *http.Request) {
 	var user testPass
 	_ = json.NewDecoder(r.Body).Decode(&user)
 
-	// assume everything is set and store that password
-	err := storeTestPass(user.ID, user.Password)
+	// assume everything is set and store the hashed password
+	err := storeTestPass(user.ID, user.HashedPassword)
 	if err != nil {
 		http.Error(w, "There was an error storing the test user's test password", 500)
+	}
+
+	// assume everything is set and store the plaintext password
+	err = storeTestDisplayPass(user.ID, user.Password)
+	if err != nil {
+		http.Error(w, "There was an error storing the test user's display password", 500)
 	}
 
 	// flip the user's init flag
@@ -285,9 +292,8 @@ func testRegisterAuth(w http.ResponseWriter, r *http.Request) {
 
 // PROTECTED
 // testRegisterKeys - API call that posts the user's PLAINTEXT keys into the database
-// NOTE: This is for testing only, the user;s entire key should not be kept in plaintext EVER
+// NOTE: This is for testing only, the user's entire key should not be kept in plaintext EVER
 func testRegisterKeys(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Registering keys...?")
 	var user testKeys
 	_ = json.NewDecoder(r.Body).Decode(&user)
 
@@ -302,13 +308,24 @@ func testRegisterKeys(w http.ResponseWriter, r *http.Request) {
 // testGetUserKeys - API call that get's the user's keys in plaintext for testing
 func testGetUserKeys(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
-	fmt.Println("UserID is", params["userID"])
 	keyArray, err := getTestKeys(params["userID"][0])
 	if err != nil {
 		http.Error(w, "There was an issue getting your keys", 500)
 	}
 
 	json.NewEncoder(w).Encode(keyArray)
+}
+
+// PROTECTED
+// testGetUserDisplayPass - API call that get's the user's password in plaintext for testing
+func testGetUserDisplayPass(w http.ResponseWriter, r *http.Request) {
+	params := r.URL.Query()
+	password, err := getTestDisplayPass(params["userID"][0])
+	if err != nil {
+		http.Error(w, "There was an issue getting your password to display", 500)
+	}
+
+	json.NewEncoder(w).Encode(password)
 }
 
 // getTestUserInit - get the test users information needed for the front-end
@@ -590,12 +607,39 @@ func storeTestKeys(keys []string, locks []string, userid string) error {
 	return nil // no errors, yay!
 }
 
+// storeTestDisplayPass - stores the test user's plaintext password
+func storeTestDisplayPass(userid string, password string) error {
+	dbinfo := dbinfo.Db()
+	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
+	if err != nil {
+		return errors.New("opening the database connection for storeTestPass went wrong")
+	}
+	defer db.Close()
+
+	// Prepare statement for inserting the user's auth into the new table
+	prepareStatement := "INSERT INTO testPassDisplay VALUES(DEFAULT, ?, ?)"
+
+	stmtIns, err := db.Prepare(prepareStatement)
+	if err != nil {
+		return errors.New("error encountered when preparing to insert the test user's display password")
+	}
+	defer stmtIns.Close()
+
+	_, err = stmtIns.Exec(userid, password)
+	if err != nil {
+		fmt.Println("Err was", err)
+		return errors.New("error encountered when executing the query to insert the test user's display password")
+	}
+
+	return nil // no errors, yay!
+}
+
 // getTestKeys queries the database and returns all of the user's locks into a slice
 func getTestKeys(userid string) ([][]string, error) {
 	dbinfo := dbinfo.Db()
 	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
 	if err != nil {
-		return nil, errors.New("Unable to connect to the database in the GetLocks function in serve.go")
+		return nil, errors.New("Unable to connect to the database in the getTestKeys function in serve.go")
 	}
 	defer db.Close()
 
@@ -620,4 +664,23 @@ func getTestKeys(userid string) ([][]string, error) {
 	}
 
 	return comboSlice, nil
+}
+
+// getTestDisplayPass queries the database and returns the user's display password as a string
+func getTestDisplayPass(userid string) (string, error) {
+	dbinfo := dbinfo.Db()
+	db, err := sql.Open(dbinfo[0], dbinfo[1]) // gets the database information from the dbinfo package and enters the returned slice values as arguments
+	if err != nil {
+		return "", errors.New("Unable to connect to the database in the getTestDisplayPass function in serve.go")
+	}
+	defer db.Close()
+
+	var password string
+	row := db.QueryRow("SELECT pass FROM testPassDisplay WHERE userid = ?", userid).Scan(&password)
+	switch row {
+	case sql.ErrNoRows: // if no rows were returned, the user does not exist
+		return "", errors.New("No password was returned")
+	}
+
+	return password, nil
 }

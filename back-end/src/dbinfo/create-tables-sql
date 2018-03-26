@@ -96,3 +96,9 @@ create table testKeysDisplay(
 	id int primary key auto_increment, userid int not null, keysAre varchar(16), keyLocks int, keyType int,
 	foreign key (userid) references testUsers(id)
 );
+
+drop table if exists testPassDisplay;
+create table testPassDisplay(
+	id int primary key auto_increment, userid int not null, pass varchar(64),
+	foreign key (userid) references testUsers(id)
+);

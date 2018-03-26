@@ -15,7 +15,7 @@ import { AuthenticationService } from '../_auth-guard/authentication.service';
 
 export class LogoutComponent implements OnInit {
     countDown;
-    counter = 4;
+    counter = 3;
 
     constructor(private authenticationService: AuthenticationService, private router: Router) {}
 
@@ -25,7 +25,7 @@ export class LogoutComponent implements OnInit {
         .take(this.counter)
         .map(() => --this.counter);
         this.authenticationService.logout();
-        Observable.timer(4200)
+        Observable.timer(3100)
           .subscribe(i => {
             this.router.navigate(['/']);
         });

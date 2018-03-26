@@ -62,7 +62,6 @@ export class RegisterTestComponent implements OnInit {
         this.showSuccess = false;
         this.showFail = true;
         this.showInit = false;
-          console.log(err);
       }
     );
   }

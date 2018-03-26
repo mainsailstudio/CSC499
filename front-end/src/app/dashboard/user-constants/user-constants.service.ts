@@ -24,7 +24,6 @@ export class UserConstantsService {
     public Init;
 
     constructor() {
-        console.log('HEALLO?? Are you even trying?');
         const userDataJSON = localStorage.getItem('currentUser');
         const userData = JSON.parse(userDataJSON);
 
@@ -38,11 +37,9 @@ export class UserConstantsService {
             this.ID = userData['id'];
         }
         if (this.Email === 'undefined' || this.Email === undefined || this.Email === '' || this.Email === null) {
-            console.log('Are you even trying?');
             this.Email = userData['email'];
         }
         if (this.Token === 'undefined' || this.Token === undefined || this.Token === '' || this.Token === null) {
-            console.log('Are you even trying?');
             this.Token = userData['token'];
         }
         if (this.TestLevel === 'undefined' || this.TestLevel === undefined || this.TestLevel === '' || this.TestLevel === null) {
@@ -52,7 +49,6 @@ export class UserConstantsService {
             this.LoginState = userData['loginState'];
         }
         if (this.Init === 'undefined' || this.Init === undefined || this.Init === '' || this.Init === null) {
-            console.log('Are you even trying?');
             this.Init = userData['init'];
         }
     }

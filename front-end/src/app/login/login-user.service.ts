@@ -66,14 +66,6 @@ export class LoginUserService {
     });
   }
 
-  tryPing (): Observable<boolean> {
-    return this.http.get(TestURL + 'ping', httpOptionsAuthorized).map(
-      response => {
-        console.log(response);
-          return true;
-      });
-  }
-
   logout(): void {
     // clear token remove user from local storage to log user out
     this.token = null;

@@ -23,13 +23,13 @@
     <!-- if the testLevel is 1 -->
     <div id="testLevel1" *ngIf="testLevel === 1">
       <label for="locks">Password:</label><br />
-      <input autofocus required ngModel tempPass name="tempPass" #tempPass="ngModel" type="password" style="width:70%" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"><br />
+      <input autofocus required ngModel tempPass name="tempPass" #tempPass="ngModel" type="password" style="width:70%"><br />
     </div>
 
     <!-- if the testLevel is 2 or 3 -->
     <div id="testLevel2-3" *ngIf="testLevel === 2 || testLevel === 3">
       <label for="locks">Locks: {{ locksString }}</label>&nbsp;<i (click)="refreshLocks()" title="Refresh the locks" class="fas fa-sync"></i><br />
-      <input autofocus required ngModel keys name="keys" #keys="ngModel" type="password" style="width:70%" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"><br />
+      <input autofocus required ngModel keys name="keys" #keys="ngModel" type="password" style="width:70%"><br />
     </div>
 
      <!-- if the loginstate is unknown -->

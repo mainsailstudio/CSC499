@@ -55,9 +55,10 @@
         <p>That's it! Not so hard really.</p>
         <h3>There are some restrictions though:</h3>
             <ul>
-                <li>Each key has to be at least 4 characters</li>
+                <li>Each key has to be at least <strong>3</strong> characters</li>
                 <li>None of the keys can repeat</li>
                 <li>The keys must be entered in without any delimiters when logging in</li>
+                <li><strong>Please do not write them down anywhere!</strong></li>
             </ul>
         <p>You are going to set up your own words soon, but first, a bit about memorization</p>
         <button (click)="changeInstructions(2)" style="float:right">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
@@ -96,7 +97,9 @@
             <div class="collapse" id="collapseRandomImage">
                 <img [src]="imagePath(sharkImage)" />
             </div> 
+            <li>Close your eyes and think through the sentence you constructed 3 or 4 times</li>
         </ol>
+        <p>You are now going to set up your own table of locks and keys, hit the "Next" button to continue!</p>
         <!-- <img src="{{ xkcdImage }}"> -->
         <button (click)="changeInstructions(1)"><i class="fas fa-angle-double-left fa-lg fa-alignWithText"></i> Back</button> <button (click)="changeInstructions(3)" style="float:right">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
     </div>
@@ -104,6 +107,6 @@
         <h1>Create your own table of locks and keys</h1>
         <app-dashboard-test></app-dashboard-test>
         <button (click)="changeInstructions(2)"><i class="fas fa-angle-double-left fa-lg fa-alignWithText"></i> Back</button>
-        <h6>Remember, each key has to be at least 4 characters and there can't be any duplicates</h6> 
+        <h6>Remember, each key has to be at least 3 characters and there can't be any duplicates</h6> 
     </div>
 </div>

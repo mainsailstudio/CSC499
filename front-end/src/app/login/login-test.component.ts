@@ -76,7 +76,6 @@ export class LoginTestComponent implements OnInit {
   refreshLocks() {
     // first add to the refreshes variable
     this.refreshes++;
-    console.log('Refreshes are ' + this.refreshes);
     // since they can't refresh it until postData has already been called once, this should have their email
     this.postData(this.userEmail);
   }
@@ -85,7 +84,6 @@ export class LoginTestComponent implements OnInit {
    // this.register = undefined;
     email = email.trim();
     this.userEmail = email;
-    console.log('Email is ' + this.userEmail);
 
 
     const loginUser: TestUser = { email } as TestUser;
@@ -126,7 +124,6 @@ export class LoginTestComponent implements OnInit {
   }
 
   loginUser(keys: string, tempPass: string) {
-    console.log('Keys are ' + keys + ' and tempPass is ' + tempPass);
   }
 
   // the form that logs in the user regardless if they are using a password or dynauth due to the testLevel variable
@@ -198,7 +195,6 @@ export class LoginTestComponent implements OnInit {
         this.showFail = true;
         this.showSuccess = false;
         this.showInitError = false;
-        console.log('Error is ' + err);
       }
     );
   }

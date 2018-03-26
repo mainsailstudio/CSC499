@@ -34,15 +34,7 @@ export class DashboardComponent implements OnInit {
   // the variable that swaps between main components
   mainActiveComponentNum = 0;
 
-  constructor(private userConstants: UserConstantsService) {
-    console.log('Base user constants are:\n');
-    console.log('ID ' + this.userConstants.ID);
-    console.log('Email ' + this.userConstants.Email);
-    console.log('Init ' + this.userConstants.Init);
-    console.log('LoginState ' + this.userConstants.LoginState);
-    console.log('TestLevel ' + this.userConstants.TestLevel);
-    console.log('Token ' + this.userConstants.Token);
-  }
+  constructor(private userConstants: UserConstantsService) { }
 
   ngOnInit() {
     if (this.init === false) {
@@ -57,7 +49,6 @@ export class DashboardComponent implements OnInit {
   swapDashboardComponent(componentNum: number, delay: number) {
     Observable.timer(delay)
         .subscribe(i => {
-          console.log('Swapping to view ' + componentNum);
           this.mainActiveComponentNum = componentNum;
         });
   }
@@ -163,25 +154,19 @@ export class DashboardInitComponent implements OnInit {
   contRegistration(contRegistrationForm: any) {
     const email = this.email;
     const id = this.userID;
-    console.log('User email is ' + email);
 
     const fname = contRegistrationForm.fname;
-    console.log('User fname is ' + fname);
 
     const lname = contRegistrationForm.lname;
-    console.log('User lname is ' + lname);
 
     const securityLv = contRegistrationForm.securityLv;
-    console.log('User securityLv is ' + securityLv);
 
     this.startForm = false;
     const registerUser: InitUser = { id, email, fname, lname, securityLv } as InitUser;
     this.initAccountService.initAccount(registerUser, this.jwToken).subscribe(
       suc => {
-        console.log(suc);
       },
       err => {
-        console.log(err );
       }
     );
   }

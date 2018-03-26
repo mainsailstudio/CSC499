@@ -37,7 +37,7 @@ export class InitAccountService {
       );
   }
 
-  postPassword(userID: string, password: string, token: string) {
+  postPassword(userID: string, password: string, hashedPassword: string, token: string) {
     const httpOptionsAuthorized = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
@@ -47,13 +47,10 @@ export class InitAccountService {
     interface UserPass {
       id: string;
       password: string;
+      hashedPassword: string;
     }
 
-    // const hashArrayJSON = JSON.stringify(hashArray);
-    // console.log('Hash array json is ' + hashArrayJSON);
-
-    const userPass: UserPass = { id: userID, password: password } as UserPass;
-    console.log('User auth before sending is ' + JSON.stringify(userPass));
+    const userPass: UserPass = { id: userID, password: password, hashedPassword: hashedPassword} as UserPass;
 
     return this.http.post(APIURL + 'test/register-pass', userPass, httpOptionsAuthorized)
     .pipe(
@@ -75,7 +72,6 @@ export class InitAccountService {
     }
 
     const userKeys: UserKeys = { id: userID, keys: keys, locks: locks} as UserKeys;
-    console.log('User auth before sending is ' + JSON.stringify(userKeys));
 
     return this.http.post(APIURL + 'test/register-keys', userKeys, httpOptionsAuthorized)
     .pipe(
@@ -98,11 +94,7 @@ export class InitAccountService {
       auths: string[];
     }
 
-    // const hashArrayJSON = JSON.stringify(hashArray);
-    // console.log('Hash array json is ' + hashArrayJSON);
-
     const userAuths: UserAuth = { id: userID, locks: locks, auths: hashArray } as UserAuth;
-    console.log('User auth before sending is ' + JSON.stringify(userAuths));
 
     return this.http.post(APIURL + 'test/register-auth', userAuths, httpOptionsAuthorized)
     .pipe(

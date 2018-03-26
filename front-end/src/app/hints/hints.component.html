@@ -1,6 +1,13 @@
 <div clas="container">
   <div clas="row">
-    <div class="col">
+    <!-- hints for those using a password -->
+    <div class="col" *ngIf="this.userConstants.TestLevel === 1">
+    <h1>Your password is:</h1>
+    <p>{{ password }}</p>
+    </div>
+
+    <!-- hints for those using locks and keys -->
+    <div class="col" *ngIf="this.userConstants.TestLevel === 2 || this.userConstants.TestLevel === 3">
     <h1>Your locks and keys are:</h1>
     <ul>
         <li *ngFor="let key of keys" id="key-list">

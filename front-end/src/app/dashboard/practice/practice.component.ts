@@ -31,6 +31,7 @@ export class PracticeComponent implements OnInit {
 
   // get user's keys into this
   keys = [];
+  password = '';
 
   // will be filled by postData
   locks = [];
@@ -57,20 +58,25 @@ export class PracticeComponent implements OnInit {
               ) { }
 
   ngOnInit() {
-    console.log('UserID is ' + this.userConstants.ID);
-    console.log('User email is ' + this.userConstants.Email);
-    this.practiceService.getTestUserKeys(this.userConstants.ID).subscribe(
-      suc => {
-        console.log(suc);
-        this.keys = Array.from(suc); // what in the hell is going on with this, idk internet code works
-        console.log('Base suc is ' + suc);
-        console.log('This keys is ' + this.keys);
-      },
-      err => {
-        console.log(err);
-        console.log('Error log here');
-      }
-    );
+    if (this.userConstants.TestLevel === 1) {
+      this.practiceService.getTestUserDisplayPassword(this.userConstants.ID).subscribe(
+        suc => {
+          this.password = suc;
+        },
+        err => {
+        }
+      );
+    }
+
+    if (this.userConstants.TestLevel === 2 || this.userConstants.TestLevel === 3) {
+      this.practiceService.getTestUserKeys(this.userConstants.ID).subscribe(
+        suc => {
+          this.keys = Array.from(suc); // what in the hell is going on with this, idk internet code works
+        },
+        err => {
+        }
+      );
+    }
     this.postData(this.userConstants.Email);
   }
 
@@ -97,8 +103,6 @@ export class PracticeComponent implements OnInit {
         this.nextFormInput(suc);
       },
       err => {
-        console.log(err);
-        console.log('Error log here');
       }
     );
   }
@@ -119,7 +123,6 @@ export class PracticeComponent implements OnInit {
   }
 
   loginUser(keys: string, tempPass: string) {
-    console.log('Keys are ' + keys + ' and tempPass is ' + tempPass);
   }
 
   // the form that logs in the user regardless if they are using a password or dynauth due to the testLevel variable
@@ -187,7 +190,6 @@ export class PracticeComponent implements OnInit {
         this.showLoading = false;
         this.showFail = true;
         this.showSuccess = false;
-        console.log('Error is ' + err);
       }
     );
   }
