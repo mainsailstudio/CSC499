@@ -1,6 +1,6 @@
 <h1>Practice</h1>
 
-<form (ngSubmit)="contLogin(contLoginForm.value)" #contLoginForm="ngForm" *ngIf="!initLogin">
+<form (ngSubmit)="contLogin(contLoginForm.value)" #contLoginForm="ngForm" *ngIf="!this.userConstants.Init">
     <label for="email">Email:</label><br />
     <input disabled required ngModel fakeEmail name="fakeEmail" #fakeEmail="ngModel" type="email" style="width:70%" [(ngModel)]="userConstants.Email" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');"><br />
 

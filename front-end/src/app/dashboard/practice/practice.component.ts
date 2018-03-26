@@ -54,7 +54,7 @@ export class PracticeComponent implements OnInit {
   constructor(private loginService: LoginTestService,
               private activityLog: ActivityLogService,
               private practiceService: PracticeService,
-              private userConstants: UserConstantsService
+              public userConstants: UserConstantsService
               ) { }
 
   ngOnInit() {

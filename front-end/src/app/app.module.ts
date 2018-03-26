@@ -24,7 +24,6 @@ import {  DashboardComponent,
   DashboardPracticeComponent,
   DashboardHintsComponent,
   DashboardAboutComponent} from './dashboard/dashboard.component';
-import { ConfigurationComponent } from './dashboard/configuration/configuration.component';
 import { LogoutComponent } from './login/logout.component';
 
 // module imports
@@ -77,7 +76,6 @@ import { GetTokenService } from './misc/get-token.service';
     DashboardInitComponent,
     DashboardSidebarComponent,
     DashboardNavComponent,
-    ConfigurationComponent,
     RegisterTestComponent,
     LandingTestComponent,
     LoginTestComponent,

@@ -15,7 +15,7 @@ export class HintsComponent implements OnInit {
 
   // image path stuff
   private relativePath = '../../assets/';
-  private sharkImage = 'rainbow-shark.png';
+  public sharkImage = 'rainbow-shark.png';
 
   // random word array for suggested words
   randomWordArray = [];
@@ -24,7 +24,7 @@ export class HintsComponent implements OnInit {
   keyArray = [];
 
   constructor(private practiceService: PracticeService,
-              private userConstants: UserConstantsService) { }
+              public userConstants: UserConstantsService) { }
 
   ngOnInit() {
     if (this.userConstants.TestLevel === 1) {
