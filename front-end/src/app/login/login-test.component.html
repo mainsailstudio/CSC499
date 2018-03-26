@@ -9,7 +9,7 @@
             Make sure this is a valid email
         </div>
 
-      <button type="submit" (click)="postData(email.value)" class="button" *ngIf="initLogin">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+      <button type="submit" (click)="startProcessAndGetLocks(email.value)" class="button" *ngIf="initLogin">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
       <div *ngIf="showInitError" class="alert alert-info" role="alert">
           This account has not been configured yet<br />
           Please register using the form to the right first

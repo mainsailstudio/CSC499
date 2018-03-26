@@ -76,11 +76,11 @@ export class LoginTestComponent implements OnInit {
   refreshLocks() {
     // first add to the refreshes variable
     this.refreshes++;
-    // since they can't refresh it until postData has already been called once, this should have their email
-    this.postData(this.userEmail);
+    // since they can't refresh it until startProcessAndGetLocks has already been called once, this should have their email
+    this.startProcessAndGetLocks(this.userEmail);
   }
 
-  postData(email: string): void {
+  startProcessAndGetLocks(email: string): void {
    // this.register = undefined;
     email = email.trim();
     this.userEmail = email;
@@ -191,6 +191,11 @@ export class LoginTestComponent implements OnInit {
       err => {
         // add the failure to the failure variable
         this.failures++;
+
+        // refresh the locks
+        this.startProcessAndGetLocks(this.userEmail);
+
+        // reset notifications
         this.showLoading = false;
         this.showFail = true;
         this.showSuccess = false;
