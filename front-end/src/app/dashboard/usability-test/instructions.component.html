@@ -2,7 +2,7 @@
     <div *ngSwitchCase="1">
         <h1>Success! Now, what is this?</h1>
         <p>This is just a simple memorability test to see how well you can remember a strong password</p>
-        <p>You will be creating your password on the next page</p>
+        <p>You will be creating your password soon, but first:</p>
         <h3>Restrictions:</h3>
         <ul>
             <li>Your password must be "strong" as indicated by the password strength meter. This requires:</li>
@@ -20,13 +20,43 @@
                 <li>This, again, relies on your honesty</li>
             </ul>
         </ul>
-        <p>Now hit "Next" and create your password</p>
-        <button (click)="changeInstructions(3)" style="float:right">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+        <p>You are going to set up your own password soon, but first, a bit about memorization</p>
+        <button (click)="changeInstructions(2)" style="float:right">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
+    </div>
+    <div *ngSwitchCase="2">
+        <h1>Memorization techniques</h1>
+        <p>Memorizing passwords can seem difficult, but there are some simple tricks that make it much easier. Try following the instructions below when you are configuring your password.</p>
+        <ol>
+            <li>Pick 2 or 3 random words from this list that form a sort of nonsensical phrase</li>
+                <button type="button" data-toggle="collapse" data-target="#collapseRandomWords" aria-expanded="false" aria-controls="collapseRandomWords">View some randomly generated words <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+                <div class="collapse" id="collapseRandomWords">
+                    <h3 style="margin-top:0px; margin-bottom:10px;">Random words <i (click)="refreshWords()" title="Refresh the locks" class="fas fa-sync" style="vertical-align: 3px;"></i></h3>
+                    <div  style="margin-bottom:25px;">
+                        <span *ngFor="let randomWord of randomWordArray" style="margin-right:20px;">{{ randomWord }}</span>
+                    </div>
+                </div> 
+            <li>Replace some letters with similar looking numbers or symbols</li>
+            <button type="button" data-toggle="collapse" data-target="#collapseRandomImage" aria-expanded="false" aria-controls="collapseRandomImage">View an example <i class="fas fa-angle-double-down fa-lg fa-alignWithText"></i></button>
+            <div class="collapse" id="collapseRandomImage">
+                <h3 style="margin-top:0px;">Words chosen</h3>
+                <ul>
+                    <li>Shark</li>
+                    <li>Angel</li>
+                    <li>Ride</li>
+                </ul>
+                <h3>Password:</h3>
+                <p>r1deSha@rkangel</p>
+            </div> 
+            <li>Close your eyes and think through the sentence you constructed 3 or 4 times</li>
+        </ol>
+        <p>You are now going to set up your own password, hit the "Next" button to continue!</p>
+        <!-- <img src="{{ xkcdImage }}"> -->
+        <button (click)="changeInstructions(1)"><i class="fas fa-angle-double-left fa-lg fa-alignWithText"></i> Back</button> <button (click)="changeInstructions(3)" style="float:right">Next <i class="fas fa-angle-double-right fa-lg fa-alignWithText"></i></button>
     </div>        
     <div *ngSwitchCase="3">
         <h1>Create your password</h1>
         <app-dashboard-test></app-dashboard-test>
-        <button (click)="changeInstructions(1)"><i class="fas fa-angle-double-left fa-lg fa-alignWithText"></i> Back</button> 
+        <button (click)="changeInstructions(2)"><i class="fas fa-angle-double-left fa-lg fa-alignWithText"></i> Back</button> 
         <h6>Remember, the password has to be at least 8 characters, have a capital letter and 1 number or symbol</h6>
     </div>
 </div>

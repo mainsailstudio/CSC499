@@ -146,8 +146,10 @@ export class PracticeComponent implements OnInit {
     }
 
     const secretBeforeHash = tempPass + auth;
+    console.log('secretBeforeHash is ' + secretBeforeHash);
     this.secretLength = secretBeforeHash.length;
     const secret = shajs('sha256').update(secretBeforeHash).digest('hex'); // due to the if's one or the other should be empty
+    console.log('Secret is ' + secret);
     const loginUser: ContTestUser = { email, testLevel, secret } as ContTestUser;
     this.loginService.contLoginUser(loginUser).subscribe(
       suc => {

@@ -16,6 +16,7 @@ export class HintsComponent implements OnInit {
   // image path stuff
   private relativePath = '../../assets/';
   public sharkImage = 'rainbow-shark.png';
+  private xkcdImage = 'password-strength.png';
 
   // random word array for suggested words
   randomWordArray = [];
@@ -27,6 +28,7 @@ export class HintsComponent implements OnInit {
               public userConstants: UserConstantsService) { }
 
   ngOnInit() {
+    this.refreshWords();
     if (this.userConstants.TestLevel === 1) {
       this.practiceService.getTestUserDisplayPassword(this.userConstants.ID).subscribe(
         suc => {

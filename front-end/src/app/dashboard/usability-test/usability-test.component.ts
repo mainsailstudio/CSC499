@@ -25,7 +25,7 @@ export class UsabilityTestInstructionsComponent implements OnInit {
 
   // passphrase XKCD comic, great for illustrations
   private relativePath = '../../assets/';
-  private xkcdImage = 'password_strength.png';
+  private xkcdImage = 'password-strength.png';
   private sharkImage = 'rainbow-shark.png';
 
   // random word array for suggested words
