@@ -1,9 +1,0 @@
-TODO
-
-Alright you basterd, finish this stuff up:
-    1.  Validate user info on front-end (strong password mostly)
-    2.  Once they register successfully, give them a nice green notification and allow them to practice
-        3.  In the practice page, allow them to have a dropdown that shows their keys
-    4.  Limit refreshing keys
-    5.  Write documentation into program
-    6.  Update Dr. Wania and have form be through Blackboard cuz I am too lazy to write it in here
