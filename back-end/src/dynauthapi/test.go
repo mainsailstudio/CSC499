@@ -270,7 +270,7 @@ func testRegisterAuth(w http.ResponseWriter, r *http.Request) {
 	lockPermArray := dynauthcore.LimPerms(user.Locks, 4) // 4 is the default
 
 	// combine the permutated locks with the received array of hashed auths delivered by the frontend
-	// NOTE: it is assumed the frontend is using the EXACT same permutation algorithms (find all subsets then permute all seubsets) to generate them, otherwise it will not work
+	// NOTE: it is assumed the frontend is using the EXACT same permutation algorithms (find all subsets then permute all subsets) to generate them, otherwise it will not work
 	combineArray := dynauthcore.CombinePerms(lockPermArray, user.Auths)
 
 	// hash each perm again with a salt

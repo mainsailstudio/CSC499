@@ -1,0 +1,34 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{A Brief Review of the Current State of Authentication}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Knowledge-based Authentication}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Possession-based Authentication}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Trait-based Authentication}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{The Prevalence and Problems of Passwords}{}% 6
+\BOOKMARK [2][-]{subsection.3.1}{Lack of a Viable Alternative}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.2}{Familiarity of use}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.3}{Ease of implementation}{section.3}% 9
+\BOOKMARK [1][-]{section.4}{Enter: Dynamic Authentication}{}% 10
+\BOOKMARK [2][-]{subsection.4.1}{On The Name}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.2}{Need for a New Method of Authentication}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.3}{Basic Traits Necessary to Replace Passwords}{section.4}% 13
+\BOOKMARK [2][-]{subsection.4.4}{Overview of Usage}{section.4}% 14
+\BOOKMARK [2][-]{subsection.4.5}{Example \(Correct\) Usage 1}{section.4}% 15
+\BOOKMARK [2][-]{subsection.4.6}{Example \(Incorrect\) Usage 2}{section.4}% 16
+\BOOKMARK [2][-]{subsection.4.7}{Information Storage}{section.4}% 17
+\BOOKMARK [1][-]{section.5}{Benefits of Dynauth}{}% 18
+\BOOKMARK [1][-]{section.6}{Implementation of Dynauth}{}% 19
+\BOOKMARK [2][-]{subsection.6.1}{Method of Implementation}{section.6}% 20
+\BOOKMARK [2][-]{subsection.6.2}{Backend}{section.6}% 21
+\BOOKMARK [2][-]{subsection.6.3}{Frontend}{section.6}% 22
+\BOOKMARK [2][-]{subsection.6.4}{JWT Tokens}{section.6}% 23
+\BOOKMARK [1][-]{section.7}{Challenges During Implementation}{}% 24
+\BOOKMARK [2][-]{subsection.7.1}{Hashing Speed}{section.7}% 25
+\BOOKMARK [2][-]{subsection.7.2}{Data Storage Problems}{section.7}% 26
+\BOOKMARK [1][-]{section.8}{Usability Testing}{}% 27
+\BOOKMARK [2][-]{subsection.8.1}{Method of Usability Testing}{section.8}% 28
+\BOOKMARK [2][-]{subsection.8.2}{Sample Size}{section.8}% 29
+\BOOKMARK [1][-]{section.9}{Results of Usability Testing}{}% 30
+\BOOKMARK [2][-]{subsection.9.1}{Instructions Are Important}{section.9}% 31
+\BOOKMARK [1][-]{section.10}{Conclusion}{}% 32
+\BOOKMARK [2][-]{subsection.10.1}{Figures and Tables}{section.10}% 33
+\BOOKMARK [1][-]{section*.3}{References}{}% 34

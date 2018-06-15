@@ -1,0 +1,275 @@
+\documentclass[conference]{IEEEtran}
+% \IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{hyperref}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Dynamic Authentication: Developing an Alternative to Passwords (\url{https://dynauth.io})\\}
+
+\author{\IEEEauthorblockN{Connor Peters}
+\IEEEauthorblockA{\textit{Dept. of Computer Sciences} \\
+\textit{The College at Brockport}\\
+Brockport NY, USA \\
+cpete4@brockport.edu}
+\and
+\IEEEauthorblockN{Dr. Ning Yu}
+\IEEEauthorblockA{\textit{Dept. of Computer Sciences} \\
+\textit{The College at Brockport}\\
+Brockport NY, USA \\
+nyu@brockport.edu}
+\and
+\IEEEauthorblockN{Dr. Christine Wania}
+\IEEEauthorblockA{\textit{Dept. of Computer Sciences} \\
+\textit{The College at Brockport}\\
+Brockport NY, USA \\
+cwania@brockport.edu}
+}
+
+\maketitle
+
+\begin{abstract}
+	Abstract here after the entire paper is finished
+\end{abstract}
+
+% \begin{IEEEkeywords}
+% cybersecurity, frontend, backend, dynauth
+% \end{IEEEkeywords}
+
+\section{Introduction}
+	As the Internet has matured, the ubiquitous use of passwords across the web to secure user accounts has resulted in passwords becoming a cornerstone of the Internet’s cybersecurity infrastructure. However, between the constant use of passwords required by web-based services and the steady increase of computing power, a sort of paradox has developed; a password needs to be long and random to be secure, and a password needs to be easily memorizable. This paradox has caused many user experience issues, and is the reason most services now require users to create passwords with a minimum character count and special symbols to guarantee password length and complexity. 
+	
+	Passwords alone are not that bad. They actually have some amazing advantages in the world of authentication.
+	
+	The purpose of this project is not to expose the insecurities of passwords, as that is already well documented; rather, the purpose of this project is to propose and validate a new knowledge-based authentication scheme as a replacement to the everyday use of passwords.
+
+\section{The Prevalence and Problems of Passwords}
+	Weren't passwords supposed to die a decade ago\cite[Need to cite]{cite here}? Why are they more prevalent now than ever\cite[Need to cite]{cite here}? From my observations, there are 3 main reasons:
+	\begin{enumerate}
+		\item Lack of a viable alternative
+		\item Familiarity of use
+		\item Ease of implementation
+	\end{enumerate}
+\subsection{Lack of a Viable Alternative}
+	When accessing any sort of website, people expect passwords. If they were presented anything else\footnote{With the possible exception of using a smartphone finger print scanner}, they would be confused and not understand what they were seeing. They wouldn't know how to use it, they wouldn't trust it, and they would most likely just leave altogether. 
+	
+	An interesting example of this is my credit card provider's online system. The password requirement are exceedingly stringent, requiring something like 14 characters with all the symbols and goofiness you would expect. On top of that, the bank also requires you to choose an image and 1 of a dozen or so predefined hints\footnote{Some examples are: "similar washer", "unique clothier", "interesting tailor". I have yet to figure out the intended use for such abstract phrases...} to make up for the complex password. Needless to say this has not helped me one whit\footnote{Is that a word people still use? Judging by the graph of usage over time Google so generously provides when you research a word definition, no.}.
+	
+	It's obvious to me\footnote{And others \cite{b1}} that developing alternative to passwords is not a trivial\footnote{Have I used that word twice now?} process. There are many MANY factors to consider; from user experience to cross-platform compatibility to ease of implementation, passwords will not be easy to root out of the system. It might actually be something that can never happen\footnote{I am trying my hardest a fallibilist to not say the dreaded "i" word here. I am not even convinced that FTL is impossible at this point.}
+\subsection{Familiarity of use}
+
+\subsection{Ease of implementation}
+
+
+\section{Enter: Dynamic Authentication}
+	"Dynauth" is a portmanteau of dynamic and authentication, and will be used colloquially to refer to dynamic authentication for the rest of this paper.
+\subsection{Need for a New Method of Authentication}
+	To be clear, I am not saying passwords are a \textit{complete} failure. They are marvelously familiar to users while being completely platform agnostic and relatively easy to implement\footnote{To developers who understand the complexities at least. It's really not hard to use Bcrypt...}. These aspects of passwords are what allowed them to spread like weeds and become the overrun jungle they are now. These aspects of authentication should be preserved as 
+\subsection{Basic Traits Necessary to Replace Passwords}
+	Why it needs to be knowledge-based and easy to remember-
+\subsection{Overview of Usage}
+	A user configures a table of numbered "locks" that correlate to strings of text (typically plain English words) known "keys". These locks and keys are similar to a password in that they are the user's "secret", and must remembered for authentication.
+	\begin{table}
+		\centering
+			\begin{tabular}{ | l | l | }
+				\hline
+				\textbf{Locks} & \textbf{Keys} \\ \hline
+				1 & ant \\ \hline
+				2 & beetle \\ \hline
+				3 & cat \\ \hline
+				4 & dog \\ \hline
+				5 & eagle \\ \hline
+				6 & fish \\ \hline
+				7 & goat \\ \hline
+				8 & hare \\ \hline
+				9 & ibis \\ \hline
+				10 & jackal \\
+				\hline
+			\end{tabular}
+		\caption{A sample table of locks and keys}
+	\end{table}
+
+	Once the user configure their locks and keys, they are ready to login. A typical login sessions goes like this:
+	\begin{enumerate}
+		\item The user enters in their username (a valid email address, for this implementation)
+		\item The user is presented 4\footnote{The number 4 was a completely arbitrary number chosen for this implementation simply because it seemed reasonable, both in terms of memorization and security. This number is not set in stone, and more testing will have to be done to determine what the optimal number would be.} of their locks in a random order, without repeat
+		\item The user inputs, in one long string without spaces or delimiters, the keys that correlate to the randomly chosen locks in the same order
+	\end{enumerate}
+\subsection{Example (Correct) Usage 1}
+	Using the same locks and keys as depicted in Table 1, here is what a correct (meaning the keys are inputted correctly by the user) login session might look like:
+	\begin{itemize}
+		\item Please enter your email:
+		\begin{itemize}
+			\item cpete4@brockport.edu
+		\end{itemize}
+		\item Your locks are: 7 - 4 - 2 - 10
+		\begin{itemize}
+			\item goatdogbeetlejackal
+		\end{itemize}
+		\item Correct! You are now authenticated
+	\end{itemize}
+\subsection{Example (Incorrect) Usage 2}
+	Using the same locks and keys as depicted in Table 1, here is what a incorrect (meaning the keys are inputted incorrectly by the user) login session might look like:
+	\begin{itemize}
+		\item Please enter your email:
+		\begin{itemize}
+			\item cpete4@brockport.edu
+		\end{itemize}
+		\item Your locks are: 3 - 6 - 8 - 9
+		\begin{itemize}
+			\item catfishharejackal\footnote{Notice the word "jackal" is for lock number 10, not 9 as required}
+		\end{itemize}
+		\item INCORRECT: Your keys do not match, not authenticated. Please try again
+		\item Your locks are: 9 - 4 - 2 - 1\footnote{Notice that the locks changed automatically upon failure.}
+		\begin{itemize}
+			\item ibisdogbeetleant
+		\end{itemize}
+		\item Correct! You are now authenticated
+	\end{itemize}
+
+\subsection{Information Storage}
+	One of the main problems with the usage of passwords is the fact that no matter what hashing scheme is used, there is always a one-to-one relationship of username/email to password somewhere in a database. This allows any attacker who gains access to compile massive tables of passwords to crack through at a later time.
+	
+	The core difference that allows dynauth to operate more securely, even in the event of a database breach, is the \textbf{hashed} storage of \textit{all possible lock and key permutations}. This means that if a user configures 10 total keys, and are presented 4 total locks at the time of authentication (the base level configuration I chose), there will be a total of 10P4 (10 * 9 * 8 * 7 = 5040) permutations generated and stored.
+	
+	\textbf{Example:}
+	\begin{itemize}
+		\item The user configures the locks and keys outlined above\
+		\item 
+	\end{itemize}
+
+\subsection{Benefits of Dynauth}
+
+\subsection{On The Name}
+I am willing to admit that "Dynauth" or even "Dynamic Authentication" might not be the most ideal name for such a mechanism due to the ambiguity around the word "dynamic". It was suggested to name it "Active Authentication" due to the fact that the user needs to "actively" think about the process every time they authenticate, reinforcing the memorization of the locks and keys. Despite the nice alliteration, I decided to keep the "dynamic" due to the fact that I had already bought the domain name "dynauth.io" and I did not want to change it.\footnote{Humans are stubborn}
+	
+\section{Implementation}
+	The obvious next step after developing the framework of dynauth was to implement it in a usable and extensible way to use as a testbed for further research. A live example utilizing the code written during this study is available online at \url{https://dynauth.io}.
+\subsection{Method of Implementation}
+	As is common practice in software development, I broke dynauth into two de-coupled sections, the "backend" and the "frontend". The backend was written entirely in Golang\footnote{\url{https://golang.org}} and the frontend was written in TypeScript using the Angular 5 framework.
+\subsection{Backend}
+	The backend of the system was designed as a REST-like\footnote{I describe it as "REST-like" due to the fact that the API is not entirely stateless. Once the user initially sends a login request to retrieve the random locks from the server, those locks are stored in order to be used again during authentication.} API that issues JSON Web Tokens\footnote{JWT landing page: \url{https://jwt.io/}, JWT RFC: \url{https://tools.ietf.org/html/rfc7519}} to users after authentication for secure user identification.
+	
+	The backend of this implementation is perhaps the most important aspect of this project because:
+	\begin{enumerate}
+		\item It provides a testbed to analyze the security benefits of dynauth
+		\item It provides a testbed to benchmark the performance and compare it to other authentication schemes
+		\item The REST-like design forced me to consider every HTTP request sent over the Internet
+	\end{enumerate}
+	Using Golang as the sole server-side language was a huge 
+\subsection{Frontend}
+	An Angular 5 JavaScript application to send HTTP requests to the API
+
+\subsection{Challenges During Implementation}
+	\begin{enumerate}
+		\item Permutation generation could cause lots of server load
+		\item Authenticating every HTTP request
+		\item I designed each hash permutation to be inserted into the MySQL database as a single huge insert statement rather than X amount of permutations as separate statements. This worked wonderfully from a speed point of view, however, if the number of user keys exceeded 13, MySQL would reject the insert statement for being too large.
+		\item Client-side hashing seemed necessary but could load down the frontend
+	\end{enumerate}
+\subsection{Hashing Speed}
+	Bcrypt was too dang slow, SHA3 and SHA256 had my back
+\subsection{Data Storage Problems}
+	Had to create a separate table for each user for speed of access
+
+\section{Usability}
+	When it comes to authentication, user experience is of paramount importance; It would be trivial to make passwords secure by simply requiring them to be 20+ characters. However, we have learned over time that doing so would not actually result in anyone being more secured due to the compromises that would inflict upon the users\cite[Need to cite]{cite here}. Having some sort of authentication scheme that integrates well across domains 
+\subsection{Method of Usability Testing}
+	Normal password control group and Dynauth 10x4 control group
+\subsection{Sample Size}
+	Used the CIS404 class as my testing group
+
+\subsection{Results of Usability Testing}
+	Results here
+\subsection{Instructions Are Important}
+	I forgot to tell people to remember their locks and keys. Great.
+
+\section{Conclusion}
+	After a while may suffer the same eventual flaws as passwords
+
+\subsection{Figures and Tables}
+\paragraph{Positioning Figures and Tables} Place figures and tables at the top and 
+bottom of columns. Avoid placing them in the middle of columns. Large 
+figures and tables may span across both columns. Figure captions should be 
+below the figures; table heads should appear above the tables. Insert 
+figures and tables after they are cited in the text. Use the abbreviation 
+``Fig.~\ref{fig}'', even at the beginning of a sentence.
+
+\begin{table}[htbp]
+\caption{Table Type Styles}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Table}&\multicolumn{3}{|c|}{\textbf{Table Column Head}} \\
+\cline{2-4} 
+\textbf{Head} & \textbf{\textit{Table column subhead}}& \textbf{\textit{Subhead}}& \textbf{\textit{Subhead}} \\
+\hline
+copy& More table copy$^{\mathrm{a}}$& &  \\
+\hline
+\multicolumn{4}{l}{$^{\mathrm{a}}$Sample of a Table footnote.}
+\end{tabular}
+\label{tab1}
+\end{center}
+\end{table}
+
+\begin{figure}[htbp]
+% \centerline{\includegraphics{fig1.png}}
+\caption{Example of a figure caption.}
+\label{fig}
+\end{figure}
+
+Figure Labels: Use 8 point Times New Roman for Figure labels. Use words 
+rather than symbols or abbreviations when writing Figure axis labels to 
+avoid confusing the reader. As an example, write the quantity 
+``Magnetization'', or ``Magnetization, M'', not just ``M''. If including 
+units in the label, present them within parentheses. Do not label axes only 
+with units. In the example, write ``Magnetization (A/m)'' or ``Magnetization 
+\{A[m(1)]\}'', not just ``A/m''. Do not label axes with a ratio of 
+quantities and units. For example, write ``Temperature (K)'', not 
+``Temperature/K''.
+
+\section*{Acknowledgment}
+
+The preferred spelling of the word ``acknowledgment'' in America is without 
+an ``e'' after the ``g''. Avoid the stilted expression ``one of us (R. B. 
+G.) thanks $\ldots$''. Instead, try ``R. B. G. thanks$\ldots$''. Put sponsor 
+acknowledgments in the unnumbered footnote on the first page.
+
+\section*{References}
+
+Please number citations consecutively within brackets \cite{b1}. The 
+sentence punctuation follows the bracket \cite{b2}. Refer simply to the reference 
+number, as in \cite{b3}---do not use ``Ref. \cite{b3}'' or ``reference \cite{b3}'' except at 
+the beginning of a sentence: ``Reference \cite{b3} was the first $\ldots$''
+
+Number footnotes separately in superscripts. Place the actual footnote at 
+the bottom of the column in which it was cited. Do not put footnotes in the 
+abstract or reference list. Use letters for table footnotes.
+
+Unless there are six authors or more give all authors' names; do not use 
+``et al.''. Papers that have not been published, even if they have been 
+submitted for publication, should be cited as ``unpublished'' \cite{b4}. Papers 
+that have been accepted for publication should be cited as ``in press'' \cite{b5}. 
+Capitalize only the first word in a paper title, except for proper nouns and 
+element symbols.
+
+For papers published in translation journals, please give the English 
+citation first, followed by the original foreign-language citation \cite{b6}.
+
+\begin{thebibliography}{00}
+\bibitem{b1} Bonneau, Joseph, et al. “The Quest to Replace Passwords: A Framework for Comparative Evaluation of Web Authentication Schemes.” 2012 IEEE Symposium on Security and Privacy, 2012, doi:10.1109/sp.2012.44.
+\bibitem{b2} J. Clerk Maxwell, A Treatise on Electricity and Magnetism, 3rd ed., vol. 2. Oxford: Clarendon, 1892, pp.68--73.
+\bibitem{b3} I. S. Jacobs and C. P. Bean, ``Fine particles, thin films and exchange anisotropy,'' in Magnetism, vol. III, G. T. Rado and H. Suhl, Eds. New York: Academic, 1963, pp. 271--350.
+\bibitem{b4} K. Elissa, ``Title of paper if known,'' unpublished.
+\bibitem{b5} R. Nicole, ``Title of paper with only first word capitalized,'' J. Name Stand. Abbrev., in press.
+\bibitem{b6} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, ``Electron spectroscopy studies on magneto-optical media and plastic substrate interface,'' IEEE Transl. J. Magn. Japan, vol. 2, pp. 740--741, August 1987 [Digests 9th Annual Conf. Magnetics Japan, p. 301, 1982].
+\bibitem{b7} M. Young, The Technical Writer's Handbook. Mill Valley, CA: University Science, 1989.
+\end{thebibliography}
+
+\end{document}
