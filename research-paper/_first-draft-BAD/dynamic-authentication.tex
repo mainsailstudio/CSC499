@@ -43,123 +43,129 @@ cwania@brockport.edu}
 % \end{IEEEkeywords}
 
 \section{Introduction}
-	The reliability of passwords as a secure authentication scheme has been degrading rapidly since their digital inception in the very first multi-user operating systems. Due to Moore's Law and the general expansion of the Internet, passwords that were once secure are no longer, and the bar for what is an acceptable password is continually being pushed farther down a dark path.
+	As the Internet has matured, the ubiquitous use of passwords across the web to secure user accounts has resulted in passwords becoming a cornerstone of the Internet’s cybersecurity infrastructure. However, between the constant use of passwords required by web-based services and the steady increase of computing power, a sort of paradox has developed; a password needs to be long and random to be secure and a password needs to be easily memorizable. These things are mutually exclusive and are the reason most services now require users to create passwords with a minimum character count and special symbols to guarantee password length and complexity. These restrictions have resulted in a terrible user experience to most people, tech savvy or not.
 	
-	The user experience when authenticating with a password has followed an identical route, becoming more and more unbearable with time. In short, as computers get faster, passwords must be more complex\footnote{By complex, I really mean "provide more bits of entropy".}, and therefore user requirements more stringent. However, as noted by \cite{Needed}, the recall ability of humans has not changed at all with time, and most people's passwords are insecure regardless of the requirements \cite{Needed}.
+	Passwords as a concept alone are not that bad. They actually have some amazing advantages in the world of authentication. They are marvelously familiar to users while being completely platform agnostic and relatively easy to implement\footnote{To developers who understand the complexities at least.} and reset. The positive aspects of passwords as an authentication method are not present in other forms of authentication such as biometric fingerprint scanning or hardware USB keys. Using hardware devices over the Internet is risky in general, and doing so reliably and securely just adds to that complexity. Not to mention, every hardware component you add costs money somewhere down the chain, in many cases hitting the users themselves. Passwords do the gargantuan  job of web authentication better than anything else currently, yet, they are still so problematic.
 	
-	This brings us to an interesting place in the world of cybersecurity. Users need to be authenticated of course, yet alternate schemes that would attempt to replace the password, such as biometric readers, have still not gained widespread prevalence across the Internet despite their growing ubiquity in end-user computing devices. Two factor authentication is just starting to gain traction, but users in general hate it \cite{Needed} and adoption rates are low. Passwords are increasingly unfit for the job, yet there is no replacement.
-	
-	But it's not all bad. Passwords \textit{have} worked, at least enough to protect the majority of Internet users from malevolent cyber threats \cite{?}. Let's give passwords a break for just a second to appreciate the benefits they provide.
+	The purpose of this project is not to expose the insecurities of passwords, as that is already well documented\cite{Citation Needed}; rather, the purpose of this project is to propose and validate a new knowledge-based authentication scheme as a replacement to the everyday use of passwords.
+
+\section{The Prevalence and Problems of Passwords}
+	Weren't passwords supposed to die a decade ago\cite[Need to cite]{Citation Needed}? Why are they more prevalent now than ever\cite{Citation Needed}? From my observations, along with the massive growth of the Internet, there are 3 main reasons:
 	\begin{enumerate}
-		\item Passwords are platform agnostic. Any device with an input method can take advantage of them.
-		\item Passwords do not require any additional hardware pieces for the users or the developers.
-		\item Passwords are free to use.
-		\item Passwords are relatively easy to implement for developers.
-		\item Passwords can be reset.
-		\item Passwords are marvelously familiar to users due to their prevalence on the Internet.
+		\item Lack of a viable alternative
+		\item Familiarity of use
+		\item Ease of implementation
 	\end{enumerate}
-	When framed like that, passwords actually seem to be quite competent at their job of authentication. Yet time and time again, the opposite is proven to be true. The reality is that the critical flaw to passwords are humans themselves, not the technology they are built on. But technology is here to suit humans; if it doesn't work for us, it just doesn't work.
-	
-\section{Dynamic Authentication}
-	Dynamic Authentication, colloquially referred to as "dynauth" for this paper, is an authentication scheme designed to replace passwords. The core concept behind dynauth is to create an authentication scheme that attempts to retain the aspects of passwords that are beneficial, while eliminating the parts that aren't. Therefore, dynauth should be thought of as a sort of iterative improvement on typical passwords, rather than a new thing entirely.
-	
-	Before I explain how dynauth functions, a brief description of how password-based authentication works is necessary to prevent confusion in the upcoming sections.
-	
-	Firstly, password-based authentication relies on two main elements:
-	\begin{enumerate}
-		\item A publically known identifying "username", most often an email
-		\item A protected "secret", known only to the identifier, most often a password
-	\end{enumerate}
-	The difference between a "secret" and a "password" is an important one to highlight. A user's secret is any piece of data that can be used to prove someone should have access to something. This can be a password, PIN, or security question. A password is a secret, but a secret isn't necessarily a password. The distinction is important to keep in mind as you read the upcoming description of dynauth.
-	
-	Secondly, the password-based authentication scheme referred to in this paper is assumed to be following all of the industry standard password security guidelines as described by \cite{?}. This is important to note because all comparisons to dynauth and passwords made in this paper assumes that the password is implemented perfectly. After all, it is far too common for an inexperienced developer to not properly implement authentication in their application \cite{?}.
+\subsection{Lack of a Viable Alternative}
+	Developing alternative to passwords is not a trivial process. There are many MANY factors to consider\cite{Citation Needed}; from user experience to cross-platform compatibility to ease of implementation, passwords will not be easy to root out entirely. It might actually be something that can never feasibly happen due to the vastness of their implementation. As I mentioned earlier, the main competitors to passwords work well for some use cases-smartphones for example-but they are not as widespread and frankly don't do the job as well as passwords in many situations. The only \textbf{actual} alternative to passwords at this point is a password manager application which isn't actually a replacement at all, just a bridge to fix some of the problems.
+\subsection{Familiarity of use}
+	When accessing any sort of website, people expect passwords. If they were presented anything else\footnote{With the possible exception of using a smartphone finger print scanner}, they would be confused and not understand what they were seeing. They wouldn't know how to use it, they wouldn't trust it, and they would most likely just leave altogether. 
+
+	An interesting example of this is the process to authenticate into my credit card provider's online system. The password requirement are exceedingly stringent, requiring something like 14 characters with all the symbols and goofiness you would expect. On top of that, the system also requires you to choose an abstract image along with one of a dozen or so predefined hints\footnote{Some examples are: "similar washer", "unique clothier", "interesting tailor". I have yet to figure out the intended use for such abstract phrases...} to assumedly make up for the complex password. However, a picture of the internals of a Swiss watch and the phrase, "Doubtful Cog" does absolutely nothing to prevent me from resetting that password once every couple of months.
+\subsection{Ease of implementation}
+	Passwords are all software, and when it comes to websites, platform agnostic software at that. There are literally thousands of online tutorials depicting how to implement passwords correctly (ie. hashed and salted) and the technology used is almost always Open Source and free for commercial use. No other authentication method comes close to that level of support.
+\subsection{Need for a New Method of Authentication}
+While passwords do have some wonderful qualities, their widespread use has resulted in some catastrophic user experience issues:
+\begin{enumerate}
+	\item Most users reuse the same password(s) over and over\cite{Citation Needed}
+	\item Most users write all of their passwords down\cite{Citation Needed}
+	\item All users forget their passwords at some point\cite{Citation Needed}
+\end{enumerate}
+There are also many easy to execute attacks that can render passwords useless or worse:
+\begin{enumerate}
+	\item Bruteforcing, ie. guessing all possible combinations until a match is found\footnote{A password can ALWAYS be guessed.}
+	\item "Smart"forcing\footnote{I made this up}, ie. guessing a friends password because it's their dogs name and anniversary date
+	\item Social engineering ie. phishing/spear phishing or convincing someone to remotely give you access
+	\item Keylogging, you don't know what's installed on someone else's computer\footnote{Many people don't know what is installed on their own computer}
+	\item Shoulder surfing, ie. seeing someone type in their password
+\end{enumerate}
+Both the user experience issues and security flaws that are inextricably tied to passwords have gotten to such a head that it is fairly well agreed upon\cite{Citation Needed} that something needs to be done. 
+\subsection{Basic Traits Necessary to Replace Passwords}
+\textbf{This needs to be filled out still, a lot of the information is available at \cite{b1}}
+
+\section{Enter: Dynamic Authentication}
+	"Dynauth", is a portmanteau of dynamic and authentication\footnote{Thanks for the idea Microsoft}, and will be used colloquially to refer to dynamic authentication for the rest of this paper.
 \subsection{Introduction to Dynauth}
-	Dynauth, just like a password-based authentication scheme, requires an identifying username as well as an authenticating secret. The difference is that the secret the user must remember for authentication is not a password. Instead, the secret is a list of words (typically plain English words), known as "keys", associated with numbers, known as "locks".
+	Dynauth is designed to be a password replacement authentication scheme that fixes many of the problems inherent to passwords, while being similar enough to be adopted easily. The end goal for dynauth is to implement the latest OAuth protocol and over a service to authenticate other apps over the Internet and prevent needing multiple logins.
+\subsection{Overview of Usage}
+	A user configures a table of numbered "locks" that correlate to strings of text (typically plain English words) known "keys". These locks and keys are similar to a password in that they are the user's "secret", and must remembered for authentication.
+	Table 1 depicts what a lock and key setup might look like.
+	\begin{table}
+		\centering
+			\begin{tabular}{ | l | l | }
+				\hline
+				\textbf{Locks} & \textbf{Keys} \\ \hline
+				1 & ant \\ \hline
+				2 & beetle \\ \hline
+				3 & cat \\ \hline
+				4 & dog \\ \hline
+				5 & eagle \\ \hline
+				6 & fish \\ \hline
+				7 & goat \\ \hline
+				8 & hare \\ \hline
+				9 & ibis \\ \hline
+				10 & jackal \\ \hline
+			\end{tabular}
+		\caption{A sample table of locks and keys}
+	\end{table}
 
-	A typical list of locks and keys might look like this:\footnote{This list of locks and keys is not necessarily an example of what a highly secure configuration may be like since complexity requirements for locks and keys can be altered depending on the use case, just like with passwords.}
+	\textbf{Note:} this table is not necessarily an example of what a typical configuration may be like since complexity requirements for keys have not been nailed down yet. It seems that typical dictionary words with a minimum length of 3 are sufficient for most use cases, but that has not been confirmed.
+	
+	Once the user configure their locks and keys, they are ready to login. A typical login sessions goes like this:
 	\begin{enumerate}
-		\item rough
-		\item mountain
-		\item biking
-		\item large
-		\item rocks
-		\item resulted
-		\item lengthy
-		\item costly
-		\item repairs
-		\item jeff
+		\item The user enters in their username (a valid email address, for this implementation)
+		\item The user is presented 4\footnote{The number 4 was a completely arbitrary number chosen for this implementation simply because it seemed reasonable, both in terms of memorization and security. This number is not set in stone, and more testing will have to be done to determine what the optimal number would be.} of their locks in a random order, without repeat
+		\item The user inputs, as one long string without spaces or delimiters, the keys that correlate to the randomly chosen locks in the same order
 	\end{enumerate}
-
-	The numbers 1 through 10 being the locks, and the following words being the associated keys.
-
-	However, unlike password-based authentication, the user does not enter in the entirety of their secret to authenticate. Instead, after they enter in their username, the user is presented with 4\footnote{The number 4 was a completely arbitrary number chosen for this implementation simply because it seemed reasonable, both in terms of memorization and security. This number is not set in stone, and more testing will have to be done to determine what the optimal number would be.} of their (numbered) locks in a random order, without repeat. The user then inputs the keys that are associated with the presented locks as one long string, in the same order as shown, without spaces or delimiters. Should the keys and locks match the ones on the list, the user will be authenticated.
-	
-	If the inputted string does not match the keys and the locks, the presented locks will be randomly selected again and the user is not authenticated.
-	
-	To further illustrate how dynauth functions, here are 2 example login sessions:
 \subsection{Example Usage 1: Successful Authentication}
-	Using the same locks and keys as depicted in the list above, here is what a successful login session might look like:
+	Using the same locks and keys as depicted in Table 1, here is what a successful login session might look like:
 	\begin{enumerate}
-		\item Please enter your email:\\
-		\textbf{Input}: cpete4@brockport.edu
-		\item Your locks are: 7 - 4 - 2 - 10\\
-		\textbf{Input}: lengthylargemountainjeff
+		\item Please enter your email:
+		\begin{itemize}
+			\item cpete4@brockport.edu
+		\end{itemize}
+		\item Your locks are: 7 - 4 - 2 - 10
+		\begin{itemize}
+			\item goatdogbeetlejackal
+		\end{itemize}
 		\item Correct! You are now authenticated
 	\end{enumerate}
 \subsection{Example Usage 2: Failed Authentication}
-	Using the same locks and keys as depicted in the list above, here is what a failed login session might look like:
+	Using the same locks and keys as depicted in Table 1, here is what a failed login session might look like:
 	\begin{enumerate}
-		\item Please enter your email:\\
-		\textbf{Input}: cpete4@brockport.edu
-		\item Your locks are: 7 - 4 - 2 - 10\\
-		\textbf{Input}: lengthlargemountainrepairs
-		\item Incorrect, please try again
-		\item Your locks are: 9 - 10 - 1 - 4\\
-		\textbf{Input}: repairsjeffroughlarge
+		\item Please enter your email:
+		\begin{itemize}
+			\item cpete4@brockport.edu
+		\end{itemize}
+		\item Your locks are: 3 - 6 - 8 - 9
+		\begin{itemize}
+			\item catfishharejackal\footnote{Notice the word "jackal" is for lock number 10, not 9 as required}
+		\end{itemize}
+		\item INCORRECT: Your keys do not match, not authenticated. Please try again
+		\item Your locks are: 9 - 4 - 2 - 1\footnote{Notice that the locks changed automatically upon failure.}
+		\begin{itemize}
+			\item ibisdogbeetleant
+		\end{itemize}
 		\item Correct! You are now authenticated
 	\end{enumerate}
-\subsection{Memorization}
-	Before getting into the technical intricacies that make dynauth a more secure alternative to the traditional password, I think it's best to address the issue of memorization. I can already imagine many people starting to consider tearing their hair out at the thought of \textit{adding} complexity to an authentication process that is starting to fail \textit{because} of increasing complexity. Requiring users to remember not just \textit{one} secret but \textit{ten}, in the proper order, that also changes every time they fail -- well that's ridiculous.
-	
-	The reality is this: a password with stringent requirements designed to make it more secure results in passwords that are far harder to remember than a simple list of 10 words. Humans are actually pretty good at remembering ordered information \cite{?}. They aren't so good at remembering if their Apple ID password used their "normal" password with the uppercase at the beginning or the one with the exclamation point at the end. Due to this, people have successfully created passwords that are easy for computers to crack and hard for people to remember\cite{?}. Dynauth navigates around this issue by not requiring users to use symbols and numbers at all, but to instead use common dictionary words.
-	
-	Also, the fact that at face value it seems a more difficult task to remember 10 words in order than a passwords just encourages users to try harder to commit them to memory. As you'll see later, a simple practice feature developed for the usability test made a huge difference in how easily users were able to memorize their locks and keys.
-	
-	Lastly, since dynauth is more complex than passwords, it is much less likely that a developer will incorrectly implement it and subsequently comprise the security of their users\footnote{This assumption comes from the fact that the implementation of dynauth isn't immediately apparent to most developers like passwords are. Therefore, they are more likely to research methods of implementation urging them to use an official library or OAuth (once they are built that is).}.
-\subsection{Design}
-	This is where things get interesting. For all the same reasons as passwords\cite{Citation Needed}, all user's locks and keys need to be hashed and stored in a safe and secure manner to prevent attackers from accessing cleartext entries of them if they can somehow get in the backend of the system. There also needs to be a way guarantee the security of each hash is greater than that of a typical password because otherwise, what's the point?
-	
-	This presents a problem: any normal dictionary word cannot be hashed by itself and referenced later as it would be far too insecure. Therefore, the locks and keys can't just be hashed and stuck in the database to be compared to the individually entered locks and keys later.
+\subsection{Usage Details}
+	The user's locks will initially not be presented to them until a registered email is submitted since the locks are grabbed from the server, not generated client side. Also, every time there is a failed authentication attempt, the locks will reshuffle themselves, making another server call. For this implementation, users were given the ability to "refresh" their locks at will and no maximum number of failed attempts. These features are easily implemented, however, more research will need to be done before the necessity of additional restrictions like these is clear.
+\subsection{Hashing}
+	For all the same reasons as passwords\cite{Citation Needed}, the locks and keys need to be hashed and stored in a safe and secure manner. It was decided that all the information sent between the client and server not only needs to be TLS encrypted, but also hashed itself to keep the integrity of dynauth as an authentication scheme\footnote{This has resulted in the unintended but welcome effect that anytime a user needs to reset one key, they must re-enter all the others previously since the system cannot pick and choose what is changed in the hashes due to the design.}. The latest and still secure as of June 2018 hashing schemes of SHA2-256 and SHA3-256 were used in this implementation since the 256 bit models provides a great amount of security while taking up less data.
+\subsection{Information Storage}
+	One of the main problems with the usage of passwords is the fact that no matter what hashing and salting scheme is used, there is always a one-to-one relationship of username/email to password somewhere in a database. This allows any attacker who gains access to compile massive tables of passwords quickly to crack through at a later time.
 	
 	The core difference that allows dynauth to operate more securely, even in the event of a database breach, is the \textbf{hashed} storage of \textit{all possible lock and key permutations}. This means that if a user configures 10 total keys, and are presented 4 total locks at the time of authentication (the base level configuration I chose), there will be a total of 10P4 (10 * 9 * 8 * 7 = 5040) permutations generated and stored.
 	
-	Here is an example of a user's permutations being generated and hashed:
+	\textbf{An example of the permutations being generated:}
 	\begin{enumerate}
-		\item The first 4 keys of the user's configuration are concatenated.\\
-		\textbf{Example:} roughmountainbikinglarge
-		\item That string is then hashed
-		\textbf{Example:} 1CF0B384D1D52133255970AE0B091D5BDFCB627F\\EA9048D1FBC265BBF00137B7
-		\item The locks that those 4 keys are associated with are prepended to the hash string
-		\textbf{Example:} 12341CF0B384D1D52133255970AE0B091D5BDFCB\\627FEA9048D1FBC265BBF00137B7
-		\item That entire string is then hashed again, and the result is what is stored in the database as a single permutation
-		\textbf{Example:} 0E60D213A1055A3F3D49BF4611D3307542615E53A\\638751BAF50CF9E187228C9
-		\item This process would continue until all possible permutations of the user's configuration are generated and stored.
+		\item The user configures the locks and keys outlined above
+		\item The first permutation that is generated is the one for the first 4 \textbf{keys}: "antbeetlecatdog"
+		\item That permutation is then hashed\footnote{As mentioned above, using SHA2-256} into: "0fba3db0d135d8db6798011404194e398cf5d9de5ff3be2\-5937d911cc279cf56"
+		\item The associated \textbf{locks} are then prepended onto the hash: "\textbf{1234}0fba3db0d135d8db6798011404194e398cf5d9de5f\-f3be25937d911cc279cf56"
+		\item That new string with the prepended locks is then hashed yet again to ensure that the user can't just enter any of their keys in response to the locks\footnote{This time, the hash is SHA3-256 with a 64 character salt that is stored right next to the final hash in the database. NOTE: The salt is not represented in the hashes in this example.}: "06d9cd066d2d6fe9849b2a76b3bc90c28c5e2ba43c4dbb\-57b6bfac793e6b20df"
+		\item That final hash is then stored in the database along with the hash salt, and the next permutation would being the same process until there aren't any left.
 	\end{enumerate}
-	
-	Here is the process for a user to authenticate:
-	\begin{enumerate}
-		\item The user enters in their email on the client side and the email is sent to the server.
-		\item The server randomly selects the locks appropriate for the user and stores them in a database with an expiration date and time.
-		\item The server then sends the same locks it stored back to the client for the user to view.
-		\item The user enters in the keys associated with the locks.
-		\item The locks are hashed client side and the hash is then sent to the server.
-		\item The server then prepends the keys stored previously in step 2 to the hash received from the client and hashes that entire string again.
-		\item The resulting hash is then used to iterate over the user's database of lock and key permutations until a match is found. If any permutation matches, the user is authenticated.
-	\end{enumerate}
-	
-	The reason this design was chosen was...
-	% One of the main problems with the usage of passwords is the fact that no matter what hashing and salting scheme is used, there is always a one-to-one relationship of username/email to password somewhere in a database. This allows any attacker who gains access to compile massive tables of passwords quickly to crack through at a later time.
-	
 \subsection{Benefits of Dynauth}
 	\paragraph{Crack time greatly increased} The largest benefit dynauth provides is how much longer it would take to successfully crack\footnote{By "crack" I mean guess all the possibilities against a hash, NOT crack the hash itself}. The average password provides about 2$^{22}$ bits of entropy\cite{Citation Needed}. Considering a worse case scenario, each key present in dynauth provides between 2$^{11}$ and 2$^{14}$ bits of entropy, depending on the words present in the dictionary used for a Dictionary Attack\footnote{It is assumed the attacker will be using a dictionary attack here because that is the worse-case scenario. Trying to guess the final hash character by character results in excess of 2$^{120}$ bits of entropy}. With a 10x4 schema, that means the average dynauth setup provides between 2$^{44}$ and 2$^{56}$ bits of entropy. These bits of entropy would also provide more protection than a typical password since they are hashed twice, first on the client side, then on the server side with the locks . This would mean an attacker would need to perform twice as many operations per guess, doubling the average amount of computation time needed to crack a single hash. On top of that, three distinct hashes would have to be cracked before an attacker retrieves all 10 keys\footnote{This is the case since each hash contains only 4 of the 10 words. The attacker would need to crack hashes for 1234, 5678, and 87910.}.
 	\paragraph{Social engineering is less effective} It is much more difficult to phish a user since the system would have to know exactly how many locks and keys they use beforehand. Even in the event of a successful phishing attack, the attacker does not necessarily have immediate access since they would only have 4 our of the 10 possible keys.
@@ -167,11 +173,6 @@ cwania@brockport.edu}
 	\paragraph{Possibility of infinite loop} \textbf{Not sure if I should mention this.} This is the idea that if a user is bruteforcing it, they can't assume that a wrong answer was actually not correct since it just wasn't correct for the displayed locks and keys while it still could be correct for another pair. This could result in the attacker never being able to get in.
 	\paragraph{It's new software} As with everything new, people need to adapt. That includes attackers; brand new software would have to be made to attempt to crack user's accounts. While this is similar to security by obscurity in that it isn't actually secure at all, it will slow attackers down initially.
 	\paragraph{Potentially strong enough to be used alone} Due to the additional bits of entropy provided, I would be more confident to say that a user could either reuse their locks and keys between accounts (as long as the accounts implement it correctly), or a single service could authenticate other services using this method with more assurance that there isn't a weak link of a master password.
-\subsection{Additional Possibilities}
-	There are many additional little features that could be implemented with relative ease.
-	\begin{itemize}
-		\item A refresh button to reshuffle the user's locks on demand
-	\end{itemize}
 \subsection{On The Name}
 	I am willing to admit that "Dynauth" or even "Dynamic Authentication" might not be the most ideal name for such a mechanism due to the ambiguity around the word "dynamic". The intention was to convey that the login process is dynamic in the sense that the user types a different thing between sessions and that the secret is changed on a failed login attempt. It was suggested to name it "Active Authentication" due to the fact that the user needs to "actively" think about the process every time they authenticate, reinforcing the memorization of the locks and keys. Despite the nice alliteration, I decided to keep the "dynamic" due to the fact that I had already bought the domain name "dynauth.io" and I did not want to change it for a small difference.\footnote{Humans are stubborn}
 	

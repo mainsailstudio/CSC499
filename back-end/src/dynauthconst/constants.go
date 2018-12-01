@@ -14,7 +14,7 @@ const DatabaseName = "dynauth_backend"
 const DatabaseUser = "root"
 
 // DatabasePass - the password of the database
-const DatabasePass = "root"
+const DatabasePass = ""
 
 // BcryptIterations - the amount of iterations to perform when hashing a password or auth using bcrypt
 const BcryptIterations = 1 // for testing

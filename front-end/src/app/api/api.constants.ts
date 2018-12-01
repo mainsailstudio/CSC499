@@ -1,5 +1,5 @@
 export const TestURL = 'http://localhost:8080/';
-export const RealURL = 'https://dev.dynauth.io/';
+export const RealURL = 'http://localhost:808/';
 export const APIURL = 'http://localhost:8080/';
 // export const APIURL = 'https://dev.dynauth.io/'; // real url
 export const WordArray = [

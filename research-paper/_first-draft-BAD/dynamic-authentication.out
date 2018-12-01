@@ -1,0 +1,29 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{The Prevalence and Problems of Passwords}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Lack of a Viable Alternative}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Familiarity of use}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Ease of implementation}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{Need for a New Method of Authentication}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.5}{Basic Traits Necessary to Replace Passwords}{section.2}% 7
+\BOOKMARK [1][-]{section.3}{Enter: Dynamic Authentication}{}% 8
+\BOOKMARK [2][-]{subsection.3.1}{Introduction to Dynauth}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.2}{Overview of Usage}{section.3}% 10
+\BOOKMARK [2][-]{subsection.3.3}{Example Usage 1: Successful Authentication}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.4}{Example Usage 2: Failed Authentication}{section.3}% 12
+\BOOKMARK [2][-]{subsection.3.5}{Usage Details}{section.3}% 13
+\BOOKMARK [2][-]{subsection.3.6}{Hashing}{section.3}% 14
+\BOOKMARK [2][-]{subsection.3.7}{Information Storage}{section.3}% 15
+\BOOKMARK [2][-]{subsection.3.8}{Benefits of Dynauth}{section.3}% 16
+\BOOKMARK [2][-]{subsection.3.9}{On The Name}{section.3}% 17
+\BOOKMARK [1][-]{section.4}{Implementation}{}% 18
+\BOOKMARK [2][-]{subsection.4.1}{Method of Implementation}{section.4}% 19
+\BOOKMARK [2][-]{subsection.4.2}{Backend}{section.4}% 20
+\BOOKMARK [2][-]{subsection.4.3}{Frontend}{section.4}% 21
+\BOOKMARK [2][-]{subsection.4.4}{Challenges During Implementation}{section.4}% 22
+\BOOKMARK [1][-]{section.5}{Validation}{}% 23
+\BOOKMARK [2][-]{subsection.5.1}{Analysis of Implementation}{section.5}% 24
+\BOOKMARK [2][-]{subsection.5.2}{Usability Testing}{section.5}% 25
+\BOOKMARK [2][-]{subsection.5.3}{Method of Usability Testing}{section.5}% 26
+\BOOKMARK [2][-]{subsection.5.4}{Results of Usability Testing}{section.5}% 27
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 28
+\BOOKMARK [1][-]{section*.2}{References}{}% 29
